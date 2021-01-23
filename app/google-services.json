@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "433718453457",
+    "firebase_url": "https://com-zizi-rendezvous-default-rtdb.firebaseio.com",
+    "project_id": "com-zizi-rendezvous",
+    "storage_bucket": "com-zizi-rendezvous.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433718453457:android:0580ef967e7a24602451f0",
+        "android_client_info": {
+          "package_name": "com.zizi.rendezvous"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433718453457-mt6mao9b5tciera3e448d3jrlm0jpgai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC3jJef7qqwA5LAbKJTlxKnEjK5aVgPCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433718453457-mt6mao9b5tciera3e448d3jrlm0jpgai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

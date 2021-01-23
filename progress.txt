@@ -1,0 +1,126 @@
+НУЖНО СДЕЛАТЬ
+
+Не работает БД реалтайм датабейз на новом аккаунте, там выбирал локацию евро.
+
+LoadRequestMeetingFromMemory();  функцию вызывать, когда вошли в приложение
+
+
+#Добавлял вычитав это: #############################################################################
+#When using Firebase Realtime Database in your app along with ProGuard
+#you need to consider how your model objects will be serialized and deserialized after obfuscation.
+#If you use DataSnapshot.getValue(Class) or DatabaseReference.setValue(Object) to read and write data
+#you will need to add rules to the proguard-rules.pro file:
+
+# Add this global rule
+-keepattributes Signature
+
+# This rule will properly ProGuard all the model classes in
+# the package com.yourcompany.models. Modify to fit the structure
+# of your app.
+-keepclassmembers class ru.zizi.rendezvous.ModelMessage { *; }
+-keepclassmembers class ru.zizi.rendezvous.ModelChat { *; }
+# ==================================================================================================
+
+
+Загрузить паспорт жены.
+Перевести приложение на аккаунт жены.
+
+ТЕМНАЯ ТЕМА
+Темный фон #121212
+«основной цвет», я имею в виду «основной цвет темной темы» (тональное значение 200).
+Цвет текста на кнопках FAB должен быть черный.
+Высокое выделение текста должно иметь непрозрачность 87%.
+Текст с низким акцентом должен иметь непрозрачность 60%.
+Отключенный текст, должен иметь непрозрачность 38%.
+
+МОНЕТИЗАЦИЯ
+TrivialDrive приложение из примеров в студии с оплатой и комментариями от Гугла
+
+Реализовать модерацию.
+Подготовить скриншоты и рекламный текст
+Опубликовать.
+
+ВОПРОСЫ
+Какой счет нужно открыть в долларах, чтобы получать переводы? https://support.google.com/googleplay/android-developer/answer/7161440
+Можно ли, чтобы разработчик был один, а платежный профиль был на другого человека?
+Можно ли оформить на самозанятого?
+Можно ли к бесплатному привязать платный контент?
+
+СДЕЛАТЬ ПОТОМ
+Использую устаревшие методы, что пришло на замену? Например AsyncTask in android.os has been deprecated.
+Нужно делать админку.
+Протестировать в режиме Strictmode https://developer.android.com/docs/quality-guidelines/core-app-quality#strictmode
+Протестировать, тесты тут: https://developer.android.com/docs/quality-guidelines/core-app-quality
+Попробовать уйти от экран авторизации, как в вайбер или вотсапп.
+Разобраться, как восстанавливать приложение после длительного простоя, возможно из saved instans
+28. Если нет чатов, то показать сообщение, если нет встреч, то показать сообщение.
+Нужна статистика о количестве встреч.
+Попробовать на различных расширениях устройств.
+Почитать для совместимости с различными типами устройств https://developer.android.com/guide/practices/screens_support#screen-independence
+Оптимизация для планшетов.
+Научиться обновлять уведомления, так же удалять https://developer.android.com/training/notify-user/build-notification#builder
+Есть тип уведомлений специально для чатов, для возможности ведения истории, примеры тут https://developer.android.com/training/notify-user/build-notification#builder
+38. Поработать с отменой уведомлени и с накоплением https://startandroid.ru/ru/uroki/vse-uroki-spiskom/510-urok-185-notifications-rezhimy-otkrytiya-activity.html
+Лицензионное соглашение с пользователем (EULA).
+При передаче уведомления не передавать токен, а только ID пользователя, останольное подгружать из БД. 
+Определять расширение экрана при загрузке первой активити, добавить расширение в переменные глобального класса и использовать их на фрагменте чата
+Добавить регионы
+Разобраться с отладкой по сети
+Подключить гугл аналитику
+Может быть, как то упорядочивать вывод заявок? По дате? Алфавиту? Может наверху платные?
+35. При нажатии на кнопку назад сделать предупреждение о выходе из приложения.
+addOnSuccessListener заменить на CompliteListener, там есть проверка на неуспех. Где есть слушатель и метод onCancelled, залогировать ошибки.  
+66. Сделать крутилку на деталях встречи, пока грузится инфа
+67. Сделать на деталях встречи: в необязательных полях, если пустые, написать "не указано".
+31. Разобраться с темной темой и расставить правильные цвета.
+60. Когда на форме заявки блокируем выбор города, то при клике написать, сначала выберите регион.
+55. На форме заявки сделать кнопку подачи заявки в виде FAB
+33. Отбработать ошибки при отправке сообщения, например, что нет интернета.
+27. Когда печатаешь в чате несколько строк, при переходе на новую строку сдвигать весь чат выше.
+22. Когда пользователь разлогинивается, ему не нужно присылать личных сообщений, а там привязка к токену.
+17. Сделать на форме логин на и где-то возможность обратиться в службу поддержки.
+3.  Сделать кнопку разлогина.
+14. При оплате окно сделать с темной темой.
+Лицензирование, служба проверяет заплатил ти пользователь, а для бесплатных может разрешать или запрещать доступ к доп модулям. На сегодня нужна она мне? https://developer.android.com/google/play/licensing
+Если будет плохо работать выборка, то попробовать оптимизировать запросы с БД или перейти на другую БД. 
+	Сейчас много, чего фильтруется на уровне приложения из вариантов можно количество мест уменьшить до 10 или диапазон лет сделать до 10 лет и применить array-contains-any 
+	https://firebase.google.com/docs/firestore/query-data/queries#in_and_array-contains-any
+	Так же можно посмотреть в сторону порциальной загрузки данных, тут что-то есть https://sodocumentation.net/ru/android/topic/5511/%D0%B1%D0%B0%D0%B7%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-firebase-realtime
+	Можно использовать курсоры, при выборке применить по возрасту больше чем максимальный, потом упорядочить и начать с минимального возраста startAt https://firebase.google.com/docs/firestore/query-data/query-cursors
+Поддержка установки на SD-карту https://developer.android.com/guide/topics/data/install-location
+
+ОПЦИИ
+Зажигать экран при уведомлении
+Вибрация при уведомлении
+Звук при уведомлении
+Сделать видимость уведомлений в зависимости от настроек пользователя. Инфа тут https://developer.android.com/training/notify-user/build-notification#builder раздел Set lock screen visibility
+
+
+БЕЗОПАСНОСТЬ
+https://firebase.google.cn/docs/database/security/core-syntax?authuser=3&skip_cache=true&hl=ru
+https://firebase.google.cn/docs/rules/basics?authuser=3&hl=ru&skip_cache=true#realtime-database_2
+https://firebase.google.cn/docs/database/security/rules-conditions?authuser=3&hl=ru&skip_cache=true
+На данный момент отключил уведомления о угрозах в безопасности. Включить назад в консоли, нажать на колокольчик и далее настройки.
+ГитХаб обнаружил, что у меня ключ приложенеия в открытом доступе, нужно завести приватный репозиторий.
+
+РАБОТАЕТ ИЛИ НЕТ
+Установить этот атрибут, чтобы даже после длительного возврата стек не очищался и должны всегда начинать с той же активити на которой закончили. 
+	alwaysRetainTaskState учтановить в активити параметр true
+	If this attribute is set to "true" in the root activity of a task, the default behavior just described does not happen. The task retains all activities in its stack even after a long period.
+
+БЭКЕНД
+Для начала https://cloud.google.com/tools/android-studio/app_engine/run_test_deploy
+
+НЕ ЯСНО
+В настойках сборки пароль к ключу с подписью указывается явно, надо скрыть бы.
+
+ПЕРЕД КАЖДОЙ СБОРКОЙ
+Прогнать через Lint.
+Инкрементировать версии.
+Актуализировать целевые платформы.
+Сделать очистку проекта.
+Собрать.
+Протестировать релизную версию.
+Выложить (обновить информацию, скриншоты).
+Слить в мастер ветку.
+

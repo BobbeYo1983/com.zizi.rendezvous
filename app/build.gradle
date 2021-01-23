@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
+android {
+    signingConfigs {
+
+        debug {
+            storeFile file('KeyStoreZiziDebug.jks') // путь относительно настоящего файла
+            storePassword 'KeyStoreZiziDebug'
+            keyAlias 'KeyStoreZiziDebug'
+            keyPassword 'KeyStoreZiziDebug'
+        }
+        release {
+            storeFile file('..\\..\\KeyStoreZizi.jks') // путь относительно настоящего файла
+            keyAlias 'KeyStoreZizi'
+            storePassword 'Rend#1910'
+            keyPassword 'Rend#1910'
+        }
+    }
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
+
+    defaultConfig {
+        applicationId "com.zizi.rendezvous"
+        minSdkVersion 29
+        targetSdkVersion 29
+        versionCode 1
+        versionName '1.0.0'
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true // ProGuard выключен
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release // подписываем приложение выбранной подписью
+            shrinkResources true //удаляет ненужные ресурсы
+
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            versionNameSuffix '.debug'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.material:material:1.3.0-beta01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+
+
+    // firebase /////////////////////////////////////////////////////////////////////////////////////
+    implementation platform('com.google.firebase:firebase-bom:26.1.1') // Import the BoM for the Firebase platform
+    // Declare the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    //implementation 'com.google.firebase:firebase-analytics:18.0.0' // для Realtime Database
+    implementation 'com.google.firebase:firebase-auth:20.0.1'
+    implementation 'com.google.firebase:firebase-database:19.6.0'
+    implementation 'com.google.firebase:firebase-firestore:22.0.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1' // FirebaseUI for Cloud Firestore
+    implementation 'com.google.firebase:firebase-messaging:21.0.1'
+    //===============================================================================================
+
+}
