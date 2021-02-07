@@ -43,7 +43,7 @@ public class ClassGlobalApp extends Application {
     private FirebaseAuth firebaseAuth;
 
     private FirebaseDatabase firebaseDatabase; // БД Realtime Database
-    private DatabaseReference databaseReference; //ссылка на данные в базе
+    //private DatabaseReference databaseReference; //ссылка на данные в базе
     private Map<String, Object> msg; // сообщение в БД
 
     private FirebaseFirestore firebaseFirestore; // база данных
@@ -58,8 +58,7 @@ public class ClassGlobalApp extends Application {
      */
     private ModelSingleMeeting requestMeeting; // заявка на встречу текущего пользователя
 
-
-
+    public ModelUser currentUser; // информация и настройки текущего пользователя
 
 
     /**
@@ -101,6 +100,8 @@ public class ClassGlobalApp extends Application {
         requestMeeting = new ModelSingleMeeting();
 
         //LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
+
+        currentUser = new ModelUser();
 
     }
 
@@ -283,7 +284,9 @@ public class ClassGlobalApp extends Application {
             path = "debug/" + path;
         }
 
-        return databaseReference = firebaseDatabase.getReference(path); //формируем ссылку
+        DatabaseReference databaseReference = firebaseDatabase.getReference(path); //формируем ссылку
+
+        return databaseReference;
     }
 
 
@@ -299,8 +302,8 @@ public class ClassGlobalApp extends Application {
         if (BuildConfig.DEBUG) { // если режим отладки
             collection = "_debug_" + collection;
         }
-
-        return documentReference = firebaseFirestore.collection(collection).document(document); //формируем ссылку
+        DocumentReference documentReference = firebaseFirestore.collection(collection).document(document); //формируем ссылку
+        return documentReference;
 
     }
 
@@ -310,7 +313,9 @@ public class ClassGlobalApp extends Application {
             collection = "_debug_" + collection;
         }
 
-        return collectionReference = firebaseFirestore.collection(collection); //формируем ссылку
+        CollectionReference collectionReference = firebaseFirestore.collection(collection); //формируем ссылку
+
+        return collectionReference;
     }
 
 /*    public boolean IsNotificationMessage() {

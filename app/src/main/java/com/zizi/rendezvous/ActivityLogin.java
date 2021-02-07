@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
@@ -219,7 +220,7 @@ public class ActivityLogin extends AppCompatActivity {
                         SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача входы выполнится успешно
-                            SaveProfileAndEnter();
+                            SaveProfile();
                         } else { // если вход не успешен
 
                             SetVisibilityViews(true); //показываем вьюхи
@@ -327,7 +328,7 @@ public class ActivityLogin extends AppCompatActivity {
                         SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача регистрации выполнена успешно, то юзер автоматои и авторизируется
-                            SaveProfileAndEnter();
+                            SaveProfile();
                         } else { // если регистрация не успешна
 
                             SetVisibilityViews(true); //показываем вьюхи
@@ -374,7 +375,7 @@ public class ActivityLogin extends AppCompatActivity {
     /**
      * Сохраняет профайл пользователя в БД и входит в приложение
      */
-    public void SaveProfileAndEnter (){
+    public void SaveProfile (){
         classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
         //готовим коллекцию профайла пользователя для сохранениния
@@ -388,32 +389,18 @@ public class ActivityLogin extends AppCompatActivity {
 
         user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
 
-        //сохраняем профайл пользователя в БД
+        //сохраняем в профайл пользователя в БД
         documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась
-                if (task.isSuccessful()) { //если сохранение успешно
+                if (task.isSuccessful()) { //если задача сохранения выполнилась успешно
 
-                    // если раньше не входили в приложение, то есть логин и пароль не запоминались в память и пустые
-                        classGlobalApp.PreparingToSave("email", email);
-                        classGlobalApp.PreparingToSave("password", password);
-                        classGlobalApp.SaveParams(); // сохраним на устройство для автовхода
-                    //}
-
-
-                    //создаем намерение, что хотим перейти на другую активити
-                    Intent intent = new Intent(ActivityLogin.this, ActivityMeetings.class);
-                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
-                                    |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
-                                    );
-
-                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
-                    finish(); // убиваем текущую активити, чтобы не возвращаться по кнопке назад на нее
+                    LoadProfileToRAM();
 
                 } else { // если сохранение не успешно
 
-                    classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter/onComplete", "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), true);
+                    classGlobalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), true);
 
                     //показываем всплывающее окно
                     classDialog.setTitle("Ошибка входа");
@@ -426,6 +413,78 @@ public class ActivityLogin extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+
+    /**
+     * Загрузка профайла пользователя из БД в RAM
+     */
+    private void LoadProfileToRAM(){
+
+        DocumentReference documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+
+                    //TODO подгрузить информацию из БД
+                    DocumentSnapshot documentSnapshot = task.getResult();
+
+                    //грузим количество бесплатных встречь
+                    if (documentSnapshot.get("countRequestMeetings") != null) {//если такое поле существует
+
+                        int countRequestMeetings = (int) documentSnapshot.get("countRequestMeetings");
+                        classGlobalApp.currentUser.setCountRequestMeetings(countRequestMeetings);
+
+                    } else {
+
+                        classGlobalApp.Log(getClass().getSimpleName(), "LoadProfileToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле countRequestMeetings не найдено, присвоено значение по умолчанию", false);
+                        classGlobalApp.currentUser.setCountRequestMeetings(Data.DEFAULT_COUNT_REQUEST_MEETINGS);
+                    }
+
+                    classGlobalApp.currentUser.setId(classGlobalApp.GetCurrentUserUid()); // id пользователя
+
+                    EnterInApplication(); //входим в приложение
+
+
+                } else { // если ошибка при чтении профайла из БД
+
+                    classGlobalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException(), true);
+
+                    //показываем всплывающее окно
+                    classDialog.setTitle("Ошибка входа");
+                    classDialog.setMessage("Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException());
+                    classDialog.show(fragmentManager, "classDialog");
+
+                    //делаем вьюхи видимыми
+                    SetVisibilityViews(true);
+                }
+            }
+        });
+
+    }
+
+
+    /**
+     * Вход в приложение, то есть переход на первую активити после авторизации
+     */
+    private void EnterInApplication () {
+
+        // сохраняем логин и пароль в память
+        classGlobalApp.PreparingToSave("email", email);
+        classGlobalApp.PreparingToSave("password", password);
+        classGlobalApp.SaveParams(); // сохраним на устройство для автовхода
+
+
+        //создаем намерение, что хотим перейти на другую активити
+        Intent intent = new Intent(ActivityLogin.this, ActivityMeetings.class);
+        intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+        );
+
+        startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+        finish(); // убиваем текущую активити, чтобы не возвращаться по кнопке назад на нее
 
     }
 

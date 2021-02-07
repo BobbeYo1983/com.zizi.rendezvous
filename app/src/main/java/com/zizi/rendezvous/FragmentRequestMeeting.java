@@ -19,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -43,14 +46,14 @@ public class FragmentRequestMeeting extends Fragment {
 
     //Объявление ///////////////////////////////////////////////////////////////////////////////////
     private ClassGlobalApp classGlobalApp; //глобальный класс приложения, общий для всех компонентов
-    private FirebaseFirestore firebaseFirestore; // база данных
+    //private FirebaseFirestore firebaseFirestore; // база данных
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
-    private Map<String, Object> meeting; // коллекция ключ-значение для описания встречи
+    //private Map<String, Object> meeting; // коллекция ключ-значение для описания встречи
     private ActivityMeetings activityMeetings; // настоящая активити
     private FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     private FragmentPlace fragmentPlace; // фрагмент с выбором места
     private ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
-    private String tmpStr; // временный буфер
+    //private String tmpStr; // временный буфер
     private ClassDialog classDialog; //класс для показа всплывающих окон
     private FragmentManager fragmentManager; // для управления показом компонентов
 
@@ -84,6 +87,8 @@ public class FragmentRequestMeeting extends Fragment {
     private TextInputLayout til_comment;
     private TextInputEditText til_comment_et; // комментарий к встрече
     private Button btn_apply_request; // кнопка подачи заявки
+    private ScrollView svRequestMeeting; // прокручиваемый слой
+    private ProgressBar pbRequestMeeting; // крутилка
 
 
 
@@ -103,8 +108,8 @@ public class FragmentRequestMeeting extends Fragment {
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
         classGlobalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
-        firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
-        meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
+        //firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
+        //meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
@@ -141,7 +146,11 @@ public class FragmentRequestMeeting extends Fragment {
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
         materialToolbar = getActivity().findViewById(R.id.materialToolbar);
         btn_apply_request = getActivity().findViewById(R.id.btn_apply_request);
+        svRequestMeeting = getActivity().findViewById(R.id.svRequestMeeting);
+        pbRequestMeeting = getActivity().findViewById(R.id.pbRequestMeeting);
         //=========================================================================================
+
+
 
     }
 
@@ -509,6 +518,9 @@ public class FragmentRequestMeeting extends Fragment {
 
                 ) { // Если поля все введены корректно
 
+                    //TODO нужно проверить есть ли бесплатные заявки
+                    //TODO декремент количества заявок
+
                     SaveParamsToRAM();
 
                     // сохраняем заявку в БД
@@ -594,6 +606,11 @@ public class FragmentRequestMeeting extends Fragment {
             }
         });
         //==================================================================================================
+
+
+
+        svRequestMeeting.setVisibility(View.VISIBLE); // Показываем UI
+        pbRequestMeeting.setVisibility(View.GONE); // крутилку скрываем
 
     }
 
