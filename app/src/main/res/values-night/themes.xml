@@ -1,19 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+
+
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+    <!--<style name="Theme.Gift" parent="Theme.MaterialComponents.DayNight.DarkActionBar">-->
+    <style name="Theme.myDayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-    <style name="Theme.MyApp" parent="Theme.MaterialComponents.NoActionBar">
-        <!-- Темная тема для всего приложения, подключается в манифесте. Наследование от темной статичной темы, вне зависимости выбора пользователя -->
-        <item name="android:navigationBarColor">@android:color/black</item>
-    </style>
 
-    <style name="Theme.myDarkTheme" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -30,6 +23,13 @@
 
         <!--Нижняя панель навигации с кнопками-->
         <item name="android:navigationBarColor">@color/darkThemeBackground</item>
+
+
+
     </style>
+
+
+
+
 
 </resources>
