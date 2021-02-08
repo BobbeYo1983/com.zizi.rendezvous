@@ -518,40 +518,47 @@ public class FragmentRequestMeeting extends Fragment {
 
                 ) { // Если поля все введены корректно
 
-                    //TODO нужно проверить есть ли бесплатные заявки
-                    //TODO декремент количества заявок
+                    //нужно проверить есть ли бесплатные заявки
+                    int countRequestMeetings = Integer.valueOf(classGlobalApp.currentUser.getCountRequestMeetings());
+                    classGlobalApp.Log(getClass().getSimpleName(), "btn_apply_request.setOnClickListener", "Количество бесплатных заявок = " + countRequestMeetings, false);
+                    if (countRequestMeetings > 0) {
 
-                    SaveParamsToRAM();
+                        SaveParamsToRAM(); // сохранение в оперативную память
 
-                    // сохраняем заявку в БД
-                    documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid());
-                    documentReference.set(classGlobalApp.GetRequestMeeting()).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) { //если задачка по работе с БД выполнилась
-                            if (task.isSuccessful()) { //если задача по работе с БД выполнилась успешно
+                        // сохраняем заявку в БД
+                        documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid());
+                        documentReference.set(classGlobalApp.GetRequestMeeting()).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) { //если задачка по работе с БД выполнилась
+                                if (task.isSuccessful()) { //если задача по работе с БД выполнилась успешно
 
-                                classGlobalApp.SaveRequestMeetingToMemory(); // сохраняем заявку в память
+                                    classGlobalApp.SaveRequestMeetingToMemory(); // сохраняем заявку в память
 
-                                classGlobalApp.PreparingToSave("statusRequestMeeting", Data.ACTIVE); // отмечаем статус заявки активным
-                                classGlobalApp.SaveParams();
+                                    classGlobalApp.PreparingToSave("statusRequestMeeting", Data.ACTIVE); // отмечаем статус заявки активным
+                                    classGlobalApp.SaveParams();
 
-                                activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
+                                    DecrementCountRequestMeetings();
 
-                            } else { //если задача по работе с БД выполнилась не успешно
+                                    activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
 
-                                classGlobalApp.Log(getClass().getSimpleName(), "UpdateUI/onComplete", "Ошибка при подаче заявки. Ошибка записи заявки в БД: " + task.getException(), true);
+                                } else { //если задача по работе с БД выполнилась не успешно
 
-                                //показываем всплывающее окно
-                                classDialog.setTitle("Ошибка записи в БД");
-                                classDialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
-                                classDialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
-                                classDialog.show(fragmentManager, "classDialog");
+                                    classGlobalApp.Log(getClass().getSimpleName(), "UpdateUI/onComplete", "Ошибка при подаче заявки. Ошибка записи заявки в БД: " + task.getException(), true);
+
+                                    //показываем всплывающее окно
+                                    classDialog.setTitle("Ошибка записи в БД");
+                                    classDialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
+                                    classDialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
+                                    classDialog.show(fragmentManager, "classDialog");
+
+                                }
 
                             }
+                        });
+                    } else {
 
-                        }
-                    });
-
+                        //TODO перейти на страничку с оплатой
+                    }
 
                 } else {// если одно из обязательных полей не заполнено в заявке
 
@@ -614,6 +621,27 @@ public class FragmentRequestMeeting extends Fragment {
 
     }
 
+
+    /**
+     * Уменьшение количества бесплатных заявок на встречи
+     */
+    private void DecrementCountRequestMeetings() {
+
+        //отнимаем одну встречу
+        int countRequestMeetings = Integer.valueOf(classGlobalApp.currentUser.getCountRequestMeetings())-1;
+        classGlobalApp.currentUser.setCountRequestMeetings(String.valueOf(countRequestMeetings));
+
+        DocumentReference documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
+        documentReference.update("countRequestMeetings", classGlobalApp.currentUser.getCountRequestMeetings())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()){
+                            classGlobalApp.Log(getClass().getSimpleName(), "DecrementCountRequestMeetings", "Ошибка, бесплатная встреча списана, но не записано новое значение в БД", true);
+                        }
+                    }
+                });
+    }
 
 
     /**

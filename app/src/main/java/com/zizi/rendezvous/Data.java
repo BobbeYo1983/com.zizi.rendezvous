@@ -12,7 +12,7 @@ class Data {
     public static final String ACTIVE = "Active";
     public static final String NOT_ACTIVE = "NotActive";
     public static final String OTHER = "Прочее";
-    public static final int DEFAULT_COUNT_REQUEST_MEETINGS = 31; // количество бесплатных встреч по умолчанию
+    public static final String DEFAULT_COUNT_REQUEST_MEETINGS = "31"; // количество бесплатных встреч по умолчанию
 
 
     public static final String[] regionsTmp = new String[]{

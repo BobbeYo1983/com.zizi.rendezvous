@@ -220,7 +220,8 @@ public class ActivityLogin extends AppCompatActivity {
                         SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача входы выполнится успешно
-                            SaveProfile();
+                            //SaveProfile();
+                            LoadProfileToRAM();
                         } else { // если вход не успешен
 
                             SetVisibilityViews(true); //показываем вьюхи
@@ -328,7 +329,8 @@ public class ActivityLogin extends AppCompatActivity {
                         SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача регистрации выполнена успешно, то юзер автоматои и авторизируется
-                            SaveProfile();
+                            //SaveProfile();
+                            LoadProfileToRAM(); // загружаем профайл в оперативку
                         } else { // если регистрация не успешна
 
                             SetVisibilityViews(true); //показываем вьюхи
@@ -379,24 +381,28 @@ public class ActivityLogin extends AppCompatActivity {
         classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
         //готовим коллекцию профайла пользователя для сохранениния
-        user.put("email", classGlobalApp.GetCurrentUserEmail());
-        user.put("userID", classGlobalApp.GetCurrentUserUid());
-        user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+        //user.put("email", classGlobalApp.GetCurrentUserEmail());
+        //user.put("userID", classGlobalApp.GetCurrentUserUid());
+        //user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
 
-        display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
-        display.getSize(point); // получаем расширение экрана
-        classGlobalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
+        //display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
+        //display.getSize(point); // получаем расширение экрана
+        //classGlobalApp.Log(getClass().getSimpleName(), "SaveProfile", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
 
-        user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
+        //user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
+
+        //LoadProfileToRAM();
 
         //сохраняем в профайл пользователя в БД
         documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
-        documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        documentReference.set(classGlobalApp.currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+        //documentReference.update()
             @Override
             public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась
                 if (task.isSuccessful()) { //если задача сохранения выполнилась успешно
 
-                    LoadProfileToRAM();
+                    //LoadProfileToRAM();
+                    EnterInApplication();
 
                 } else { // если сохранение не успешно
 
@@ -422,19 +428,30 @@ public class ActivityLogin extends AppCompatActivity {
      */
     private void LoadProfileToRAM(){
 
+        //готовим профайл пользователя для сохранениния
+        classGlobalApp.currentUser.setUserID(classGlobalApp.GetCurrentUserUid());
+        classGlobalApp.currentUser.setTokenDevice(classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+        classGlobalApp.currentUser.setEmail(classGlobalApp.GetCurrentUserEmail());
+
+        display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
+        display.getSize(point); // получаем расширение экрана
+        classGlobalApp.Log(getClass().getSimpleName(), "SaveProfile", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
+
+        classGlobalApp.currentUser.setScreenExtension(String.valueOf(point.x) + "x" + String.valueOf(point.y));
+
         DocumentReference documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
 
-                    //TODO подгрузить информацию из БД
+                    //Подгружаем информацию из БД
                     DocumentSnapshot documentSnapshot = task.getResult();
 
                     //грузим количество бесплатных встречь
                     if (documentSnapshot.get("countRequestMeetings") != null) {//если такое поле существует
 
-                        int countRequestMeetings = (int) documentSnapshot.get("countRequestMeetings");
+                        String countRequestMeetings = documentSnapshot.get("countRequestMeetings").toString();
                         classGlobalApp.currentUser.setCountRequestMeetings(countRequestMeetings);
 
                     } else {
@@ -443,10 +460,9 @@ public class ActivityLogin extends AppCompatActivity {
                         classGlobalApp.currentUser.setCountRequestMeetings(Data.DEFAULT_COUNT_REQUEST_MEETINGS);
                     }
 
-                    classGlobalApp.currentUser.setId(classGlobalApp.GetCurrentUserUid()); // id пользователя
+                    SaveProfile();
 
-                    EnterInApplication(); //входим в приложение
-
+                    //EnterInApplication(); //входим в приложение
 
                 } else { // если ошибка при чтении профайла из БД
 
