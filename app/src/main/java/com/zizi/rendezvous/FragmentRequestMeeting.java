@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.zizi.rendezvous.Activity.ActivityPay;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -537,7 +538,7 @@ public class FragmentRequestMeeting extends Fragment {
                                     classGlobalApp.PreparingToSave("statusRequestMeeting", Data.ACTIVE); // отмечаем статус заявки активным
                                     classGlobalApp.SaveParams();
 
-                                    DecrementCountRequestMeetings();
+                                    DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в БД
 
                                     activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
 
@@ -557,7 +558,15 @@ public class FragmentRequestMeeting extends Fragment {
                         });
                     } else {
 
-                        //TODO перейти на страничку с оплатой
+                        //Перейти на страничку с оплатой
+                        //создаем намерение, что хотим перейти на другую активити
+                        Intent intent = new Intent(getActivity().getApplicationContext(), ActivityPay.class);
+                        //intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                        //                  |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                        //                );
+
+                        startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+
                     }
 
                 } else {// если одно из обязательных полей не заполнено в заявке

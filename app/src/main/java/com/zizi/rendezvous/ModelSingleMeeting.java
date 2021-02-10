@@ -1,17 +1,19 @@
 package com.zizi.rendezvous;
 
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.firestore.ServerTimestamp;
+
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
 
 public class ModelSingleMeeting {
 
-
-
-    //обратить внимание на регистр, далее этот класс используется при читке и записи с БД,
-    // везде регистр сделал маленькими, заработало, пока дальше не стал разбираться
-    //!!!!!!!!!!!! Переменные с нижним подчеркиванием из БД почему то не выбираются
+    //!обратить внимание на регистр, далее этот класс используется при читке и записи с БД,
+    //!везде регистр сделал маленькими, заработало, пока дальше не стал разбираться
+    //!Переменные с нижним подчеркиванием из БД почему то не выбираются
     private String userID;
     private String tokenDevice;
-    //private String email;
 
     private String name;
     private String gender;
@@ -25,21 +27,18 @@ public class ModelSingleMeeting {
     private String age_max;
     private String region;
     private String town;
-    //private String place;
     private String placeAnyPlace;
     private ArrayList<String> placeArray;
     private String placeOtherDescription;
     private String time;
     private String comment;
 
-    public ModelSingleMeeting() {}
+    @ServerTimestamp //если поле null, то в БД будет писаться метка времени FareStore, если задать, то заданная
+    private Date timeStamp;
 
-/*    private ModelSingleMeeting(String userID, String name, String age, String comment) {
-        this.userID = userID;
-        this.name = name;
-        this.age = age;
-        this.comment =comment;
-    }*/
+
+
+    public ModelSingleMeeting() {}
 
     public String getUserID() {
         return userID;
@@ -48,10 +47,6 @@ public class ModelSingleMeeting {
     public String getTokenDevice() {
         return tokenDevice;
     }
-
-/*    public String getEmail() {
-        return email;
-    }*/
 
     public String getName() {
         return name;
@@ -101,10 +96,6 @@ public class ModelSingleMeeting {
         return town;
     }
 
-/*    public String getPlace() {
-        return place;
-    }*/
-
     public String getPlaceAnyPlace() {
         return placeAnyPlace;
     }
@@ -125,6 +116,10 @@ public class ModelSingleMeeting {
         return comment;
     }
 
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
 
 
     //Setters///////////////////////////////////////////////////////////////////////////////////////
@@ -135,10 +130,6 @@ public class ModelSingleMeeting {
     public void setTokenDevice(String token) {
         this.tokenDevice = token;
     }
-
-/*    public void setEmail(String email) {
-        this.email = email;
-    }*/
 
     public void setName(String name) {
         this.name = name;
@@ -188,10 +179,6 @@ public class ModelSingleMeeting {
         this.town = town;
     }
 
-/*    public void setPlace(String place) {
-        this.place = place;
-    }*/
-
     public void setPlaceAnyPlace(String placeAnyPlace) {
         this.placeAnyPlace = placeAnyPlace;
     }
@@ -210,6 +197,10 @@ public class ModelSingleMeeting {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String CreateStringFromArrayListPlaces () {

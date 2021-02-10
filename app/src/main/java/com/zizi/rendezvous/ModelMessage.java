@@ -53,12 +53,12 @@ public class ModelMessage {
         this.pushKey = pushKey;
     }
 
-    //формируем дату и время, но это не на клиенте, то есть
+    //!формируем дату и время, но это не на клиенте, то есть
     public Map<String, String> getTimeStamp() {
         return ServerValue.TIMESTAMP;
     }
 
-    @Exclude // эта директива помечает поле как исключенное из БД, то есть при обмене данных с БД, когда класс является моделью, farebase этот геттер не вызывает
+    @Exclude //! эта директива помечает поле как исключенное из БД, то есть при обмене данных с БД, когда класс является моделью, farebase этот геттер не вызывает
     public Long getTimeStampLong() {
         return timeStamp;
     }
