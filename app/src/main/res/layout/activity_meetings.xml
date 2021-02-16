@@ -6,12 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ActivityMeetings">
 
-
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/navigation_drawer"
+        />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
 
         <com.google.android.material.appbar.AppBarLayout
@@ -19,21 +25,17 @@
             android:layout_height="wrap_content">
 
 
-
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/materialToolbar"
+                style="@style/Widget.MaterialComponents.Toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="@string/page_title"
                 app:menu="@menu/top_app_bar"
                 app:navigationIcon="@drawable/ic_outline_menu_24"
-                style="@style/Widget.MaterialComponents.Toolbar"
-                />
-
+                app:title="@string/page_title" />
 
 
         </com.google.android.material.appbar.AppBarLayout>
-
 
 
         <fragment
@@ -42,8 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:layout="@layout/fragment_empty"/>
-
+            tools:layout="@layout/fragment_empty" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
