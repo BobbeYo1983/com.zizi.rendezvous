@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+
+
+
+        <item
+            android:id="@+id/itemMeetings"
+            android:icon="@drawable/ic_outline_menu_24"
+            android:title="Встречи"
+            android:checked="true" />
+
+
+
+        <item
+            android:id="@+id/itemAbout"
+            android:icon="@drawable/ic_outline_menu_24"
+            android:title="О приложении" />
+
+
+
+        <item
+            android:id="@+id/itemAdmin"
+            android:icon="@drawable/ic_outline_menu_24"
+            android:title="Админка" />
+
+
+
+    </group>
+
+</menu>
