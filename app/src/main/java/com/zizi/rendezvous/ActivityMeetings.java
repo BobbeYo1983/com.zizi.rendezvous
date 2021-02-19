@@ -1,47 +1,44 @@
 package com.zizi.rendezvous;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ActivityMeetings extends AppCompatActivity {
 
     private ClassGlobalApp classGlobalApp; //класс для работы с функциями общими для всех активити, фрагментов, сервисов
-    private MaterialToolbar materialToolbar; // верхняя панелька
+    //private MaterialToolbar materialToolbar; // верхняя панелька
     private FragmentManager fragmentManager; // для управления показом компонентов
-    private FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
+    //private FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
     private Fragment fragmentListMeetings; // фрагмент со списком заявок
     private Fragment fragmentRequestMeeting; // фрагмент с заявкой
-    private Fragment fragmentChat; // фрагмент с чатом
-    private Fragment currentFragment; // текущий фрагмент
-    private Fragment fragmentListChats; // текущий фрагмент
+    //private Fragment fragmentChat; // фрагмент с чатом
+    //private Fragment currentFragment; // текущий фрагмент
+    //private Fragment fragmentListChats; // текущий фрагмент
     private DocumentReference documentReference; // ссылка на документ
-    private Map<String, Object> mapDocument; //Документ с информацией о встрече
+    //private Map<String, Object> mapDocument; //Документ с информацией о встрече
     private ClassDialog classDialog; //класс для показа всплывающих окон
+    private ActionBarDrawerToggle  actionBarDrawerToggle;
+
+    private DrawerLayout drawerLayout; //шторка меню слева
 
 
     @Override
@@ -51,24 +48,62 @@ public class ActivityMeetings extends AppCompatActivity {
 
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
-        //classGlobalApp.Log("ActivityMeetings", "onCreate", "Method is run", false);
+        classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Начинаю создавать активити", false);
+
         classGlobalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
 
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
-        fragmentChat = new FragmentChat();
-        fragmentListChats = new FragmentListChats();
-        mapDocument = new HashMap<String, Object>();
+        Fragment fragmentChat = new FragmentChat();
+        //fragmentListChats = new FragmentListChats();
+        //mapDocument = new HashMap<String, Object>();
         classDialog = new ClassDialog(); // класс для показа всплывающих окон
 
         //ищем нужные элементы
-        materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
+        MaterialToolbar materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
+        drawerLayout = findViewById(R.id.drawerLayout); //слой левой шторки
         //============================================================================================
 
 
 
+        //шторка/////////////////////////////////////////////////////////////////////////////////////
+
+        //связыватель drawerLayout и materialToolbar типа если открыта шторка или закрыта, то иконка гамбургера соответствующая
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                materialToolbar, R.string.drawerLayoutOpen, R.string.drawerLayoutClose) {
+
+            /** Этот код вызывается, когда боковое меню переходит в полностью закрытое состояние. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                //getActionBar().setTitle(mTitle); //сменить заголовок в верхней панельке, типа Гуглы так рекомендуют
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu() Что то связано с пересозданием меню действий, типа пересоздавать или затирать его
+            }
+
+            /** Этот код вызывается, когда боковое меню полностью открывается. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                //getActionBar().setTitle(mDrawerTitle);
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        //добавляем к лушателю связыватель/переключатель )))
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        //==========================================================================================
+
+
+
         // materialToolbar ///////////////////////////////////////////////////////////////////////////
+
+        // Set whether to include the application home affordance in the action bar.
+        // (and put a back mark at icon in ActionBar for "up" navigation)
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Enable or disable the "home" button in the corner of the action bar.
+        // (clickable or not)
+        //getActionBar().setHomeButtonEnabled(true); // сделать гамбургер кликабельным
+
         materialToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели
@@ -85,55 +120,64 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
         //ГРУЗИМ НУЖНЫЙ ФРАГМЕНТ/////////////////////////////////////////////////////////////////////
-        //если статус заявки пустой, то есть неизвестен, то его нужно выяснить. Нужно залезть в БД и посмотреть, есть ли там заявка и попробовать получить ее.
-        if (classGlobalApp.GetParam("statusRequestMeeting").equals("")) {
 
-            classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки неизвестен, лезем в БД, пытаемся получить заявку по ID пользователя", false);
+        // Рассмотрим статус заявки
+        switch (classGlobalApp.GetParam("statusRequestMeeting")) {
+            // если статус заявки пустой, то есть неизвестен, то его нужно выяснить.
+            // Нужно залезть в БД и посмотреть, есть ли там заявка и попробовать получить ее.
+            case "":
+                classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки неизвестен, лезем в БД, пытаемся получить заявку по ID пользователя", false);
 
-            GetRequestMeetingFromDB(); // проверяем есть ли завяка в БД
+                GetRequestMeetingFromDB(); // проверяем есть ли завяка в БД
 
-        //если Если статус заявки NOT_ACTIVE
-        } else if (classGlobalApp.GetParam("statusRequestMeeting").equals(Data.NOT_ACTIVE)) {
+                break;
 
-            classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки не активный, будем грузить фрагмент с формой заявки", false);
+            case Data.NOT_ACTIVE: //если Если статус заявки NOT_ACTIVE
 
-            ChangeFragment(fragmentRequestMeeting,  false); // показываем заявку
+                classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки не активный, будем грузить фрагмент с формой заявки", false);
 
-            //если Если статус заявки ACTIVE
-        } else if (classGlobalApp.GetParam("statusRequestMeeting").equals(Data.ACTIVE)) {
+                ChangeFragment(fragmentRequestMeeting, false); // показываем заявку
 
-            classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки активный, будем дальше смотреть, что грузить", false);
+                break;
 
-            Bundle bundle = getIntent().getExtras(); //получаем параметры переданные в активити
-            //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerID="  + bundle.getString("partnerID"),false);
-            //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerTokenDevice="  + bundle.getString("partnerTokenDevice"),false);
-            //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerName="  + bundle.getString("partnerName"),false);
-            //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerAge="  + bundle.getString("partnerAge"),false);
+            case Data.ACTIVE: //если Если статус заявки ACTIVE
 
-            if (bundle != null && bundle.getString("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
-                classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Параметр: fragmentForLoad="  + bundle.getString("fragmentForLoad") + ", нужно грузить фрагмент с чатом",false);
+                classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки активный, будем дальше смотреть, что грузить", false);
 
-                //извлекаем параметры и передаем их дальше фрагменту
-                classGlobalApp.ClearBundle();
-                classGlobalApp.AddBundle("partnerID", bundle.getString("partnerID"));
-                classGlobalApp.AddBundle("partnerTokenDevice", bundle.getString("partnerTokenDevice"));
-                classGlobalApp.AddBundle("partnerName", bundle.getString("partnerName"));
-                classGlobalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
+                Bundle bundle = getIntent().getExtras(); //получаем параметры переданные в активити
 
-                ChangeFragment(fragmentListMeetings, false); // показываем встречи
-                ChangeFragment(fragmentChat, true); // переходим к чату
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerID="  + bundle.getString("partnerID"),false);
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerTokenDevice="  + bundle.getString("partnerTokenDevice"),false);
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerName="  + bundle.getString("partnerName"),false);
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerAge="  + bundle.getString("partnerAge"),false);
+
+                if (bundle != null && bundle.getString("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
+                    classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Параметр: fragmentForLoad=" + bundle.getString("fragmentForLoad") + ", нужно грузить фрагмент с чатом", false);
+
+                    //извлекаем параметры и передаем их дальше фрагменту
+                    classGlobalApp.ClearBundle();
+                    classGlobalApp.AddBundle("partnerID", bundle.getString("partnerID"));
+                    classGlobalApp.AddBundle("partnerTokenDevice", bundle.getString("partnerTokenDevice"));
+                    classGlobalApp.AddBundle("partnerName", bundle.getString("partnerName"));
+                    classGlobalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
+
+                    ChangeFragment(fragmentListMeetings, false); // показываем встречи
+                    ChangeFragment(fragmentChat, true); // переходим к чату
 
 
-            } else { // если в fragmentForLoad не указан явно фрагмент, то грузим список встреч
+                } else { // если в fragmentForLoad не указан явно фрагмент, то грузим список встреч
 
-                ChangeFragment(fragmentListMeetings, false); // показываем встречи
-            }
+                    ChangeFragment(fragmentListMeetings, false); // показываем встречи
+                }
 
-        }
-        else { //если неопознанный статус, то грузим фрагмент с заявкой
+                break;
 
-            classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки неопознан, будем грузить фрагмент с заявкой", false);
-            ChangeFragment(fragmentRequestMeeting,  false); // показываем заявку
+            default:  //если неопознанный статус, то грузим фрагмент с заявкой
+
+                classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки неопознан, будем грузить фрагмент с заявкой", false);
+                ChangeFragment(fragmentRequestMeeting, false); // показываем заявку
+
+                break;
         }
         //===========================================================================================
 
@@ -150,6 +194,43 @@ public class ActivityMeetings extends AppCompatActivity {
             finish(); // убиваем активити
         }
 
+    }
+
+
+    /** Этот метод вызывается, когда мы вызываем invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Если панель навигации открыта, скрыть элементы действий, связанные с контентом
+        //boolean drawerLayoutOpen = drawerLayout.isDrawerOpen(mDrawerList); //mDrawerList - лист с пунктами меню
+        //menu.findItem(R.id.action_websearch).setVisible(!drawerLayoutOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -216,13 +297,14 @@ public class ActivityMeetings extends AppCompatActivity {
 
         classGlobalApp.Log(getClass().getSimpleName(), "ChangeFragment", "Имя класса нового фрагмента = " + fragment.getClass().getSimpleName(), false);
 
+        FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
         fragmentTransaction = fragmentManager.beginTransaction();                // начинаем транзакцию
         fragmentTransaction.replace(R.id.fragment_replace, fragment, fragment.getClass().getSimpleName());  // обновляем фрагмент
         if (toStack) { // если нужно добавить для навигации в стек фрагментов
             fragmentTransaction.addToBackStack(null);                           // добавляем в конец стека фрагментов для навигации
         }
         fragmentTransaction.commit();                                       // применяем
-        currentFragment = fragment;                                  // запоминаем текущий фрагмент
+        //currentFragment = fragment;                                  // запоминаем текущий фрагмент
 
     }
 
