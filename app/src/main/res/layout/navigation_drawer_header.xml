@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--Шапка в меню слева(шторка)-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="match_parent"
@@ -14,9 +17,11 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:textAppearance="?attr/textAppearanceHeadline6"
-        android:text="Рандеву" />
+        android:text="Рандеву"
+        />
 
     <TextView
+        android:id="@+id/tvUserID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -24,6 +29,7 @@
         android:layout_marginEnd="24dp"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="@color/material_on_surface_emphasis_medium"
-        android:text="Идентификатор пользователя" />
+        android:text="tvUserID"
+        />
 
 </LinearLayout>

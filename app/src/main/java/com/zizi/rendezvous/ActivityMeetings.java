@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,9 +13,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,6 +42,7 @@ public class ActivityMeetings extends AppCompatActivity {
     private ActionBarDrawerToggle  actionBarDrawerToggle;
 
     private DrawerLayout drawerLayout; //шторка меню слева
+    private TextView tvUserID; //поле с идентификатором пользователя в заголовке шторки
 
 
     @Override
@@ -63,11 +67,12 @@ public class ActivityMeetings extends AppCompatActivity {
         //ищем нужные элементы
         MaterialToolbar materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
         drawerLayout = findViewById(R.id.drawerLayout); //слой левой шторки
+        //tvUserID = findViewById(R.id.tvUserID);
         //============================================================================================
 
 
 
-        //шторка/////////////////////////////////////////////////////////////////////////////////////
+        //drawerLayout шторка///////////////////////////////////////////////////////////////////////
 
         //связыватель drawerLayout и materialToolbar типа если открыта шторка или закрыта, то иконка гамбургера соответствующая
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
@@ -76,15 +81,17 @@ public class ActivityMeetings extends AppCompatActivity {
             /** Этот код вызывается, когда боковое меню переходит в полностью закрытое состояние. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                //getActionBar().setTitle(mTitle); //сменить заголовок в верхней панельке, типа Гуглы так рекомендуют
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu() Что то связано с пересозданием меню действий, типа пересоздавать или затирать его
+                //!getActionBar().setTitle(mTitle); //сменить заголовок в верхней панельке, типа Гуглы так рекомендуют
+                //!invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu() Что то связано с пересозданием меню действий, типа пересоздавать или затирать его
             }
 
             /** Этот код вызывается, когда боковое меню полностью открывается. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //getActionBar().setTitle(mDrawerTitle);
-                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                //!getActionBar().setTitle(mDrawerTitle);
+                //!invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                tvUserID = findViewById(R.id.tvUserID);
+                tvUserID.setText(classGlobalApp.currentUser.getEmail());
             }
         };
 
@@ -211,10 +218,11 @@ public class ActivityMeetings extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
+        //Синхронизация состояния переключеля после того, как произошло onRestoreInstanceState.
         actionBarDrawerToggle.syncState();
     }
 
+    //вызывается при изменении конфигурации устройства.
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -349,4 +357,16 @@ public class ActivityMeetings extends AppCompatActivity {
 
     }
 
+/*    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START, true);
+            Log.v("!@#", "!!!!!!!!!!!!!!!!!");
+        } else {
+            Log.v("!@#", "&&&&&&&&&&&&&&&&&&&&");
+            super.onBackPressed();
+        }
+
+    }*/
 }

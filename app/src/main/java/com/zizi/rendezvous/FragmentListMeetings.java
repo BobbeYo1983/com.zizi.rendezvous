@@ -61,9 +61,9 @@ public class FragmentListMeetings extends Fragment {
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
-    private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
+    //private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
     private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
-    ////private ArrayList<?> arrayListPlaces; //сюда вычитывать массив с местами будем
+    //!private ArrayList<?> arrayListPlaces; //сюда вычитывать массив с местами будем
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -114,7 +114,7 @@ public class FragmentListMeetings extends Fragment {
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
         classGlobalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
-        firebaseDatabase = FirebaseDatabase.getInstance(); // БД
+        //firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         userInfo = new HashMap<>(); // коллекция ключ-значение для описания встречи
         usersInfoAll = new ArrayList<>(); // информация по всем пользователям
         fragmentListChats = new FragmentListChats(); //фрагмент с чатами
@@ -173,14 +173,14 @@ public class FragmentListMeetings extends Fragment {
         materialToolbar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой
 
-        // событие при клике на кнопку навигации на верхней панельке
-        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        // событие при клике на кнопку навигации/гамбургер на верхней панельке
+/*        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //ничего не делаем
                 //getActivity().onBackPressed();
             }
-        });
+        });*/
         //==========================================================================================
 
 
@@ -368,5 +368,7 @@ public class FragmentListMeetings extends Fragment {
 
         }
     }
+
+
 
 }
