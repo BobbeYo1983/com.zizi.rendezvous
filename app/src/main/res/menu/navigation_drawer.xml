@@ -12,22 +12,22 @@
 
         <item
             android:id="@+id/itemMeetings"
-            android:icon="@drawable/ic_outline_menu_24"
+            android:icon="@drawable/ic_outline_wc_24"
             android:title="Встречи"
-            android:checked="true" />
+            />
 
 
 
         <item
             android:id="@+id/itemAbout"
-            android:icon="@drawable/ic_outline_menu_24"
+            android:icon="@drawable/ic_outline_info_24"
             android:title="О приложении" />
 
 
 
         <item
             android:id="@+id/itemAdmin"
-            android:icon="@drawable/ic_outline_menu_24"
+            android:icon="@drawable/ic_outline_admin_panel_settings_24"
             android:title="Админка" />
 
 

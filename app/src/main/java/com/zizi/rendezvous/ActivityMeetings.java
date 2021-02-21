@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -67,6 +70,7 @@ public class ActivityMeetings extends AppCompatActivity {
         //ищем нужные элементы
         MaterialToolbar materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
         drawerLayout = findViewById(R.id.drawerLayout); //слой левой шторки
+        NavigationView navigationView = findViewById(R.id.navigationView);
         //tvUserID = findViewById(R.id.tvUserID);
         //============================================================================================
 
@@ -93,10 +97,15 @@ public class ActivityMeetings extends AppCompatActivity {
                 tvUserID = findViewById(R.id.tvUserID);
                 tvUserID.setText(classGlobalApp.currentUser.getEmail());
             }
+
+
         };
 
         //добавляем к лушателю связыватель/переключатель )))
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
+
+
+
         //==========================================================================================
 
 
@@ -204,6 +213,7 @@ public class ActivityMeetings extends AppCompatActivity {
     }
 
 
+
     /** Этот метод вызывается, когда мы вызываем invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -218,16 +228,21 @@ public class ActivityMeetings extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        //Синхронизация состояния переключеля после того, как произошло onRestoreInstanceState.
+        //Синхронизация состояния переключеля шторки после того, как произошло onRestoreInstanceState.
         actionBarDrawerToggle.syncState();
     }
+
+
 
     //вызывается при изменении конфигурации устройства.
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        //перерисовываем переключатель шторки
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -240,6 +255,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
     /**
@@ -357,16 +373,25 @@ public class ActivityMeetings extends AppCompatActivity {
 
     }
 
-/*    @Override
+    @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
+        //если шторка открыта, то закрываем ее
         if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.drawerLayout.closeDrawer(GravityCompat.START, true);
-            Log.v("!@#", "!!!!!!!!!!!!!!!!!");
-        } else {
-            Log.v("!@#", "&&&&&&&&&&&&&&&&&&&&");
+        } else { // если шторка закрыта, то отрабатываем обычное нажатие на кнопку назад
             super.onBackPressed();
         }
+        //ChangeFragment(fragmentListMeetings, true);
 
-    }*/
+/*        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }).setNegativeButton("No", null).show();*/
+
+    }
 }
