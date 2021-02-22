@@ -1,17 +1,7 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Services;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Vibrator;
-import android.provider.Settings;
 //import android.support.v4.app.NotificationCompat;
 
 import androidx.core.app.NotificationCompat;
@@ -20,18 +10,22 @@ import androidx.core.content.ContextCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.zizi.rendezvous.Activity.ActivityMeetings;
+import com.zizi.rendezvous.GlobalApp;
+import com.zizi.rendezvous.Data.Data;
+import com.zizi.rendezvous.R;
 
 
 public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 {
-    ClassGlobalApp classGlobalApp; // класс для работы с общими для всех компонентов функциями приложения
+    GlobalApp globalApp; // класс для работы с общими для всех компонентов функциями приложения
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        classGlobalApp = (ClassGlobalApp) getApplicationContext();
-        classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onCreate", "Метод запущен", false);
+        globalApp = (GlobalApp) getApplicationContext();
+        globalApp.Log("ServiceFirebaseCloudMessaging", "onCreate", "Метод запущен", false);
     }
 
     @Override // вызывается только, когда приложение запущено, не в фоновом режиме
@@ -40,10 +34,10 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 
         String stringTmp = Data.FRAGMENT_CHAT + remoteMessage.getData().get("userID"); //формируем строку для сравнения
         // если в настоящее время открыт фрагмент (видимый виджет) с чатом пользователя, который прислал уведомление, то не формировать уведомление
-        if (!classGlobalApp.GetVisibleWidget().equals(stringTmp)) {
+        if (!globalApp.GetVisibleWidget().equals(stringTmp)) {
 
 
-            classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
+            globalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
 
             //создаем намерение, что хотим перейти на другую активити
             Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
@@ -103,7 +97,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         //sendRegistrationToServer(token);
 
         //сохраняем в память телефона
-        classGlobalApp.SetTokenDevice(token);
+        globalApp.SetTokenDevice(token);
 
     }
 

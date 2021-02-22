@@ -1,4 +1,4 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Fragments;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +22,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.zizi.rendezvous.Activity.ActivityLogin;
+import com.zizi.rendezvous.GlobalApp;
+import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +34,7 @@ import java.util.Map;
 public class FragmentDetailsMeeting extends Fragment {
 
     // ОБЪЯВЛЕНИЕ ///////////////////////////////////////////////////////////////////////////////
-    private ClassGlobalApp classGlobalApp; // глобальный класс приложения
+    private GlobalApp globalApp; // глобальный класс приложения
     private Map<String, Object> mapDocument; //Документ с информацией о встрече
     private FirebaseFirestore firebaseFirestore; // база данных
     private DocumentReference documentReference; // ссылка на документ
@@ -75,7 +77,7 @@ public class FragmentDetailsMeeting extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // ИНИЦИАЛИЗАЦИЯ //////////////////////////////////////////////////////////////////////////
-        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        globalApp = (GlobalApp) getActivity().getApplicationContext();
         mapDocument = new HashMap<String, Object>();
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         //==========================================================================================
@@ -124,7 +126,7 @@ public class FragmentDetailsMeeting extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+        if (!globalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
@@ -133,7 +135,7 @@ public class FragmentDetailsMeeting extends Fragment {
 
         //Читаем документ со встречей партнера из БД //////////////////////////////////////////////////
         //classGlobalApp.Log(getClass().getSimpleName(), "onStart", "partnerUserID = ", false);
-        documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetBundle("partnerUserID")); // формируем путь к документу
+        documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetBundle("partnerUserID")); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
@@ -146,12 +148,12 @@ public class FragmentDetailsMeeting extends Fragment {
                         UpdateUI(requestMeetingPartner); // обновляем данные в полях
                     } else { // если документа не существует
 
-                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", true);
+                        globalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", true);
                     }
 
                 } else { // если ошибка чтения БД
 
-                    classGlobalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
+                    globalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
                 }
             }
         });

@@ -1,11 +1,10 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Models;
 
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.ServerTimestamp;
+import com.zizi.rendezvous.Data.Data;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 public class ModelSingleMeeting {
 

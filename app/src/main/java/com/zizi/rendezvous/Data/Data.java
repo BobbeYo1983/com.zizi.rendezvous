@@ -1,6 +1,6 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Data;
 
-class Data {
+public class Data {
 
     //константы
     public static final String ANY_PLACE = "Любое место";

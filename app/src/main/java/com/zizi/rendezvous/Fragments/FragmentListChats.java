@@ -1,4 +1,4 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,20 +20,23 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizi.rendezvous.Activity.ActivityLogin;
+import com.zizi.rendezvous.Activity.ActivityMeetings;
+import com.zizi.rendezvous.GlobalApp;
+import com.zizi.rendezvous.Models.ModelChat;
+import com.zizi.rendezvous.R;
 
 import java.util.ArrayList;
 
 public class FragmentListChats extends Fragment {
 
-    private ClassGlobalApp classGlobalApp; //гобальный класс по работе с приложением
+    private GlobalApp globalApp; //гобальный класс по работе с приложением
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     private ArrayList<ModelChat> arrayListAllItems; // Имя для универсальности и использования на других экранах, коллекция со всеми ячейками recyclerView
     private Adapter adapter; // адаптер с данными для RecyclerView
@@ -67,7 +70,7 @@ public class FragmentListChats extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         //инициализация ////////////////////////////////////////////////////////////////////////////
-        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        globalApp = (GlobalApp) getActivity().getApplicationContext();
         arrayListAllItems = new ArrayList<>();
         adapter = new Adapter(arrayListAllItems);
         modelChat = new ModelChat();
@@ -132,11 +135,11 @@ public class FragmentListChats extends Fragment {
         });
 
         // ЗНАЧЕК с количеством непрочитанных сообщений текущего пользователя
-        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
+        databaseReference = globalApp.GenerateDatabaseReference("chats/unreads/" + globalApp.GetCurrentUserUid() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                classGlobalApp.Log("FragmentListChats", "onActivityCreated/onDataChange", "Количество непрочитанных изменилось", false);
+                globalApp.Log("FragmentListChats", "onActivityCreated/onDataChange", "Количество непрочитанных изменилось", false);
                 countUnreads = (int) snapshot.getChildrenCount(); // получаем количество непрочитанных чатов
                 if (countUnreads > 0) { // если есть непрочитанные чаты
                     badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.chats); // создаем значек около вкладки Чаты на нижней панели, пока без номера
@@ -162,7 +165,7 @@ public class FragmentListChats extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+        if (!globalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
@@ -174,12 +177,12 @@ public class FragmentListChats extends Fragment {
      * Метод вызывается при изменении данных в БД в списке чатов пользователя
      */
     private void UpdateChats(){
-        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/"); //ссылка на данные
+        databaseReference = globalApp.GenerateDatabaseReference("chats/lists/" + globalApp.GetCurrentUserUid() + "/"); //ссылка на данные
 
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД чата
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                classGlobalApp.Log("FragmentListChats", "UpdateChats/onChildAdded", "В список добавились чаты", false);
+                globalApp.Log("FragmentListChats", "UpdateChats/onChildAdded", "В список добавились чаты", false);
                 arrayListAllItems.add(snapshot.getValue(ModelChat.class)); // записываем инфу о чате в коллекцию со всеми сообщениями
                 adapter.notifyDataSetChanged(); // обновление адаптера
                 //recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount()); // пролистать чат в самый конец
@@ -320,7 +323,7 @@ public class FragmentListChats extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //удаляем всю ссылку с перепиской
-                        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + arrayListItems.get(getAdapterPosition()).getUserID()); //ссылка на данные
+                        databaseReference = globalApp.GenerateDatabaseReference("chats/lists/" + globalApp.GetCurrentUserUid() + "/" + arrayListItems.get(getAdapterPosition()).getUserID()); //ссылка на данные
                         databaseReference.removeValue();
 
                     }
@@ -334,8 +337,8 @@ public class FragmentListChats extends Fragment {
                     @Override
                     public void onClick(View v) {
                     //готовим аргументы для передачи в другой фрагмент
-                    classGlobalApp.ClearBundle();
-                    classGlobalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
+                    globalApp.ClearBundle();
+                    globalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
 
                     activityMeetings.ChangeFragment(fragmentDetailsMeeting, true); //переходим в подробности встречи
 
@@ -351,11 +354,11 @@ public class FragmentListChats extends Fragment {
                     public void onClick(View v) {
 
                         // добавляем аргументы для передачи в другой фрагмент
-                        classGlobalApp.ClearBundle();
-                        classGlobalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
-                        classGlobalApp.AddBundle("partnerTokenDevice", arrayListItems.get(getAdapterPosition()).getTokenDevice());
-                        classGlobalApp.AddBundle("partnerName", arrayListItems.get(getAdapterPosition()).getName());
-                        classGlobalApp.AddBundle("partnerAge", arrayListItems.get(getAdapterPosition()).getAge());
+                        globalApp.ClearBundle();
+                        globalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
+                        globalApp.AddBundle("partnerTokenDevice", arrayListItems.get(getAdapterPosition()).getTokenDevice());
+                        globalApp.AddBundle("partnerName", arrayListItems.get(getAdapterPosition()).getName());
+                        globalApp.AddBundle("partnerAge", arrayListItems.get(getAdapterPosition()).getAge());
 
                         activityMeetings.ChangeFragment(fragmentChat, true); //переходим в личный чат
 

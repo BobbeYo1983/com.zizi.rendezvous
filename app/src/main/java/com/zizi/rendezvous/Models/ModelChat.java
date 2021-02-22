@@ -1,4 +1,4 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Models;
 
 public class ModelChat {
 

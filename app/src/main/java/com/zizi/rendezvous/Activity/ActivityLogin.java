@@ -1,4 +1,4 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,10 +9,8 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,14 +22,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.zizi.rendezvous.Dialog;
+import com.zizi.rendezvous.GlobalApp;
+import com.zizi.rendezvous.Data.Data;
+import com.zizi.rendezvous.R;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ActivityLogin extends AppCompatActivity {
 
-    private ClassGlobalApp classGlobalApp; // класс для сервисных функций приложения, описание внутри класса
+    private GlobalApp globalApp; // класс для сервисных функций приложения, описание внутри класса
     private FirebaseFirestore firebaseFirestore; // база данных
     private FirebaseAuth firebaseAuth; // объект для работы с авторизацией в Firebase
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
@@ -39,7 +40,7 @@ public class ActivityLogin extends AppCompatActivity {
     private String password; // пароль пользователя
     private Map<String, Object> user; // коллекция ключ-значение для сохранения профиля в БД
     private FragmentManager fragmentManager; //менеджер фрагментов
-    private ClassDialog classDialog; //класс для показа всплывающих окон
+    private Dialog dialog; //класс для показа всплывающих окон
     private Display display; // для разрешения экрана
     private Point point; // для разрешения экрана
 
@@ -63,13 +64,13 @@ public class ActivityLogin extends AppCompatActivity {
 
 
         // Инициализация ////////////////////////////////////////////////////////////////////////////
-        classGlobalApp = (ClassGlobalApp) getApplicationContext();
-        classGlobalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
+        globalApp = (GlobalApp) getApplicationContext();
+        globalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         user = new HashMap<>(); // коллекция ключ-значение для сохранения профиля в БД
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         fragmentManager = getSupportFragmentManager();
-        classDialog = new ClassDialog(); // класс для показа всплывающих окон
+        dialog = new Dialog(); // класс для показа всплывающих окон
         point = new Point();
         //==========================================================================================
 
@@ -160,7 +161,7 @@ public class ActivityLogin extends AppCompatActivity {
         super.onStart();
 
         // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
-        if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
+        if (globalApp.GetParam("email").equals("") && globalApp.GetParam("password").equals("") ) {
             //if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
                 //email = "999999@1.com";
                 //email = "emul@1.com";
@@ -170,9 +171,9 @@ public class ActivityLogin extends AppCompatActivity {
                 SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
             //}
         } else { // если раньше заполнял пользователь логин и пароль, то автовход
-            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
-            email = classGlobalApp.GetParam("email");
-            password = classGlobalApp.GetParam("password");
+            globalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
+            email = globalApp.GetParam("email");
+            password = globalApp.GetParam("password");
             Signin();
         }
 
@@ -209,7 +210,7 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     public void Signin (){ // вход в систему
-        classGlobalApp.Log(getClass().getSimpleName(), "Signin", "Метод запущен.", false);
+        globalApp.Log(getClass().getSimpleName(), "Signin", "Метод запущен.", false);
 
         if (!email.equals("") ){ // если поле почты не пустое, то  переходим к проверке пароля пытаемся войти
             if (!password.equals("")) { // если пароль не пустой, то пытаемся войти
@@ -243,9 +244,9 @@ public class ActivityLogin extends AppCompatActivity {
                                     switch (error.getValue()) {
                                         case 0:
                                             //показываем всплывающее окно
-                                            classDialog.setTitle("Ошибка входа");
-                                            classDialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
-                                            classDialog.show(fragmentManager, "classDialog");
+                                            dialog.setTitle("Ошибка входа");
+                                            dialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
+                                            dialog.show(fragmentManager, "classDialog");
                                             break;
                                         case 1:
                                             til_password.setError("Неверный пароль.");
@@ -258,30 +259,30 @@ public class ActivityLogin extends AppCompatActivity {
                                             break;
                                         case 4:
                                             //показываем всплывающее окно
-                                            classDialog.setTitle("Ошибка входа");
-                                            classDialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
-                                            classDialog.show(fragmentManager, "classDialog");
+                                            dialog.setTitle("Ошибка входа");
+                                            dialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
+                                            dialog.show(fragmentManager, "classDialog");
                                             break;
                                         case 5:
                                             //показываем всплывающее окно
-                                            classDialog.setTitle("Ошибка входа");
-                                            classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
-                                            classDialog.show(fragmentManager, "classDialog");
+                                            dialog.setTitle("Ошибка входа");
+                                            dialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
+                                            dialog.show(fragmentManager, "classDialog");
                                             break;
                                         case 6:
                                             //показываем всплывающее окно
-                                            classDialog.setTitle("Ошибка входа");
-                                            classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.");
-                                            classDialog.show(fragmentManager, "classDialog");
+                                            dialog.setTitle("Ошибка входа");
+                                            dialog.setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.");
+                                            dialog.show(fragmentManager, "classDialog");
                                             break;
                                         default:
                                             //показываем пользователю
-                                            classDialog.setTitle("Ошибка входа");
-                                            classDialog.setMessage("Ошибка при входе пользователя: " + exceptionMessage);
-                                            classDialog.show(fragmentManager, "classDialog");
+                                            dialog.setTitle("Ошибка входа");
+                                            dialog.setMessage("Ошибка при входе пользователя: " + exceptionMessage);
+                                            dialog.show(fragmentManager, "classDialog");
 
                                             //добавляем в лог и в БД
-                                            classGlobalApp.Log("ActivityLogin",
+                                            globalApp.Log("ActivityLogin",
                                                     "Signin/onComplete",
                                                     "Ошибка при входе пользователя: " + exceptionMessage,
                                                     true
@@ -300,7 +301,7 @@ public class ActivityLogin extends AppCompatActivity {
                 til_password.setError(getString(R.string.til_password));
             }
         } else { // если поле почты пустое, то просим заполнить
-            classGlobalApp.Log(getClass().getSimpleName(), "Signin", "Поле с email пустое, введите email.", false);
+            globalApp.Log(getClass().getSimpleName(), "Signin", "Поле с email пустое, введите email.", false);
             SetVisibilityViews(true);
             til_email.setError("Введите email");
         }
@@ -309,7 +310,7 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     public void Registration () { // регистрация
-        classGlobalApp.Log("ActivityLogin", "onStart/Registration", "Метод запущен.", false);
+        globalApp.Log("ActivityLogin", "onStart/Registration", "Метод запущен.", false);
         if (!email.equals("")){ // если поля почты и пароля не пустые, то пытаемся делать регистрацию
             if (password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")) {//если пароль соответствует политике
                 //^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$
@@ -347,12 +348,12 @@ public class ActivityLogin extends AppCompatActivity {
                                 default:
 
                                     //показываем пользователю
-                                    classDialog.setTitle("Ошибка регистрации");
-                                    classDialog.setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage());
-                                    classDialog.show(fragmentManager, "classDialog");
+                                    dialog.setTitle("Ошибка регистрации");
+                                    dialog.setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage());
+                                    dialog.show(fragmentManager, "classDialog");
 
                                     //добавляем в лог и в БД
-                                    classGlobalApp.Log("ActivityLogin",
+                                    globalApp.Log("ActivityLogin",
                                                         "Registration/onComplete",
                                                     "Ошибка при регистрации пользователя: "
                                                                 + task.getException().getMessage(),
@@ -378,7 +379,7 @@ public class ActivityLogin extends AppCompatActivity {
      * Сохраняет профайл пользователя в БД и входит в приложение
      */
     public void SaveProfile (){
-        classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
+        globalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
         //готовим коллекцию профайла пользователя для сохранениния
         //user.put("email", classGlobalApp.GetCurrentUserEmail());
@@ -394,8 +395,8 @@ public class ActivityLogin extends AppCompatActivity {
         //LoadProfileToRAM();
 
         //сохраняем в профайл пользователя в БД
-        documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
-        documentReference.set(classGlobalApp.currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+        documentReference = globalApp.GenerateDocumentReference("users", globalApp.GetCurrentUserUid()); // формируем путь к документу
+        documentReference.set(globalApp.currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
         //documentReference.update()
             @Override
             public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась
@@ -406,12 +407,12 @@ public class ActivityLogin extends AppCompatActivity {
 
                 } else { // если сохранение не успешно
 
-                    classGlobalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), true);
+                    globalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), true);
 
                     //показываем всплывающее окно
-                    classDialog.setTitle("Ошибка входа");
-                    classDialog.setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException());
-                    classDialog.show(fragmentManager, "classDialog");
+                    dialog.setTitle("Ошибка входа");
+                    dialog.setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException());
+                    dialog.show(fragmentManager, "classDialog");
 
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);
@@ -429,17 +430,17 @@ public class ActivityLogin extends AppCompatActivity {
     private void LoadProfileToRAM(){
 
         //готовим профайл пользователя для сохранениния
-        classGlobalApp.currentUser.setUserID(classGlobalApp.GetCurrentUserUid());
-        classGlobalApp.currentUser.setTokenDevice(classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
-        classGlobalApp.currentUser.setEmail(classGlobalApp.GetCurrentUserEmail());
+        globalApp.currentUser.setUserID(globalApp.GetCurrentUserUid());
+        globalApp.currentUser.setTokenDevice(globalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+        globalApp.currentUser.setEmail(globalApp.GetCurrentUserEmail());
 
         display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
         display.getSize(point); // получаем расширение экрана
-        classGlobalApp.Log(getClass().getSimpleName(), "SaveProfile", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
+        globalApp.Log(getClass().getSimpleName(), "SaveProfile", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
 
-        classGlobalApp.currentUser.setScreenExtension(String.valueOf(point.x) + "x" + String.valueOf(point.y));
+        globalApp.currentUser.setScreenExtension(String.valueOf(point.x) + "x" + String.valueOf(point.y));
 
-        DocumentReference documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
+        DocumentReference documentReference = globalApp.GenerateDocumentReference("users", globalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -452,12 +453,12 @@ public class ActivityLogin extends AppCompatActivity {
                     if (documentSnapshot.get("countRequestMeetings") != null) {//если такое поле существует
 
                         String countRequestMeetings = documentSnapshot.get("countRequestMeetings").toString();
-                        classGlobalApp.currentUser.setCountRequestMeetings(countRequestMeetings);
+                        globalApp.currentUser.setCountRequestMeetings(countRequestMeetings);
 
                     } else {
 
-                        classGlobalApp.Log(getClass().getSimpleName(), "LoadProfileToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле countRequestMeetings не найдено, присвоено значение по умолчанию", false);
-                        classGlobalApp.currentUser.setCountRequestMeetings(Data.DEFAULT_COUNT_REQUEST_MEETINGS);
+                        globalApp.Log(getClass().getSimpleName(), "LoadProfileToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле countRequestMeetings не найдено, присвоено значение по умолчанию", false);
+                        globalApp.currentUser.setCountRequestMeetings(Data.DEFAULT_COUNT_REQUEST_MEETINGS);
                     }
 
                     SaveProfile();
@@ -466,12 +467,12 @@ public class ActivityLogin extends AppCompatActivity {
 
                 } else { // если ошибка при чтении профайла из БД
 
-                    classGlobalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException(), true);
+                    globalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException(), true);
 
                     //показываем всплывающее окно
-                    classDialog.setTitle("Ошибка входа");
-                    classDialog.setMessage("Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException());
-                    classDialog.show(fragmentManager, "classDialog");
+                    dialog.setTitle("Ошибка входа");
+                    dialog.setMessage("Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException());
+                    dialog.show(fragmentManager, "classDialog");
 
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);
@@ -488,9 +489,9 @@ public class ActivityLogin extends AppCompatActivity {
     private void EnterInApplication () {
 
         // сохраняем логин и пароль в память
-        classGlobalApp.PreparingToSave("email", email);
-        classGlobalApp.PreparingToSave("password", password);
-        classGlobalApp.SaveParams(); // сохраним на устройство для автовхода
+        globalApp.PreparingToSave("email", email);
+        globalApp.PreparingToSave("password", password);
+        globalApp.SaveParams(); // сохраним на устройство для автовхода
 
 
         //создаем намерение, что хотим перейти на другую активити

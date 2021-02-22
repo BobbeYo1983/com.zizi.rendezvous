@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityMeetings">
+    tools:context=".Activity.ActivityMeetings">
 
 
 
@@ -53,7 +53,7 @@
             <!-- Use app:layout_behavior="@string/appbar_scrolling_view_behavior" to fit below top app bar -->
             <fragment
                 android:id="@+id/fragment_replace"
-                android:name="com.zizi.rendezvous.FragmentEmpty"
+                android:name="com.zizi.rendezvous.Fragments.FragmentEmpty"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"

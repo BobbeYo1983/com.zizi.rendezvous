@@ -1,7 +1,6 @@
 package com.zizi.rendezvous;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,25 +9,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.zizi.rendezvous.Activity.ActivityLogin;
+import com.zizi.rendezvous.Data.Data;
+
 /**
  * Класс формирования вкплывающего диалогового окна
  */
-public class ClassDialog extends AppCompatDialogFragment {
+public class Dialog extends AppCompatDialogFragment {
 
     private String title;
     private String message;
     private String widgetName;
-    private ClassGlobalApp classGlobalApp;
+    private GlobalApp globalApp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        globalApp = (GlobalApp) getActivity().getApplicationContext();
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title)
                 .setMessage(message)

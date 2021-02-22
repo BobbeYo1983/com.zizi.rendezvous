@@ -1,4 +1,4 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Models;
 
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.Exclude;

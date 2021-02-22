@@ -4,16 +4,9 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.SharedPreferences;
-import android.media.AudioAttributes;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -21,9 +14,11 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.zizi.rendezvous.Data.Data;
+import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.Models.ModelUser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +26,7 @@ import java.util.Map;
  * Класс наследованный от базового класса приложения. Предназначен для работы с общими функциями и переменными
  * для всех активити, фрагментов и сервисов. Функции по логированию, авторизации, хранению переменных.
  */
-public class ClassGlobalApp extends Application {
+public class GlobalApp extends Application {
 
     private Map<String, String> paramsToSave; // коллекция ключ-значение
     private Map<String, String> paramsToBundle; // коллекция ключ-значение
@@ -64,7 +59,7 @@ public class ClassGlobalApp extends Application {
     /**
      * Конструктор, тут еще контекст приложения не создан, не вся инициализация может проходить, поэтому можно инициализировать позже в onCreate()
      */
-    public ClassGlobalApp(){
+    public GlobalApp(){
 
         Log("ClassGlobalApp", "ClassGlobalApp", "Создан объект класса", false);
 

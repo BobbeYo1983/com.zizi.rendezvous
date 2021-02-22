@@ -1,4 +1,4 @@
-package com.zizi.rendezvous;
+package com.zizi.rendezvous.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,23 +21,23 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.zizi.rendezvous.Activity.ActivityLogin;
+import com.zizi.rendezvous.Activity.ActivityMeetings;
+import com.zizi.rendezvous.GlobalApp;
+import com.zizi.rendezvous.Data.Data;
+import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -45,7 +45,7 @@ public class FragmentListMeetings extends Fragment {
 
 
     //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////
-    private ClassGlobalApp classGlobalApp; //глобальный класс приложения, общий для всех компонентов
+    private GlobalApp globalApp; //глобальный класс приложения, общий для всех компонентов
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     private FirebaseFirestore firebaseFirestore; // база данных
     private RecyclerView recyclerView; // список со встречами
@@ -88,7 +88,7 @@ public class FragmentListMeetings extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+        if (!globalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
@@ -111,8 +111,8 @@ public class FragmentListMeetings extends Fragment {
 
 
         //инициализация ////////////////////////////////////////////////////////////////////////////
-        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
-        classGlobalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
+        globalApp = (GlobalApp) getActivity().getApplicationContext();
+        globalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         //firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         userInfo = new HashMap<>(); // коллекция ключ-значение для описания встречи
@@ -146,11 +146,11 @@ public class FragmentListMeetings extends Fragment {
         });
 
         // ЗНАЧЕК с количеством непрочитанных сообщений текущего пользователя
-        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
+        databaseReference = globalApp.GenerateDatabaseReference("chats/unreads/" + globalApp.GetCurrentUserUid() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                classGlobalApp.Log("FragmentListMeetings", "onActivityCreated/onDataChange", "Количество непрочитанных изменилось", false);
+                globalApp.Log("FragmentListMeetings", "onActivityCreated/onDataChange", "Количество непрочитанных изменилось", false);
                 countUnreads = (int) snapshot.getChildrenCount(); // получаем количество непрочитанных чатов
                 if (countUnreads > 0) { // если есть непрочитанные чаты
                     badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.chats); // создаем значек около вкладки Чаты на нижней панели, пока без номера
@@ -187,14 +187,14 @@ public class FragmentListMeetings extends Fragment {
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         //подгружаем заявку из памяти телефона, чтобы делать выборку с актуальными данными
-        classGlobalApp.LoadRequestMeetingFromMemory();
+        globalApp.LoadRequestMeetingFromMemory();
 
         // запрос к БД c фильтрами
-        collectionReference = classGlobalApp.GenerateCollectionReference("meetings");
+        collectionReference = globalApp.GenerateCollectionReference("meetings");
         query = collectionReference// коллекция meetings
-                .whereEqualTo("gender", classGlobalApp.GetRequestMeeting().getGender_partner()) //совпадает пол в запросе и пол партнера
-                .whereEqualTo("region", classGlobalApp.GetRequestMeeting().getRegion()) //совпадает регион в запросе и в заявке партнера
-                .whereEqualTo("town", classGlobalApp.GetRequestMeeting().getTown()) //совпадает город в запросе и в заявке партнера
+                .whereEqualTo("gender", globalApp.GetRequestMeeting().getGender_partner()) //совпадает пол в запросе и пол партнера
+                .whereEqualTo("region", globalApp.GetRequestMeeting().getRegion()) //совпадает регион в запросе и в заявке партнера
+                .whereEqualTo("town", globalApp.GetRequestMeeting().getTown()) //совпадает город в запросе и в заявке партнера
                 ;
 
         options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч
@@ -214,15 +214,15 @@ public class FragmentListMeetings extends Fragment {
                 DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД, один из списка
 
                 int age = Integer.parseInt(model.getAge()); //получаем возраст
-                int age_min = Integer.parseInt(classGlobalApp.GetRequestMeeting().getAge_min()); //минимальный возраст из заявки текущего пользователя
-                int age_max = Integer.parseInt(classGlobalApp.GetRequestMeeting().getAge_max()); //максимальный возраст из заявки текущего пользователя
+                int age_min = Integer.parseInt(globalApp.GetRequestMeeting().getAge_min()); //минимальный возраст из заявки текущего пользователя
+                int age_max = Integer.parseInt(globalApp.GetRequestMeeting().getAge_max()); //максимальный возраст из заявки текущего пользователя
 
                 //arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
                 ////arrayListPlaces = new ArrayList<>((Collection<?>)snapshot.get("placeArray")); // получаем все места партнера
                 arrayListPlaces = model.getPlaceArray();
 
                 //отфильтровываем встречи по фильтру текущего пользователя и свою заявку тоже скрываем
-                if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
+                if (snapshot.getId().equals(globalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
                         !(age >= age_min && age <= age_max) || //если возраст не попадает в диапазон запроса
                         !IsPlace(arrayListPlaces) || //если нет общих мест для встречи
                         !IsTime(model.getTime()) // если не совпадает время встречи
@@ -268,9 +268,9 @@ public class FragmentListMeetings extends Fragment {
     public boolean IsPlace (ArrayList<String> arrayListPlaces) {
 
         for (String place : arrayListPlaces) {  // перебираем места партнера
-            classGlobalApp.Log(getClass().getSimpleName(), "IsPlace", "place = " + place, false);
-            for (String placeCurrentUser : classGlobalApp.GetRequestMeeting().getPlaceArray()) { //перебираем места текущего пользователя
-                classGlobalApp.Log(getClass().getSimpleName(), "IsPlace", "placeCurrentUser = " + placeCurrentUser, false);
+            globalApp.Log(getClass().getSimpleName(), "IsPlace", "place = " + place, false);
+            for (String placeCurrentUser : globalApp.GetRequestMeeting().getPlaceArray()) { //перебираем места текущего пользователя
+                globalApp.Log(getClass().getSimpleName(), "IsPlace", "placeCurrentUser = " + placeCurrentUser, false);
                 if (!place.isEmpty() && place.equals(placeCurrentUser)) { return true; } // как находим любое совпадение и строка не пустая
 
             }
@@ -291,7 +291,7 @@ public class FragmentListMeetings extends Fragment {
 
         if (time.equals(Data.anyTime)){ // если у текущего пользователя выбрано любое время
             return true;
-        } else if (time.equals(classGlobalApp.GetRequestMeeting().getTime())){ //если время не любое, и есть совпадение выбранного значения текущего пользователя с партнером
+        } else if (time.equals(globalApp.GetRequestMeeting().getTime())){ //если время не любое, и есть совпадение выбранного значения текущего пользователя с партнером
                 return true;
         }
 
@@ -326,8 +326,8 @@ public class FragmentListMeetings extends Fragment {
                 public void onClick(View v) {
 
                     //готовим аргументы для передачи в другой фрагмент
-                    classGlobalApp.ClearBundle();
-                    classGlobalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
+                    globalApp.ClearBundle();
+                    globalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
 
                     activityMeetings.ChangeFragment(fragmentDetailsMeeting, true); //переходим в подробности встречи
 
@@ -343,11 +343,11 @@ public class FragmentListMeetings extends Fragment {
                 public void onClick(View v) {
 
                     //готовим аргументы для передачи
-                    classGlobalApp.ClearBundle();
-                    classGlobalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
-                    classGlobalApp.AddBundle("partnerTokenDevice", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
-                    classGlobalApp.AddBundle("partnerName", usersInfoAll.get(getAdapterPosition()).getName());
-                    classGlobalApp.AddBundle("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge());
+                    globalApp.ClearBundle();
+                    globalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
+                    globalApp.AddBundle("partnerTokenDevice", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
+                    globalApp.AddBundle("partnerName", usersInfoAll.get(getAdapterPosition()).getName());
+                    globalApp.AddBundle("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge());
 
                     activityMeetings.ChangeFragment(fragmentChat, true); //переходим в личный чат
                 }
