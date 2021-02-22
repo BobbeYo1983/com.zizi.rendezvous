@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.zizi.rendezvous.Dialog;
 import com.zizi.rendezvous.Fragments.FragmentAbout;
+import com.zizi.rendezvous.Fragments.FragmentAdmin;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.Fragments.FragmentChat;
@@ -131,7 +132,10 @@ public class ActivityMeetings extends AppCompatActivity {
                         break;
 
                     case (R.id.itemAdmin):
-
+                        globalApp.ClearBundle();
+                        globalApp.AddBundle("title", item.getTitle().toString());
+                        FragmentAdmin fragmentAdmin = new FragmentAdmin();
+                        ChangeFragment(fragmentAdmin,false);
                         break;
 
                     default:
