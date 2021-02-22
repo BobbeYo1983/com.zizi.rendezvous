@@ -99,6 +99,7 @@ public class ActivityMeetings extends AppCompatActivity {
             }
 
 
+
         };
 
         //добавляем к лушателю связыватель/переключатель )))
@@ -106,6 +107,38 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
 
+        //нажатие на пункты
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()){
+
+                    case (R.id.itemMeetings):
+
+
+                        ChangeFragment(fragmentListMeetings,false);
+
+                        break;
+
+                    case (R.id.itemAbout):
+
+                        break;
+
+                    case (R.id.itemAdmin):
+
+                        break;
+
+                    default:
+                        classGlobalApp.Log(getClass().getSimpleName(), "onCreate/onNavigationItemSelected",
+                                "Левое меню, нет обработчика события для нажатого пункта", false);
+                        break;
+                }
+
+                drawerLayout.closeDrawer(GravityCompat.START, true); //закрываем шторку
+                return true;
+            }
+        });
         //==========================================================================================
 
 
