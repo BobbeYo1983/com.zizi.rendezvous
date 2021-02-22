@@ -21,14 +21,17 @@
         <item
             android:id="@+id/itemAbout"
             android:icon="@drawable/ic_outline_info_24"
-            android:title="О приложении" />
+            android:title="О приложении"
+            />
 
 
 
         <item
             android:id="@+id/itemAdmin"
             android:icon="@drawable/ic_outline_admin_panel_settings_24"
-            android:title="Админка" />
+            android:title="Админка"
+            android:visible="false"
+            />
 
 
 
