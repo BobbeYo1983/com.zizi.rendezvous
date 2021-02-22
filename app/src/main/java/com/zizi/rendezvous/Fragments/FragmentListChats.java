@@ -40,7 +40,7 @@ public class FragmentListChats extends Fragment {
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     private ArrayList<ModelChat> arrayListAllItems; // Имя для универсальности и использования на других экранах, коллекция со всеми ячейками recyclerView
     private Adapter adapter; // адаптер с данными для RecyclerView
-    private FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
+    //private FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
     private DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
     private ModelChat modelChat; // модель сущности одного чата
     private LinearLayoutManager linearLayoutManager; // для вертикальной ориентации recyclerView
@@ -79,7 +79,7 @@ public class FragmentListChats extends Fragment {
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         activityMeetings = (ActivityMeetings)getActivity();
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
-        firebaseDatabase = FirebaseDatabase.getInstance(); // БД
+        //firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         countUnreads = 0;
         //===========================================================================================
 
@@ -108,13 +108,13 @@ public class FragmentListChats extends Fragment {
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
 
-        // событие при клике на кнопку навигации на верхней панельке
+/*        // событие при клике на кнопку навигации на верхней панельке
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //ничего не делать при нажатии
             }
-        });
+        });*/
         //==========================================================================================
 
 

@@ -109,15 +109,10 @@ public class ActivityMeetings extends AppCompatActivity {
         //добавляем к лушателю связыватель/переключатель )))
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
-
         //если пользователь админ, то показать пункт Админки
         if (globalApp.currentUser.getEmail().equals("denis@1.com")) {
             navigationView.getMenu().findItem(R.id.itemAdmin).setVisible(true);
         }
-
-
-
-
 
         //нажатие на пункты
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
