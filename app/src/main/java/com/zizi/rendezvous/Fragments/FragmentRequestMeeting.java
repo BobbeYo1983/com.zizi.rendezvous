@@ -139,7 +139,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_time_act = getActivity().findViewById(R.id.til_time_act);
         til_comment = getActivity().findViewById(R.id.til_comment);
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
-        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
+        materialToolbar = getActivity().findViewById(R.id.material_toolbar);
         btn_apply_request = getActivity().findViewById(R.id.btn_apply_request);
         svRequestMeeting = getActivity().findViewById(R.id.svRequestMeeting);
         pbRequestMeeting = getActivity().findViewById(R.id.pbRequestMeeting);

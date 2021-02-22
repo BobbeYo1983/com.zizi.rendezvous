@@ -64,7 +64,7 @@ public class FragmentPlace extends Fragment {
 
 
         //ИЩЕМ ВЬЮХИ////////////////////////////////////////////////////////////////////////////////
-        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
+        materialToolbar = getActivity().findViewById(R.id.material_toolbar);
 
         cb_anyPlace = getActivity().findViewById(R.id.cb_anyPlace);
         cb_street = getActivity().findViewById(R.id.cb_street);

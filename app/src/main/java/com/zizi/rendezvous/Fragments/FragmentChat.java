@@ -116,7 +116,7 @@ public class FragmentChat extends Fragment {
         floatingActionButton = getActivity().findViewById(R.id.fab);
         recyclerView = getActivity().findViewById(R.id.recyclerView);
         til_message_et = getActivity().findViewById(R.id.til_message_et);
-        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
+        materialToolbar = getActivity().findViewById(R.id.material_toolbar);
         tv_unread = getActivity().findViewById(R.id.tv_unread);
         //=============================================================================================
 
@@ -155,6 +155,9 @@ public class FragmentChat extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+        //===========================================================================================
+
+
 
         //ЗНАЧЕК в нашей нижней панели materialToolbar, слушаем, если нам прислали сообщение и мы находимся в чате с партнером (фрагмент работает),
         //то тут же делаем, что нами чат прочитан для показа правильного количества непрочитанных на значке в нижней панели

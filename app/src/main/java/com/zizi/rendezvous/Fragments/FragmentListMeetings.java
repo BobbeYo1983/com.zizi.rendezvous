@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,6 +70,7 @@ public class FragmentListMeetings extends Fragment {
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
     private MaterialToolbar materialToolbar; // верхняя панелька
+    private DrawerLayout drawerLayout; //шторка меню слева
 
     public FragmentListMeetings() {
         // Required empty public constructor
@@ -126,7 +129,8 @@ public class FragmentListMeetings extends Fragment {
         recyclerView = getActivity().findViewById(R.id.rv_meeting); // список со встречами
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         activityMeetings = (ActivityMeetings)getActivity();
-        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
+        materialToolbar = getActivity().findViewById(R.id.material_toolbar);
+        drawerLayout = getActivity().findViewById(R.id.drawerLayout); //слой левой шторки
         //==========================================================================================
 
 
@@ -174,13 +178,13 @@ public class FragmentListMeetings extends Fragment {
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой
 
         // событие при клике на кнопку навигации/гамбургер на верхней панельке
-/*        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ничего не делаем
-                //getActivity().onBackPressed();
+
+                drawerLayout.openDrawer(GravityCompat.START);
             }
-        });*/
+        });
         //==========================================================================================
 
 

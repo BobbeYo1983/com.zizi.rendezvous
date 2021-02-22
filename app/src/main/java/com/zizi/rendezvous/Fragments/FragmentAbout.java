@@ -41,7 +41,7 @@ public class FragmentAbout extends Fragment {
         globalApp = (GlobalApp) getActivity().getApplicationContext(); //получаем глобальный класс приложения
 
         //ищем вьюхи
-        materialToolbar = getActivity().findViewById(R.id.materialToolbar); // верхняя панелька
+        materialToolbar = getActivity().findViewById(R.id.material_toolbar); // верхняя панелька
         tietVersion = getActivity().findViewById(R.id.tietVersion);
 
 

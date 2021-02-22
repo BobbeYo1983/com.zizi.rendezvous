@@ -75,10 +75,10 @@ public class ActivityMeetings extends AppCompatActivity {
         dialog = new Dialog(); // класс для показа всплывающих окон
 
         //ищем нужные элементы
-        materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
+        materialToolbar = findViewById(R.id.material_toolbar); // верхняя панель с кнопками
         drawerLayout = findViewById(R.id.drawerLayout); //слой левой шторки
         NavigationView navigationView = findViewById(R.id.navigationView);
-        //tvUserID = findViewById(R.id.tvUserID);
+        //tvUserID = findViewById(R.id.tv_user_id);
         //============================================================================================
 
 
@@ -89,21 +89,19 @@ public class ActivityMeetings extends AppCompatActivity {
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 materialToolbar, R.string.drawerLayoutOpen, R.string.drawerLayoutClose) {
 
-            /** Этот код вызывается, когда боковое меню переходит в полностью закрытое состояние. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                //!getActionBar().setTitle(mTitle); //сменить заголовок в верхней панельке, типа Гуглы так рекомендуют
-                //!invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu() Что то связано с пересозданием меню действий, типа пересоздавать или затирать его
-            }
-
             /** Этот код вызывается, когда боковое меню полностью открывается. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //!getActionBar().setTitle(mDrawerTitle);
-                //!invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                tvUserID = findViewById(R.id.tvUserID);
+                tvUserID = findViewById(R.id.tv_user_id);
                 tvUserID.setText(globalApp.currentUser.getEmail());
             }
+
+            /** Этот код вызывается, когда боковое меню переходит в полностью закрытое состояние. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+
+            }
+
         };
 
         //добавляем к лушателю связыватель/переключатель )))
@@ -241,17 +239,6 @@ public class ActivityMeetings extends AppCompatActivity {
             finish(); // убиваем активити
         }
 
-    }
-
-
-
-    /** Этот метод вызывается, когда мы вызываем invalidateOptionsMenu() */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // Если панель навигации открыта, скрыть элементы действий, связанные с контентом
-        //boolean drawerLayoutOpen = drawerLayout.isDrawerOpen(mDrawerList); //mDrawerList - лист с пунктами меню
-        //menu.findItem(R.id.action_websearch).setVisible(!drawerLayoutOpen);
-        return super.onPrepareOptionsMenu(menu);
     }
 
 
@@ -413,16 +400,18 @@ public class ActivityMeetings extends AppCompatActivity {
         } else { // если шторка закрыта, то отрабатываем обычное нажатие на кнопку назад
             super.onBackPressed();
         }
-        //ChangeFragment(fragmentListMeetings, true);
 
-/*        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
+        /*
+        //предупреждение о выходе
+        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
                 .setMessage("Are you sure you want to exit?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
-                }).setNegativeButton("No", null).show();*/
+                }).setNegativeButton("No", null).show();
+         */
 
     }
 }

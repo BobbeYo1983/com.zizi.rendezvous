@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,6 +56,7 @@ public class FragmentListChats extends Fragment {
     private RecyclerView recyclerView; // список с сообщениями
     private MaterialToolbar materialToolbar; // верхняя панелька
     private BottomNavigationView bottomNavigationView; // нижняя панелька
+    private DrawerLayout drawerLayout; //шторка меню слева
 
 
     @Override
@@ -88,7 +91,8 @@ public class FragmentListChats extends Fragment {
         //Ищем вьюхи /////////////////////////////////////////////////////////////////////////////////
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         recyclerView = getActivity().findViewById(R.id.recycler_view);
-        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
+        materialToolbar = getActivity().findViewById(R.id.material_toolbar);
+        drawerLayout = getActivity().findViewById(R.id.drawerLayout); //слой левой шторки
         //===========================================================================================
 
 
@@ -108,13 +112,13 @@ public class FragmentListChats extends Fragment {
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
 
-/*        // событие при клике на кнопку навигации на верхней панельке
+        // событие при клике на кнопку навигации/гамбургер на верхней панельке
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ничего не делать при нажатии
+                drawerLayout.openDrawer(GravityCompat.START);
             }
-        });*/
+        });
         //==========================================================================================
 
 
