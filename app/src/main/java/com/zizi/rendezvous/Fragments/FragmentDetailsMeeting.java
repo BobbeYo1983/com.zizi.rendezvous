@@ -35,8 +35,8 @@ public class FragmentDetailsMeeting extends Fragment {
 
     // ОБЪЯВЛЕНИЕ ///////////////////////////////////////////////////////////////////////////////
     private GlobalApp globalApp; // глобальный класс приложения
-    private Map<String, Object> mapDocument; //Документ с информацией о встрече
-    private FirebaseFirestore firebaseFirestore; // база данных
+    //private Map<String, Object> mapDocument; //Документ с информацией о встрече
+    //private FirebaseFirestore firebaseFirestore; // база данных
     private DocumentReference documentReference; // ссылка на документ
 
     //виджеты
@@ -78,8 +78,8 @@ public class FragmentDetailsMeeting extends Fragment {
 
         // ИНИЦИАЛИЗАЦИЯ //////////////////////////////////////////////////////////////////////////
         globalApp = (GlobalApp) getActivity().getApplicationContext();
-        mapDocument = new HashMap<String, Object>();
-        firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
+        //mapDocument = new HashMap<String, Object>();
+        //firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         //==========================================================================================
 
 
@@ -134,7 +134,7 @@ public class FragmentDetailsMeeting extends Fragment {
 
 
         //Читаем документ со встречей партнера из БД //////////////////////////////////////////////////
-        //classGlobalApp.Log(getClass().getSimpleName(), "onStart", "partnerUserID = ", false);
+        DocumentReference documentReference;
         documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetBundle("partnerUserID")); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override
@@ -143,8 +143,6 @@ public class FragmentDetailsMeeting extends Fragment {
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
                         ModelSingleMeeting requestMeetingPartner = document.toObject(ModelSingleMeeting.class); // получаем заявку текущего пользователя из БД
-                        //mapDocument = document.getData(); // получаем данные из документа БД
-                        //classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
                         UpdateUI(requestMeetingPartner); // обновляем данные в полях
                     } else { // если документа не существует
 

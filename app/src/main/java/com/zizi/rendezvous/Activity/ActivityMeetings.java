@@ -25,6 +25,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.zizi.rendezvous.Dialog;
+import com.zizi.rendezvous.Fragments.FragmentAbout;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.Fragments.FragmentChat;
@@ -50,6 +51,7 @@ public class ActivityMeetings extends AppCompatActivity {
     private ActionBarDrawerToggle  actionBarDrawerToggle;
 
     private DrawerLayout drawerLayout; //шторка меню слева
+    private MaterialToolbar materialToolbar; //верхняя панелька
     private TextView tvUserID; //поле с идентификатором пользователя в заголовке шторки
 
 
@@ -73,7 +75,7 @@ public class ActivityMeetings extends AppCompatActivity {
         dialog = new Dialog(); // класс для показа всплывающих окон
 
         //ищем нужные элементы
-        MaterialToolbar materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
+        materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
         drawerLayout = findViewById(R.id.drawerLayout); //слой левой шторки
         NavigationView navigationView = findViewById(R.id.navigationView);
         //tvUserID = findViewById(R.id.tvUserID);
@@ -102,9 +104,6 @@ public class ActivityMeetings extends AppCompatActivity {
                 tvUserID = findViewById(R.id.tvUserID);
                 tvUserID.setText(globalApp.currentUser.getEmail());
             }
-
-
-
         };
 
         //добавляем к лушателю связыватель/переключатель )))
@@ -120,14 +119,14 @@ public class ActivityMeetings extends AppCompatActivity {
                 switch (item.getItemId()){
 
                     case (R.id.itemMeetings):
-
-
                         ChangeFragment(fragmentListMeetings,false);
-
                         break;
 
                     case (R.id.itemAbout):
-
+                        globalApp.ClearBundle();
+                        globalApp.AddBundle("title", item.getTitle().toString());
+                        FragmentAbout fragmentAbout = new FragmentAbout();
+                        ChangeFragment(fragmentAbout,false);
                         break;
 
                     case (R.id.itemAdmin):
@@ -149,15 +148,6 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
         // materialToolbar ///////////////////////////////////////////////////////////////////////////
-
-        // Set whether to include the application home affordance in the action bar.
-        // (and put a back mark at icon in ActionBar for "up" navigation)
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // Enable or disable the "home" button in the corner of the action bar.
-        // (clickable or not)
-        //getActionBar().setHomeButtonEnabled(true); // сделать гамбургер кликабельным
-
         materialToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели

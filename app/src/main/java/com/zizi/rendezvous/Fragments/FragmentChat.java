@@ -51,7 +51,7 @@ public class FragmentChat extends Fragment {
     private GlobalApp globalApp; // глобальный класс для всего приложения
     private ArrayList<ModelMessage> arrayListAllMessages; // коллекция с сообщениями
     private Adapter adapter; // адаптер с данными для RecyclerView
-    private FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
+    //private FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
     private DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
     private TextInputEditText til_message_et; // поле с техтом ввода сообщения
     private Date dateNow; // для работы с датой
@@ -103,7 +103,7 @@ public class FragmentChat extends Fragment {
         usersIDs = new ArrayList<String>();
         dp = getActivity().getResources().getDisplayMetrics().density; // получаем плотность экрана на 1 dp
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
-        firebaseDatabase = FirebaseDatabase.getInstance(); // БД
+        //firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // узнаем разрешение экрана
@@ -145,7 +145,7 @@ public class FragmentChat extends Fragment {
         // materialToolbar //////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle(partnerInfo.getName() + ", " + partnerInfo.getAge()); // заголовок чата
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
-        materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации менюшкой в верхней панельке
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой
 
 
         // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки

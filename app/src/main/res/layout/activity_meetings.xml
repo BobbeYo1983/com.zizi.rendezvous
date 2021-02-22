@@ -40,7 +40,7 @@
                     android:layout_height="?attr/actionBarSize"
                     app:title="@string/page_title"
                     app:navigationIcon="@drawable/ic_outline_menu_24"
-                    app:menu="@menu/top_app_bar"
+                    app:menu="@menu/material_toolbar"
                     />
 
 
