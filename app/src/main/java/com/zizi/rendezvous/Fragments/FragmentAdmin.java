@@ -2,6 +2,7 @@ package com.zizi.rendezvous.Fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -10,8 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.zizi.rendezvous.BuildConfig;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.R;
@@ -67,17 +74,22 @@ public class FragmentAdmin extends Fragment {
 
         ShowProgressBar(true);//показать экран ожидания
 
-        //TODO запросить количество заявок
-/*        db.collection("Posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        //Запрос количества заявок
+        CollectionReference collectionReference = globalApp.GenerateCollectionReference("meetings");
+        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Log.d("TAG", task.getResult().size() + "");
+                    globalApp.Log(getClass().getSimpleName(), "onStart/onComplete", "Количество заявок на встречу = " + task.getResult().size(), false);
+                    int countMeetings = task.getResult().size(); //количество встреч
+                    tietCountMeetings.setText(String.valueOf(countMeetings));
+                    tietCountMeetingsIsUpdate = true; //отмечаем, что поле обновлено
+                    UpdateUI(); //пробуем обновить интерфейс, сейчас там крутится прогрессбар
                 } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
+                    globalApp.Log(getClass().getSimpleName(), "onStart/onComplete", "Ошибка при запросе количества заявок на встречу: " + task.getException(), false);
                 }
             }
-        });*/
+        });
 
     }
 
@@ -114,7 +126,7 @@ public class FragmentAdmin extends Fragment {
         } else {
             progressBar.setVisibility(View.GONE);
 
-            tietCountMeetings.setVisibility(View.INVISIBLE);
+            tietCountMeetings.setVisibility(View.VISIBLE);
         }
 
     }
