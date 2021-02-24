@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.zizi.rendezvous.Activity.ActivityMeetings;
 import com.zizi.rendezvous.BuildConfig;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.R;
@@ -29,11 +31,13 @@ import java.sql.Struct;
 public class FragmentAdmin extends Fragment {
 
     private GlobalApp globalApp; // глобальный класс приложения
+    private ActivityMeetings activityMeetings; //Активити со встречами
 
     private MaterialToolbar materialToolbar; // верхняя панелька
     private ProgressBar progressBar; //крутилка
     private TextInputEditText tietCountMeetings; //количество активных заявок на встречи
     private boolean tietCountMeetingsIsUpdate; // поле обновлено/вычитано из БД
+    private Button bModeration; //кнопка с модерацией
 
 
 
@@ -55,11 +59,15 @@ public class FragmentAdmin extends Fragment {
 
         globalApp = (GlobalApp) getActivity().getApplicationContext(); //получаем глобальный класс приложения
         tietCountMeetingsIsUpdate = false; //отмечаем, что поле не обновлено
+        activityMeetings = (ActivityMeetings)getActivity();
 
         //ищем вьюхи
         materialToolbar = getActivity().findViewById(R.id.material_toolbar); // верхняя панелька
         progressBar = getActivity().findViewById(R.id.progressBar);
         tietCountMeetings = getActivity().findViewById(R.id.tietCountMeetings);
+        bModeration = getActivity().findViewById(R.id.bModeration);
+
+
 
     }
 
@@ -74,7 +82,8 @@ public class FragmentAdmin extends Fragment {
 
         ShowProgressBar(true);//показать экран ожидания
 
-        //Запрос количества заявок
+        //tietCountMeetings //////////////////////////////////////////////////////////////////////////
+        // Запрос количества заявок
         CollectionReference collectionReference = globalApp.GenerateCollectionReference("meetings");
         collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -90,6 +99,20 @@ public class FragmentAdmin extends Fragment {
                 }
             }
         });
+        //===========================================================================================
+
+
+
+        //bModeration//////////////////////////////////////////////////////////////////////////////
+        bModeration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentModeration fragmentModeration = new FragmentModeration();
+                activityMeetings.ChangeFragment(fragmentModeration, true);
+            }
+        });
+        //==========================================================================================
+
 
     }
 
