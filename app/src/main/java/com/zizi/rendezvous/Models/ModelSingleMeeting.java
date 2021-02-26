@@ -5,6 +5,7 @@ import com.zizi.rendezvous.Data.Data;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class ModelSingleMeeting {
 
@@ -31,6 +32,8 @@ public class ModelSingleMeeting {
     private String placeOtherDescription;
     private String time;
     private String comment;
+    private Long meetingID; //идентификатор встречи
+    private boolean moderation; //отметка, прошла ли заявка автоматическую модерацию
 
     @ServerTimestamp //если поле null, то в БД будет писаться метка времени FareStore, если задать, то заданная
     private Date timeStamp;
@@ -117,6 +120,16 @@ public class ModelSingleMeeting {
 
     public Date getTimeStamp() {
         return timeStamp;
+    }
+
+    public Long getMeetingID() {
+
+        final Random random = new Random();
+        return random.nextLong();
+    }
+
+    public boolean isModeration() {
+        return moderation;
     }
 
 
@@ -228,6 +241,14 @@ public class ModelSingleMeeting {
         }
 
         return tmpStr;
+    }
+
+    public void setMeetingID(Long meetingID) {
+        this.meetingID = meetingID;
+    }
+
+    public void setModeration(boolean moderation) {
+        this.moderation = moderation;
     }
 
 }

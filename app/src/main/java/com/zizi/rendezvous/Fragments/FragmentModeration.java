@@ -1,5 +1,6 @@
 package com.zizi.rendezvous.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,14 +16,21 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Models.ModelSingleMeeting;
 import com.zizi.rendezvous.R;
+
+import java.util.Random;
 
 /** Фрагмент с функциями модерации */
 public class FragmentModeration extends Fragment {
@@ -71,4 +79,76 @@ public class FragmentModeration extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!globalApp.IsAuthorized()) { // если пользователь не авторизован
+            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
+            getActivity().finish(); // убиваем активити
+        }
+
+        ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
+
+    }
+
+
+
+    /** Читаем из базы одну случайную заявку не прошедшую случайную модерацию.
+     * В БД лежат документы со случайным числом в поле meetingId.
+     * Генерируем случайное число и берем первое встречающееся перед этим числом.
+     * */
+    private void ReadRandomMeeting() {
+
+        Random random = new Random(); // случайное число
+
+        CollectionReference collectionReference;
+        collectionReference = globalApp.GenerateCollectionReference("meetings");
+
+        Query query = collectionReference
+                        .whereLessThanOrEqualTo("meetingId", random.nextLong())
+                        .orderBy("meetingId")
+                        .limit(1)
+                        ;
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = (DocumentSnapshot)task.getResult();
+                } else {
+                    //TODO лог
+                }
+
+            }
+        });
+
+
+
+
+/*        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
+                if (task.isSuccessful()) { // если выполнилась успешно
+                    DocumentSnapshot document = task.getResult(); // получаем документ
+                    if (document.exists()) { // если документ такой есть, не null
+                        ModelSingleMeeting requestMeetingPartner = document.toObject(ModelSingleMeeting.class); // получаем заявку текущего пользователя из БД
+                        UpdateUI(requestMeetingPartner); // обновляем данные в полях
+                    } else { // если документа не существует
+
+                        globalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", true);
+                    }
+
+                } else { // если ошибка чтения БД
+
+                    globalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
+                }
+            }
+        });*/
+
+
+    }
+
+
+    
 }

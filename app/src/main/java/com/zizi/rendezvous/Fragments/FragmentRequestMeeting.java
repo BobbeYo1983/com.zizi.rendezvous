@@ -518,6 +518,8 @@ public class FragmentRequestMeeting extends Fragment {
                     globalApp.Log(getClass().getSimpleName(), "btn_apply_request.setOnClickListener", "Количество бесплатных заявок = " + countRequestMeetings, false);
                     if (countRequestMeetings > 0) {
 
+                        CheckModeration(); //проверка на модерацию
+
                         SaveParamsToRAM(); // сохранение в оперативную память
 
                         // сохраняем заявку в БД
@@ -623,6 +625,14 @@ public class FragmentRequestMeeting extends Fragment {
         pbRequestMeeting.setVisibility(View.GONE); // крутилку скрываем
 
     }
+
+
+
+    /** Автоматическая модерация, если есть сомнения, то в заявке на встречу в поле moderation устанавливается флаг false*/
+    private void CheckModeration(){
+        globalApp.GetRequestMeeting().setModeration(false);
+    }
+
 
 
     /**
