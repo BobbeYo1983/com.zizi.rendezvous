@@ -1,5 +1,7 @@
 package com.zizi.rendezvous.Fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.GlobalApp;
@@ -59,13 +63,12 @@ public class FragmentModeration extends Fragment {
         globalApp = (GlobalApp) getActivity().getApplicationContext();
 
         //ищем вьюхи
-        MaterialToolbar materialToolbar = getActivity().findViewById(R.id.material_toolbar);
-        ; // верхняя панелька
+        MaterialToolbar materialToolbar = getActivity().findViewById(R.id.material_toolbar); // верхняя панелька
 
         // materialToolbar //////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Модерация"); // заголовок чата
-        //materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой
+        //==========================================================================================
 
 
         // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
@@ -88,6 +91,8 @@ public class FragmentModeration extends Fragment {
             getActivity().finish(); // убиваем активити
         }
 
+        //TODO сделать прогрессбар
+
         ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
 
     }
@@ -105,19 +110,71 @@ public class FragmentModeration extends Fragment {
         CollectionReference collectionReference;
         collectionReference = globalApp.GenerateCollectionReference("meetings");
 
+        //запрос в БД
         Query query = collectionReference
-                        .whereLessThanOrEqualTo("meetingId", random.nextLong())
-                        .orderBy("meetingId")
-                        .limit(1)
+                        //.whereGreaterThanOrEqualTo("meetingID", random.nextLong())
+                        .whereGreaterThan("meetingID", random.nextLong()) //выбираем заявку со следующим ID после случайного числа
+                        .orderBy("meetingID") // упорядочиваем по ID
+                        .limit(1) // читаем только первую
                         ;
 
+        //получаем данные из БД
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = (DocumentSnapshot)task.getResult();
-                } else {
-                    //TODO лог
+                if(task.isSuccessful()) { //если чтение из БД успешно
+
+                    globalApp.Log(getClass().getSimpleName(), "ReadRandomMeeting/onComplete",
+                            "Чтение случайной заявки из БД выполнено успешно", false);
+
+                    if (task.getResult().getDocuments().get(0).exists()){ //если хотя бы один документ вычитан
+
+                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0); //получаем документ фаресторе
+
+                        //TODO обновить значения полей из документа
+
+                    } else { //если нет ни одного документа на модерацию
+
+                        //Покажем пользователю и разрешаем повторить чтение/////////////////////////////
+                        new AlertDialog.Builder(getContext())
+                                .setIcon(android.R.drawable.ic_dialog_info)
+                                .setTitle("Нет данных")
+                                .setMessage("Нет заявок на модерацию")
+                                .setPositiveButton("Повторить", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ReadRandomMeeting();
+                                    }
+                                })
+                                //.setNegativeButton("No", null)
+                                .show();
+                        //===============================================================================
+                    }
+
+                    //for (QueryDocumentSnapshot document : task.getResult()) {
+                    //    Log.d(TAG, document.getId() + " => " + document.getData());
+                    //}
+
+                } else { //если чтение из БД не успешно
+
+                    globalApp.Log(getClass().getSimpleName(), "ReadRandomMeeting/onComplete",
+                            "Ошибка чтения случайной заявки из БД: " + task.getException(), true);
+
+                    //Покажем пользователю и разрешаем повторить чтение/////////////////////////////
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка чтения БД")
+                            .setMessage("Ошибка чтения случайной заявки из БД: " + task.getException())
+                            .setPositiveButton("Повторить", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ReadRandomMeeting();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+
                 }
 
             }
