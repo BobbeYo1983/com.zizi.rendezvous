@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
+/** Класс заявки на встречу */
 public class ModelSingleMeeting {
 
     //!обратить внимание на регистр, далее этот класс используется при читке и записи с БД,

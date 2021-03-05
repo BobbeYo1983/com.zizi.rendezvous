@@ -8,7 +8,16 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.FragmentModeration">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="?attr/colorPrimary"
+        android:layout_gravity="center"
+        />
+
     <ScrollView
+        android:id="@+id/scrollViewFragmentModeration"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -155,6 +164,52 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_region"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Регион:"
+                app:startIconDrawable="@drawable/ic_outline_language_24"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_region_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_town"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Город:"
+                app:startIconDrawable="@drawable/ic_outline_location_city_24"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_town_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_place"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -224,7 +279,37 @@
 
 
 
+            <Button
+                android:id="@+id/bReject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Отклонить заявку"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                />
+
+
+
+            <Button
+                android:id="@+id/bAccept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?attr/borderlessButtonStyle"
+                android:text="Принять заявку"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                />
+
+
+
         </LinearLayout>
+
+
+
     </ScrollView>
+
+
 
 </FrameLayout>

@@ -3,6 +3,7 @@ package com.zizi.rendezvous.Fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,10 +12,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -23,6 +29,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -40,6 +48,33 @@ import java.util.Random;
 public class FragmentModeration extends Fragment {
 
     private GlobalApp globalApp; //глобальный класс приложения, общий для всех компонентов
+
+    //виджеты
+    private TextInputLayout til_name;
+    private TextInputEditText til_name_et; // имя пользователя
+    private TextInputLayout til_age;
+    private TextInputEditText til_age_et;
+    private TextInputLayout til_phone;
+    private TextInputEditText til_phone_et;
+    private CheckBox cb_only_write; //галка можно ли звонить
+    private TextInputLayout til_soc_net;
+    private TextInputEditText til_soc_net_et;
+    private TextInputLayout til_contact;
+    private TextInputEditText til_contact_et;
+    private TextInputLayout til_region;
+    private TextInputEditText til_region_et;
+    private TextInputLayout til_town;
+    private TextInputEditText til_town_et;
+    private TextInputLayout til_place;
+    private TextInputEditText til_place_et;
+    private TextInputLayout til_time;
+    private TextInputEditText til_time_et;
+    private TextInputLayout til_comment;
+    private TextInputEditText til_comment_et;
+    private Button bReject;
+    private Button bAccept;
+    private ProgressBar progressBar;
+    private ScrollView scrollView;
 
     public FragmentModeration() {
         // Required empty public constructor
@@ -65,6 +100,34 @@ public class FragmentModeration extends Fragment {
         //ищем вьюхи
         MaterialToolbar materialToolbar = getActivity().findViewById(R.id.material_toolbar); // верхняя панелька
 
+        til_name = getActivity().findViewById(R.id.til_name);
+        til_name_et = getActivity().findViewById(R.id.til_name_et);
+        til_age = getActivity().findViewById(R.id.til_age);
+        til_age_et = getActivity().findViewById(R.id.til_age_et);
+        til_phone = getActivity().findViewById(R.id.til_phone);
+        til_phone_et = getActivity().findViewById(R.id.til_phone_et);
+        cb_only_write = getActivity().findViewById(R.id.cb_only_write);
+        til_soc_net = getActivity().findViewById(R.id.til_soc_net);
+        til_soc_net_et = getActivity().findViewById(R.id.til_soc_net_et);
+        til_contact = getActivity().findViewById(R.id.til_contact);
+        til_contact_et = getActivity().findViewById(R.id.til_contact_et);
+        til_region = getActivity().findViewById(R.id.til_region);
+        til_region_et = getActivity().findViewById(R.id.til_region_et);
+        til_town = getActivity().findViewById(R.id.til_town);
+        til_town_et = getActivity().findViewById(R.id.til_town_et);
+        til_place = getActivity().findViewById(R.id.til_place);
+        til_place_et = getActivity().findViewById(R.id.til_place_et);
+        til_time = getActivity().findViewById(R.id.til_time);
+        til_time_et = getActivity().findViewById(R.id.til_time_et);
+        til_comment = getActivity().findViewById(R.id.til_comment);
+        til_comment_et = getActivity().findViewById(R.id.til_comment_et);
+        bReject = getActivity().findViewById(R.id.bReject);
+        bAccept = getActivity().findViewById(R.id.bAccept);
+        progressBar = getActivity().findViewById(R.id.progressBar);
+        scrollView = getActivity().findViewById(R.id.scrollViewFragmentModeration);
+
+        //ShowProgressBar(true);
+
         // materialToolbar //////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Модерация"); // заголовок чата
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой
@@ -80,6 +143,28 @@ public class FragmentModeration extends Fragment {
         });
         //===========================================================================================
 
+
+
+        //bReject///////////////////////////////////////////////////////////////////////////////////
+        bReject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
+            }
+        });
+        //==========================================================================================
+
+
+
+        //bAccept///////////////////////////////////////////////////////////////////////////////////
+        bAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
+            }
+        });
+        //==========================================================================================
+
     }
 
     @Override
@@ -90,8 +175,6 @@ public class FragmentModeration extends Fragment {
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
-
-        //TODO сделать прогрессбар
 
         ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
 
@@ -104,6 +187,8 @@ public class FragmentModeration extends Fragment {
      * Генерируем случайное число и берем первое встречающееся перед этим числом.
      * */
     private void ReadRandomMeeting() {
+
+        ShowProgressBar(true);
 
         Random random = new Random(); // случайное число
 
@@ -127,19 +212,24 @@ public class FragmentModeration extends Fragment {
                     globalApp.Log(getClass().getSimpleName(), "ReadRandomMeeting/onComplete",
                             "Чтение случайной заявки из БД выполнено успешно", false);
 
-                    if (task.getResult().getDocuments().get(0).exists()){ //если хотя бы один документ вычитан
+                    if (!task.getResult().getDocuments().isEmpty()){ //если хотя бы один документ вычитан
 
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0); //получаем документ фаресторе
 
-                        //TODO обновить значения полей из документа
+                        ModelSingleMeeting randomMeeting = documentSnapshot.toObject(ModelSingleMeeting.class); //сериализация в класс
+
+                        UpdateUI(randomMeeting); //обновляем интерфейс пользователя
 
                     } else { //если нет ни одного документа на модерацию
+
+                        progressBar.setVisibility(View.INVISIBLE);
+                        scrollView.setVisibility(View.INVISIBLE);
 
                         //Покажем пользователю и разрешаем повторить чтение/////////////////////////////
                         new AlertDialog.Builder(getContext())
                                 .setIcon(android.R.drawable.ic_dialog_info)
                                 .setTitle("Нет данных")
-                                .setMessage("Нет заявок на модерацию")
+                                .setMessage("Нет заявок на модерацию.")
                                 .setPositiveButton("Повторить", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -149,11 +239,8 @@ public class FragmentModeration extends Fragment {
                                 //.setNegativeButton("No", null)
                                 .show();
                         //===============================================================================
-                    }
 
-                    //for (QueryDocumentSnapshot document : task.getResult()) {
-                    //    Log.d(TAG, document.getId() + " => " + document.getData());
-                    //}
+                    }
 
                 } else { //если чтение из БД не успешно
 
@@ -176,36 +263,57 @@ public class FragmentModeration extends Fragment {
                     //===============================================================================
 
                 }
-
             }
         });
+    }
 
 
+    /**
+     * Обновляет данные интерфейса пользователя
+     * @param modelSingleMeeting заявка на встречу
+     */
+    private void UpdateUI(ModelSingleMeeting modelSingleMeeting) {
 
+        til_name_et.setText(modelSingleMeeting.getName());
+        til_age_et.setText(modelSingleMeeting.getAge());
+        til_phone_et.setText(modelSingleMeeting.getPhone());
 
-/*        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
-                if (task.isSuccessful()) { // если выполнилась успешно
-                    DocumentSnapshot document = task.getResult(); // получаем документ
-                    if (document.exists()) { // если документ такой есть, не null
-                        ModelSingleMeeting requestMeetingPartner = document.toObject(ModelSingleMeeting.class); // получаем заявку текущего пользователя из БД
-                        UpdateUI(requestMeetingPartner); // обновляем данные в полях
-                    } else { // если документа не существует
+        if (modelSingleMeeting.getOnlyWrite().equals("trueTrue")) {
+            cb_only_write.setChecked(true);
+        } else {
+            cb_only_write.setChecked(false);
+        }
 
-                        globalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", true);
-                    }
+        til_soc_net_et.setText(modelSingleMeeting.getSocNet());
+        Linkify.addLinks(til_soc_net_et, Linkify.ALL); // для распознования ссылок
+        til_soc_net_et.setLinkTextColor(Color.BLUE);
 
-                } else { // если ошибка чтения БД
+        til_contact_et.setText(modelSingleMeeting.getContact());
+        til_region_et.setText(modelSingleMeeting.getRegion());
+        til_town_et.setText(modelSingleMeeting.getTown());
+        til_place_et.setText(modelSingleMeeting.CreateStringFromArrayListPlaces());
+        til_time_et.setText(modelSingleMeeting.getTime());
+        til_comment_et.setText(modelSingleMeeting.getComment());
 
-                    globalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
-                }
-            }
-        });*/
-
+        ShowProgressBar(false);
 
     }
 
 
-    
+    /**
+     * Показывает или прогрессбар или виджеты
+     * @param visibility если true, то показывает прогрессбар
+     */
+    private void ShowProgressBar(boolean visibility) {
+        if (visibility) {
+            progressBar.setVisibility(View.VISIBLE);
+            scrollView.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            scrollView.setVisibility(View.VISIBLE);
+
+        }
+    }
+
+
 }
