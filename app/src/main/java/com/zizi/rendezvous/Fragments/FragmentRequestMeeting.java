@@ -41,14 +41,11 @@ public class FragmentRequestMeeting extends Fragment {
 
     //Объявление ///////////////////////////////////////////////////////////////////////////////////
     private GlobalApp globalApp; //глобальный класс приложения, общий для всех компонентов
-    //private FirebaseFirestore firebaseFirestore; // база данных
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
-    //private Map<String, Object> meeting; // коллекция ключ-значение для описания встречи
     private ActivityMeetings activityMeetings; // настоящая активити
     private FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     private FragmentPlace fragmentPlace; // фрагмент с выбором места
     private ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
-    //private String tmpStr; // временный буфер
     private Dialog dialog; //класс для показа всплывающих окон
     private FragmentManager fragmentManager; // для управления показом компонентов
 
@@ -103,8 +100,6 @@ public class FragmentRequestMeeting extends Fragment {
         //инициализация /////////////////////////////////////////////////////////////////////////////
         globalApp = (GlobalApp) getActivity().getApplicationContext();
         globalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
-        //firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
-        //meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
@@ -169,6 +164,11 @@ public class FragmentRequestMeeting extends Fragment {
      * Обновляет интерфейс пользователя
      */
     private void UpdateUI () {
+
+        svRequestMeeting.setVisibility(View.GONE); // скрываем виджеты
+        pbRequestMeeting.setVisibility(View.VISIBLE); // показываем прогрессбар
+
+
 
         // materialToolbar ////////////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Заявка"); // заголовок в панельке верхней
@@ -630,7 +630,18 @@ public class FragmentRequestMeeting extends Fragment {
 
     /** Автоматическая модерация, если есть сомнения, то в заявке на встречу в поле moderation устанавливается флаг false*/
     private void CheckModeration(){
-        globalApp.GetRequestMeeting().setModeration(false);
+
+        if (til_comment_et.getText().toString().toLowerCase().contains("секс")
+            |til_contact_et.getText().toString().toLowerCase().contains("секс")
+            | til_comment_et.getText().toString().toLowerCase().contains(" бля")
+            | til_contact_et.getText().toString().toLowerCase().contains(" бля")
+
+        ) {
+            globalApp.GetRequestMeeting().setModeration(false);
+        } else {
+            globalApp.GetRequestMeeting().setModeration(true);
+        }
+
     }
 
 
