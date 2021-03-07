@@ -104,10 +104,11 @@ public class FragmentRequestMeeting extends Fragment {
         activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
-        //dialog = new Dialog(); // класс для показа всплывающих окон
-        //fragmentManager = getActivity().getSupportFragmentManager();
+        //==========================================================================================
 
-        // находим все вьюхи на активити
+
+
+        // находим все вьюхи на активити/////////////////////////////////////////////////////////////
         til_name = getActivity().findViewById(R.id.til_name);
         til_name_et = getActivity().findViewById(R.id.til_name_et);
         til_gender = getActivity().findViewById(R.id.til_gender);
@@ -143,6 +144,176 @@ public class FragmentRequestMeeting extends Fragment {
 
 
 
+        //СЛУШАТЕЛИ//////////////////////////////////////////////////////////////////////////////////
+
+
+
+        // btn_apply_request /////////////////////////////////////////////////////////////////////////
+        //слушатель нажатия на кнопку подачи заявки
+        btn_apply_request.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Если поля все введены корректно
+                if (!til_name_et.getText().toString().equals("") &           // если имя не пустое
+                        !til_gender_act.getText().toString().equals("") &        // если пол выбран
+                        !til_age_act.getText().toString().equals("") &           //если возраст выбран
+                        !til_gender_partner_act.getText().toString().equals("") &//если пол партнера выбран
+                        !til_age_min_act.getText().toString().equals("") &       //если возраст минимальный партнера выбран
+                        !til_age_max_act.getText().toString().equals("") &       //если возраст максимальный партнера выбран
+                        !til_region_act.getText().toString().equals("") &        //если регион выбран
+                        !til_town_act.getText().toString().equals("") &          //если город выбран
+                        !til_place_et.getText().toString().equals("") &          //если место выбрано
+                        !til_time_act.getText().toString().equals("")            //если время выбрано
+
+                ) { // Если поля все введены корректно
+
+                    //нужно проверить есть ли бесплатные заявки
+                    int countRequestMeetings = Integer.valueOf(globalApp.currentUser.getCountRequestMeetings());
+                    globalApp.Log(getClass().getSimpleName(), "btn_apply_request.setOnClickListener", "Количество бесплатных заявок = " + countRequestMeetings, false);
+                    if (countRequestMeetings > 0) {
+
+                        CheckModeration(); //проверка на модерацию
+
+                        globalApp.requestMeeting.setStatus(Data.STATUS_ACTIVE);
+
+                        SaveParamsToRAM(); // сохранение в оперативную память
+
+                        // сохраняем заявку в БД
+                        documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid());
+                        documentReference.set(globalApp.requestMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) { //если задачка по работе с БД выполнилась
+                                if (task.isSuccessful()) { //если задача по работе с БД выполнилась успешно
+
+                                    globalApp.SaveRequestMeetingToMemory(); // сохраняем заявку в память
+
+                                    //globalApp.PreparingToSave("statusRequestMeeting", Data.STATUS_ACTIVE); // отмечаем статус заявки активным
+                                    //globalApp.SaveParams();
+
+                                    DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в профиль в БД
+
+                                    activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
+
+                                } else { //если задача по работе с БД выполнилась не успешно
+
+                                    globalApp.Log(getClass().getSimpleName(), "UpdateUI/onComplete", "Ошибка при подаче заявки. Ошибка записи заявки в БД: " + task.getException(), true);
+
+                                    //Показать сообщение пользователю ///////////////////////////////////////////////
+                                    new AlertDialog.Builder(getContext()) //в фрагментах getContext(), в активити ActivityName.this
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle("Ошибка записи в БД")
+                                            .setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException())
+                                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    //создаем намерение, что хотим перейти на другую активити
+                                                    Intent intent = new Intent(getActivity().getApplicationContext(), ActivityLogin.class);
+                                                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                                                            |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                                                    );
+
+                                                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+                                                }
+                                            })
+                                            //.setNegativeButton("No", null)
+                                            .show();
+                                    //===============================================================================
+
+
+                                    //показываем всплывающее окно
+                                    //dialog.setTitle("Ошибка записи в БД");
+                                    //dialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
+                                    //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
+                                    //dialog.show(fragmentManager, "classDialog");
+
+                                }
+
+                            }
+                        });
+                    } else { //если бесплатные заявки закончились
+
+                        //Перейти на страничку с оплатой
+                        //создаем намерение, что хотим перейти на другую активити
+                        Intent intent = new Intent(getActivity().getApplicationContext(), ActivityPay.class);
+                        //intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                        //                  |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                        //                );
+
+                        startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+
+                    }
+
+                } else {// если одно из обязательных полей не заполнено в заявке
+
+                    if (til_name_et.getText().toString().isEmpty()) {          // если имя не пустое
+                        til_name.setError("Введите Ваше имя");
+                    }
+
+                    if (til_gender_act.getText().toString().isEmpty()) {       // если пол не выбран
+                        til_gender.setError("Выберите Ваш пол");
+                    }
+
+                    if (til_age_act.getText().toString().isEmpty()) {       //если возраст не выбран
+                        til_age.setError("Выберите Ваш возраст");
+                    }
+
+                    if (til_gender_partner_act.getText().toString().isEmpty()) {       //если пол партнера не выбран
+                        til_gender_partner.setError("Выберите пол");
+                    }
+
+                    if (til_age_min_act.getText().toString().isEmpty()) {       //если возраст минимальный партнера не выбран
+                        til_age_min.setError("Выберите минимальный возраст");
+                    }
+
+                    if (til_age_max_act.getText().toString().isEmpty()) {       //если возраст максимальный партнера не выбран
+                        til_age_max.setError("Выберите максимальный возраст");
+                    }
+
+                    if (til_region_act.getText().toString().isEmpty()) {       //если регион не выбран
+                        til_region.setError("Выберите регион");
+                    }
+
+                    if (til_town_act.getText().toString().isEmpty()) {       //если город не выбран
+                        til_town.setError("Выберите город");
+                    }
+
+                    if (til_place_et.getText().toString().isEmpty()) {       //если место не выбрано
+                        til_place.setError("Выберите место встречи");
+                    }
+
+                    if (til_time_act.getText().toString().isEmpty()) {      //если время не выбрано
+                        til_time.setError("Выберите время встречи");
+                    }
+
+                    //Покажем пользователю сообщение/////////////////////////////////////////////////
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Заполните все поля")
+                            .setMessage("Заполните обязательные поля выделенные красным цветом")
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+
+                    //Toast.makeText(getActivity().getApplicationContext(), "Заполните обязательные поля выделенные красным цветом", Toast.LENGTH_LONG).show();
+                    //dialog.setTitle("Заполните все поля");
+                    //dialog.setMessage("Заполните обязательные поля выделенные красным цветом");
+                    //dialog.show(fragmentManager, "classDialog");
+
+                }
+
+
+            }
+        });
+        //==================================================================================================
+
     }
 
 
@@ -175,7 +346,8 @@ public class FragmentRequestMeeting extends Fragment {
         materialToolbar.setTitle("Заявка"); // заголовок в панельке верхней
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
 
-        if (globalApp.GetParam("statusRequestMeeting").equals(Data.ACTIVE)) { //если статус заявки активный
+        if (globalApp.requestMeeting.getStatus().equals(Data.STATUS_ACTIVE)) { //если статус заявки активный
+        //if (globalApp.GetParam("statusRequestMeeting").equals(Data.STATUS_ACTIVE)) { //если статус заявки активный
             materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
             // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
             materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -491,172 +663,6 @@ public class FragmentRequestMeeting extends Fragment {
             }
         });
         //===============================================================================================
-
-
-
-        // btn_apply_request /////////////////////////////////////////////////////////////////////////
-        //слушатель нажатия на кнопку подачи заявки
-        btn_apply_request.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Если поля все введены корректно
-                if (!til_name_et.getText().toString().equals("") &           // если имя не пустое
-                        !til_gender_act.getText().toString().equals("") &        // если пол выбран
-                        !til_age_act.getText().toString().equals("") &           //если возраст выбран
-                        !til_gender_partner_act.getText().toString().equals("") &//если пол партнера выбран
-                        !til_age_min_act.getText().toString().equals("") &       //если возраст минимальный партнера выбран
-                        !til_age_max_act.getText().toString().equals("") &       //если возраст максимальный партнера выбран
-                        !til_region_act.getText().toString().equals("") &        //если регион выбран
-                        !til_town_act.getText().toString().equals("") &          //если город выбран
-                        !til_place_et.getText().toString().equals("") &          //если место выбрано
-                        !til_time_act.getText().toString().equals("")            //если время выбрано
-
-                ) { // Если поля все введены корректно
-
-                    //нужно проверить есть ли бесплатные заявки
-                    int countRequestMeetings = Integer.valueOf(globalApp.currentUser.getCountRequestMeetings());
-                    globalApp.Log(getClass().getSimpleName(), "btn_apply_request.setOnClickListener", "Количество бесплатных заявок = " + countRequestMeetings, false);
-                    if (countRequestMeetings > 0) {
-
-                        CheckModeration(); //проверка на модерацию
-
-                        SaveParamsToRAM(); // сохранение в оперативную память
-
-                        // сохраняем заявку в БД
-                        documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid());
-                        documentReference.set(globalApp.requestMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) { //если задачка по работе с БД выполнилась
-                                if (task.isSuccessful()) { //если задача по работе с БД выполнилась успешно
-
-                                    globalApp.SaveRequestMeetingToMemory(); // сохраняем заявку в память
-
-                                    globalApp.PreparingToSave("statusRequestMeeting", Data.ACTIVE); // отмечаем статус заявки активным
-                                    globalApp.SaveParams();
-
-                                    DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в БД
-
-                                    activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
-
-                                } else { //если задача по работе с БД выполнилась не успешно
-
-                                    globalApp.Log(getClass().getSimpleName(), "UpdateUI/onComplete", "Ошибка при подаче заявки. Ошибка записи заявки в БД: " + task.getException(), true);
-
-                                    //Показать сообщение пользователю ///////////////////////////////////////////////
-                                    new AlertDialog.Builder(getContext()) //в фрагментах getContext(), в активити ActivityName.this
-                                            .setIcon(android.R.drawable.ic_dialog_alert)
-                                            .setTitle("Ошибка записи в БД")
-                                            .setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException())
-                                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                    //создаем намерение, что хотим перейти на другую активити
-                                                    Intent intent = new Intent(getActivity().getApplicationContext(), ActivityLogin.class);
-                                                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
-                                                            |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
-                                                    );
-
-                                                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
-                                                }
-                                            })
-                                            //.setNegativeButton("No", null)
-                                            .show();
-                                    //===============================================================================
-
-
-                                    //показываем всплывающее окно
-                                    //dialog.setTitle("Ошибка записи в БД");
-                                    //dialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
-                                    //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
-                                    //dialog.show(fragmentManager, "classDialog");
-
-                                }
-
-                            }
-                        });
-                    } else {
-
-                        //Перейти на страничку с оплатой
-                        //создаем намерение, что хотим перейти на другую активити
-                        Intent intent = new Intent(getActivity().getApplicationContext(), ActivityPay.class);
-                        //intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
-                        //                  |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
-                        //                );
-
-                        startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
-
-                    }
-
-                } else {// если одно из обязательных полей не заполнено в заявке
-
-                    if (til_name_et.getText().toString().isEmpty()) {          // если имя не пустое
-                        til_name.setError("Введите Ваше имя");
-                    }
-
-                    if (til_gender_act.getText().toString().isEmpty()) {       // если пол не выбран
-                        til_gender.setError("Выберите Ваш пол");
-                    }
-
-                    if (til_age_act.getText().toString().isEmpty()) {       //если возраст не выбран
-                        til_age.setError("Выберите Ваш возраст");
-                    }
-
-                    if (til_gender_partner_act.getText().toString().isEmpty()) {       //если пол партнера не выбран
-                        til_gender_partner.setError("Выберите пол");
-                    }
-
-                    if (til_age_min_act.getText().toString().isEmpty()) {       //если возраст минимальный партнера не выбран
-                        til_age_min.setError("Выберите минимальный возраст");
-                    }
-
-                    if (til_age_max_act.getText().toString().isEmpty()) {       //если возраст максимальный партнера не выбран
-                        til_age_max.setError("Выберите максимальный возраст");
-                    }
-
-                    if (til_region_act.getText().toString().isEmpty()) {       //если регион не выбран
-                        til_region.setError("Выберите регион");
-                    }
-
-                    if (til_town_act.getText().toString().isEmpty()) {       //если город не выбран
-                        til_town.setError("Выберите город");
-                    }
-
-                    if (til_place_et.getText().toString().isEmpty()) {       //если место не выбрано
-                        til_place.setError("Выберите место встречи");
-                    }
-
-                    if (til_time_act.getText().toString().isEmpty()) {      //если время не выбрано
-                        til_time.setError("Выберите время встречи");
-                    }
-
-                    //Покажем пользователю сообщение/////////////////////////////////////////////////
-                    new AlertDialog.Builder(getContext())
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle("Заполните все поля")
-                            .setMessage("Заполните обязательные поля выделенные красным цветом")
-                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            })
-                            //.setNegativeButton("No", null)
-                            .show();
-                    //===============================================================================
-
-                    //Toast.makeText(getActivity().getApplicationContext(), "Заполните обязательные поля выделенные красным цветом", Toast.LENGTH_LONG).show();
-                    //dialog.setTitle("Заполните все поля");
-                    //dialog.setMessage("Заполните обязательные поля выделенные красным цветом");
-                    //dialog.show(fragmentManager, "classDialog");
-
-                }
-
-
-            }
-        });
-        //==================================================================================================
 
 
 

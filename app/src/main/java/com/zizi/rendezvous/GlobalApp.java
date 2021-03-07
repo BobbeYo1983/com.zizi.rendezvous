@@ -328,8 +328,10 @@ public class GlobalApp extends Application {
             NotificationChannel notificationChannel = new NotificationChannel(Data.channelID, name, importance); //создаем канал
             notificationChannel.setDescription(descriptionСhannel); //добавляем описание канала
 
+
+
            //атрибуты для звука уведомлений////////////////////////////////////////////////////////////////////
-/*           Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
+           /*!Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
            AudioAttributes att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
@@ -340,6 +342,8 @@ public class GlobalApp extends Application {
             //вибрация
             notificationChannel.enableVibration(true);
             notificationChannel.setVibrationPattern(new long[]{500, 500, 500});*/
+
+
 
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this

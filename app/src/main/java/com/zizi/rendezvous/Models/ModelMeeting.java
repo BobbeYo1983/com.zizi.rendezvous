@@ -33,16 +33,21 @@ public class ModelMeeting {
     private String placeOtherDescription;
     private String time;
     private String comment;
-    private Long meetingID; //идентификатор встречи
-    private boolean moderation; //отметка, прошла ли заявка автоматическую модерацию
 
     @ServerTimestamp //если поле null, то в БД будет писаться метка времени FareStore, если задать, то заданная
     private Date timeStamp;
 
+    private Long meetingID; //идентификатор встречи
+    private boolean moderation; //отметка, прошла ли заявка автоматическую модерацию
+    private String status; //статус заявки
 
 
-    public ModelMeeting() {}
 
+    public ModelMeeting(){}
+
+
+
+    //Геттеры
     public String getUserID() {
         return userID;
     }
@@ -131,6 +136,10 @@ public class ModelMeeting {
 
     public boolean isModeration() {
         return moderation;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
 
@@ -254,6 +263,12 @@ public class ModelMeeting {
      */
     public void setModeration(boolean moderation) {
         this.moderation = moderation;
+    }
+
+
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

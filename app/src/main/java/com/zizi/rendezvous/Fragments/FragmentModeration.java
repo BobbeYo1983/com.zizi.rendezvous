@@ -30,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zizi.rendezvous.Activity.ActivityLogin;
+import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.R;
@@ -144,9 +145,39 @@ public class FragmentModeration extends Fragment {
             @Override
             public void onClick(View v) {
 
+                randomMeeting.setStatus(Data.STATUS_MODERATION_FAIL); //делаем статус, что заявка не прошла модерацию
+                DocumentReference documentReference = globalApp.GenerateDocumentReference("meetings", randomMeeting.getUserID()); //ссылка на заявку текущего пользователя
+                documentReference.set(randomMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //записываем в БД
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) { //если запись успешна
 
+                            ReadRandomMeeting(); //читаем следующую случайную неморерированую заявку
 
-                ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
+                        } else { //если запись не
+
+                            globalApp.Log(getClass().getSimpleName(), "bAccept.setOnClickListener",
+                                    "Ошибка записи статуса заявки о НЕУСПЕШНОЙ модерации в БД: " + task.getException(), true);
+
+                            //Покажем пользователю сообщение/////////////////////////////
+                            new AlertDialog.Builder(getContext())
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("Ошибка записи в БД")
+                                    .setMessage("Ошибка записи статуса заявки о неуспешной модерации в БД, повторите попытку еще раз.")
+                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    //.setNegativeButton("No", null)
+                                    .show();
+                            //===============================================================================
+                        }
+
+                    }
+                });
+
             }
         });
         //==========================================================================================

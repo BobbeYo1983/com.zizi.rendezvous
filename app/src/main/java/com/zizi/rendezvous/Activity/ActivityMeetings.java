@@ -58,8 +58,6 @@ public class ActivityMeetings extends AppCompatActivity {
         globalApp = (GlobalApp) getApplicationContext();
         globalApp.Log(getClass().getSimpleName(), "onCreate", "Начинаю создавать активити", false);
 
-        globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля и не будут null
-
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
@@ -157,8 +155,70 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
 
-        //ГРУЗИМ НУЖНЫЙ ФРАГМЕНТ/////////////////////////////////////////////////////////////////////
+        //Логика ГРУЗИМ НУЖНЫЙ ФРАГМЕНТ/////////////////////////////////////////////////////////////////////
 
+        GetRequestMeetingFromDB(); // проверяем есть ли завяка в БД и формируем статус заявки
+
+        switch (globalApp.requestMeeting.getStatus()){
+
+            case Data.STATUS_NOT_ACTIVE: //если заявка не активна, ее нет в БД
+
+                globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки не активный, будем грузить фрагмент с формой заявки", false);
+
+                ChangeFragment(fragmentRequestMeeting, false); // показываем заявку на встречу
+
+                break;
+
+            case Data.STATUS_MODERATION_FAIL:
+
+                //TODO направить на фрагмент с правилами и разъяснить пользователю
+                globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки STATUS_MODERATION_FAIL, нужно предупредить пользователя", false);
+
+                ChangeFragment(fragmentRequestMeeting, false); // показываем заявку на встречу
+
+                break;
+
+            case Data.STATUS_ACTIVE: //если заявка активная
+
+                globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки активный, будем дальше смотреть, что грузить", false);
+
+                Bundle bundle = getIntent().getExtras(); //получаем параметры переданные в активити
+
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerID="  + bundle.getString("partnerID"),false);
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerTokenDevice="  + bundle.getString("partnerTokenDevice"),false);
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerName="  + bundle.getString("partnerName"),false);
+                //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerAge="  + bundle.getString("partnerAge"),false);
+
+                if (bundle != null && bundle.getString("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
+                    globalApp.Log(getClass().getSimpleName(), "onCreate", "Параметр: fragmentForLoad=" + bundle.getString("fragmentForLoad") + ", нужно грузить фрагмент с чатом", false);
+
+                    //извлекаем параметры и передаем их дальше фрагменту
+                    globalApp.ClearBundle();
+                    globalApp.AddBundle("partnerID", bundle.getString("partnerID"));
+                    globalApp.AddBundle("partnerTokenDevice", bundle.getString("partnerTokenDevice"));
+                    globalApp.AddBundle("partnerName", bundle.getString("partnerName"));
+                    globalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
+
+                    ChangeFragment(fragmentListMeetings, false); // показываем сначала встречи, чтобы правильно отработала кнопка назад
+                    ChangeFragment(fragmentChat, true); // переходим к чату
+
+
+                } else { // если в fragmentForLoad не указан явно фрагмент, то грузим список встреч
+
+                    ChangeFragment(fragmentListMeetings, false); // показываем встречи
+                }
+
+                break;
+
+            default:  //если неопознанный статус, то грузим фрагмент с заявкой
+
+                globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки неопознан, будем грузить фрагмент с заявкой", false);
+                ChangeFragment(fragmentRequestMeeting, false); // показываем заявку
+
+                break;
+        }
+
+        /*globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля и не будут null
         // Рассмотрим статус заявки
         switch (globalApp.GetParam("statusRequestMeeting")) {
             // если статус заявки пустой, то есть неизвестен, то его нужно выяснить.
@@ -170,7 +230,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
                 break;
 
-            case Data.NOT_ACTIVE: //если Если статус заявки NOT_ACTIVE
+            case Data.STATUS_NOT_ACTIVE: //если Если статус заявки NOT_ACTIVE
 
                 globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки не активный, будем грузить фрагмент с формой заявки", false);
 
@@ -178,7 +238,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
                 break;
 
-            case Data.ACTIVE: //если Если статус заявки ACTIVE
+            case Data.STATUS_ACTIVE: //если Если статус заявки ACTIVE
 
                 globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки активный, будем дальше смотреть, что грузить", false);
 
@@ -217,7 +277,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
                 break;
         }
-        //===========================================================================================
+        //===========================================================================================*/
 
     }
 
@@ -292,14 +352,17 @@ public class ActivityMeetings extends AppCompatActivity {
                         globalApp.SetRequestMeeting(requestMeetingCurrentUser); // записываем заявку пользователя в текущий класс
 
                         globalApp.SaveRequestMeetingToMemory(); //сохраняем заявку в память телефона
-                        RefreshDeviceTokenInMeeting();              //нужно обновить токен в заявке в БД
+                        RefreshDeviceTokenInMeeting(); //нужно обновить токен в заявке в БД на всякий
 
                     } else { // если запрошенного документа не существует в БД
 
                         globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Запрошенного документа нет в БД", false);
 
                         //classGlobalApp.SetRequestMeeting(null); // делаем заявку в глобальном классе пустой
-                        globalApp.PreparingToSave("statusRequestMeeting", "NotActive"); // отмечаем статус заявки неактивным
+                        //globalApp.PreparingToSave("statusRequestMeeting", "NotActive"); // отмечаем статус заявки неактивным
+
+                        globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти
+                        globalApp.requestMeeting.setStatus(Data.STATUS_NOT_ACTIVE);//отмечаем статус заявки не активным
 
                         ChangeFragment(fragmentRequestMeeting, false); //переходим на фрагмент с заявкой
 
@@ -382,7 +445,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
                     //classGlobalApp.PreparingToSave("loginNotFirstTime", "trueTrue"); // отмечаем, что уже разок логинились
                     //classGlobalApp.PreparingToSave("requestIsActive", "trueTrue"); //отмечаем, что заявочка активна
-                    globalApp.PreparingToSave("statusRequestMeeting", Data.ACTIVE); // отмечаем статус заявки активным
+                    globalApp.PreparingToSave("statusRequestMeeting", Data.STATUS_ACTIVE); // отмечаем статус заявки активным
                     globalApp.SaveParams(); // сохраняем в девайс
 
                     ChangeFragment(fragmentListMeetings, false); // показываем встречи
@@ -395,7 +458,7 @@ public class ActivityMeetings extends AppCompatActivity {
                             "Ошибка при записи tokenDevice в активную заявку на встречу. Пользователю не будут приходить уведомлени. Нужно заполнить заявку по новой.", true);
 
                     //считаем заявку не активной
-                    globalApp.PreparingToSave("statusRequestMeeting", Data.NOT_ACTIVE); // отмечаем статус заявки неактивным
+                    globalApp.PreparingToSave("statusRequestMeeting", Data.STATUS_NOT_ACTIVE); // отмечаем статус заявки неактивным
                     globalApp.SaveParams(); // сохраняем в девайс
 
                     ChangeFragment(fragmentRequestMeeting, false); // показываем заявку

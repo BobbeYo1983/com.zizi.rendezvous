@@ -7,13 +7,15 @@ public class Data {
     public static final String anyTime = "Любое время";
     public static final String channelID = "Сообщения";
     public static final String tagLog = "!@#";
-    public static final String ACTIVITY_LOGIN = "ActivityLogin";
     public static final String FRAGMENT_CHAT = "FragmentChat";
-    public static final String ACTIVE = "Active";
-    public static final String NOT_ACTIVE = "NotActive";
+
+    //статусы заявки на встречу
+    public static final String STATUS_ACTIVE = "STATUS_ACTIVE";
+    public static final String STATUS_NOT_ACTIVE = "STATUS_NOT_ACTIVE";
+    public static final String STATUS_MODERATION_FAIL = "STATUS_MODERATION_FAIL";
+
     public static final String OTHER = "Прочее";
     public static final String DEFAULT_COUNT_REQUEST_MEETINGS = "31"; // количество бесплатных встреч по умолчанию
-
 
     public static final String[] regionsTmp = new String[]{
         "Нижегородская область",
