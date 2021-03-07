@@ -136,8 +136,8 @@ public class FragmentChat extends Fragment {
         // заготовим информацию о текущем пользователе при загрузке фрагмента////////////////////////
         currentUserInfo.setUserID(globalApp.GetCurrentUserUid());
         currentUserInfo.setTokenDevice(globalApp.GetTokenDevice());
-        currentUserInfo.setName(globalApp.GetRequestMeeting().getName()); // подгружаем из памяти девайса
-        currentUserInfo.setAge(globalApp.GetRequestMeeting().getAge()); // подгружаем из памяти девайса
+        currentUserInfo.setName(globalApp.requestMeeting.getName()); // подгружаем из памяти девайса
+        currentUserInfo.setAge(globalApp.requestMeeting.getAge()); // подгружаем из памяти девайса
         //==========================================================================================
 
 

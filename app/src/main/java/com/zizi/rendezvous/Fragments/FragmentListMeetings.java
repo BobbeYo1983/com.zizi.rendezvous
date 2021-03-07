@@ -196,9 +196,9 @@ public class FragmentListMeetings extends Fragment {
         // запрос к БД c фильтрами
         collectionReference = globalApp.GenerateCollectionReference("meetings");
         query = collectionReference// коллекция meetings
-                .whereEqualTo("gender", globalApp.GetRequestMeeting().getGender_partner()) //совпадает пол в запросе и пол партнера
-                .whereEqualTo("region", globalApp.GetRequestMeeting().getRegion()) //совпадает регион в запросе и в заявке партнера
-                .whereEqualTo("town", globalApp.GetRequestMeeting().getTown()) //совпадает город в запросе и в заявке партнера
+                .whereEqualTo("gender", globalApp.requestMeeting.getGender_partner()) //совпадает пол в запросе и пол партнера
+                .whereEqualTo("region", globalApp.requestMeeting.getRegion()) //совпадает регион в запросе и в заявке партнера
+                .whereEqualTo("town", globalApp.requestMeeting.getTown()) //совпадает город в запросе и в заявке партнера
                 ;
 
         options = new FirestoreRecyclerOptions.Builder<ModelMeeting>().setQuery(query, ModelMeeting.class).build(); // строим наполнение для списка встреч
@@ -218,8 +218,8 @@ public class FragmentListMeetings extends Fragment {
                 DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД, один из списка
 
                 int age = Integer.parseInt(model.getAge()); //получаем возраст
-                int age_min = Integer.parseInt(globalApp.GetRequestMeeting().getAge_min()); //минимальный возраст из заявки текущего пользователя
-                int age_max = Integer.parseInt(globalApp.GetRequestMeeting().getAge_max()); //максимальный возраст из заявки текущего пользователя
+                int age_min = Integer.parseInt(globalApp.requestMeeting.getAge_min()); //минимальный возраст из заявки текущего пользователя
+                int age_max = Integer.parseInt(globalApp.requestMeeting.getAge_max()); //максимальный возраст из заявки текущего пользователя
 
                 //arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
                 ////arrayListPlaces = new ArrayList<>((Collection<?>)snapshot.get("placeArray")); // получаем все места партнера
@@ -273,7 +273,7 @@ public class FragmentListMeetings extends Fragment {
 
         for (String place : arrayListPlaces) {  // перебираем места партнера
             globalApp.Log(getClass().getSimpleName(), "IsPlace", "place = " + place, false);
-            for (String placeCurrentUser : globalApp.GetRequestMeeting().getPlaceArray()) { //перебираем места текущего пользователя
+            for (String placeCurrentUser : globalApp.requestMeeting.getPlaceArray()) { //перебираем места текущего пользователя
                 globalApp.Log(getClass().getSimpleName(), "IsPlace", "placeCurrentUser = " + placeCurrentUser, false);
                 if (!place.isEmpty() && place.equals(placeCurrentUser)) { return true; } // как находим любое совпадение и строка не пустая
 
@@ -295,7 +295,7 @@ public class FragmentListMeetings extends Fragment {
 
         if (time.equals(Data.anyTime)){ // если у текущего пользователя выбрано любое время
             return true;
-        } else if (time.equals(globalApp.GetRequestMeeting().getTime())){ //если время не любое, и есть совпадение выбранного значения текущего пользователя с партнером
+        } else if (time.equals(globalApp.requestMeeting.getTime())){ //если время не любое, и есть совпадение выбранного значения текущего пользователя с партнером
                 return true;
         }
 

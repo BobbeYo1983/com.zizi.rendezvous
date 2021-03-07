@@ -103,7 +103,7 @@ public class FragmentPlace extends Fragment {
 
 
         //восстанавливаем галки из памяти////////////////////////////////////////////////////////////
-        if (globalApp.GetRequestMeeting().getPlaceAnyPlace().equals(Data.ANY_PLACE)) {// если галка любое место стоит и сохранена
+        if (globalApp.requestMeeting.getPlaceAnyPlace().equals(Data.ANY_PLACE)) {// если галка любое место стоит и сохранена
             cb_anyPlace.setChecked(true); //ставим галку любое место, а другие пункты делаем не активными
 
             cb_street.setEnabled(false); // делаем не активные
@@ -136,19 +136,19 @@ public class FragmentPlace extends Fragment {
 
         } else { // если не стоит галка, что любое место, то пробегаемся по другим и восстанавливаем из памяти каждую
 
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(0).equals(""))   {cb_street.setChecked(false);}        else {cb_street.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(1).equals(""))   {cb_picnic.setChecked(false);}        else {cb_picnic.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(2).equals(""))   {cb_car.setChecked(false);}           else {cb_car.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(3).equals(""))   {cb_sport.setChecked(false);}         else {cb_sport.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(4).equals(""))   {cb_film.setChecked(false);}          else {cb_film.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(5).equals(""))   {cb_billiards.setChecked(false);}     else {cb_billiards.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(6).equals(""))   {cb_cafe.setChecked(false);}          else {cb_cafe.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(7).equals(""))   {cb_disco.setChecked(false);}         else {cb_disco.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(8).equals(""))   {cb_bath.setChecked(false);}          else {cb_bath.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(9).equals(""))   {cb_myHome.setChecked(false);}        else {cb_myHome.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(10).equals(""))  {cb_youHome.setChecked(false);}       else {cb_youHome.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(11).equals(""))  {cb_hotel.setChecked(false);}         else {cb_hotel.setChecked(true);};
-            if (globalApp.GetRequestMeeting().getPlaceArray().get(12).equals(""))  {cb_other.setChecked(false);}         else {cb_other.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(0).equals(""))   {cb_street.setChecked(false);}        else {cb_street.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(1).equals(""))   {cb_picnic.setChecked(false);}        else {cb_picnic.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(2).equals(""))   {cb_car.setChecked(false);}           else {cb_car.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(3).equals(""))   {cb_sport.setChecked(false);}         else {cb_sport.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(4).equals(""))   {cb_film.setChecked(false);}          else {cb_film.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(5).equals(""))   {cb_billiards.setChecked(false);}     else {cb_billiards.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(6).equals(""))   {cb_cafe.setChecked(false);}          else {cb_cafe.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(7).equals(""))   {cb_disco.setChecked(false);}         else {cb_disco.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(8).equals(""))   {cb_bath.setChecked(false);}          else {cb_bath.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(9).equals(""))   {cb_myHome.setChecked(false);}        else {cb_myHome.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(10).equals(""))  {cb_youHome.setChecked(false);}       else {cb_youHome.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(11).equals(""))  {cb_hotel.setChecked(false);}         else {cb_hotel.setChecked(true);};
+            if (globalApp.requestMeeting.getPlaceArray().get(12).equals(""))  {cb_other.setChecked(false);}         else {cb_other.setChecked(true);};
 
         }
         //============================================================================================
@@ -246,7 +246,7 @@ public class FragmentPlace extends Fragment {
 
 
         // til_other_et ////////////////////////////////////////////////////////////////////////////
-        til_other_et.setText(globalApp.GetRequestMeeting().getPlaceOtherDescription());
+        til_other_et.setText(globalApp.requestMeeting.getPlaceOtherDescription());
         if (cb_other.isChecked()){
             til_other.setEnabled(true);
             til_other_et.setEnabled(true);
@@ -278,7 +278,7 @@ public class FragmentPlace extends Fragment {
         // сохраняем выбранные места встреч в RAM
         globalApp.Log("FragmentPlace", "onPause", "Сохранение выбранных мест в RAM", false);
 
-        if (cb_anyPlace.isChecked())        { globalApp.GetRequestMeeting().setPlaceAnyPlace(Data.ANY_PLACE); } else { globalApp.GetRequestMeeting().setPlaceAnyPlace(""); }
+        if (cb_anyPlace.isChecked())        { globalApp.requestMeeting.setPlaceAnyPlace(Data.ANY_PLACE); } else { globalApp.requestMeeting.setPlaceAnyPlace(""); }
 
         ArrayList<String> arrayListPlaces = new ArrayList<String>();
 
@@ -296,9 +296,9 @@ public class FragmentPlace extends Fragment {
         if (cb_hotel.isChecked())       { arrayListPlaces.add(cb_hotel.getText().toString()); }      else { arrayListPlaces.add(""); }
         if (cb_other.isChecked())       { arrayListPlaces.add(cb_other.getText().toString()); }      else { arrayListPlaces.add(""); }
 
-        globalApp.GetRequestMeeting().setPlaceArray(arrayListPlaces);
+        globalApp.requestMeeting.setPlaceArray(arrayListPlaces);
 
-        globalApp.GetRequestMeeting().setPlaceOtherDescription(til_other_et.getText().toString());
+        globalApp.requestMeeting.setPlaceOtherDescription(til_other_et.getText().toString());
 
         globalApp.ClearBundle();
         globalApp.AddBundle("navigationFromFragmentPlace", "trueTrue");

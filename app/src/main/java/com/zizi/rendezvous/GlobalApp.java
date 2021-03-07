@@ -357,11 +357,9 @@ public class GlobalApp extends Application {
         this.visibleWidget = visibleWidget;
     }
 
-
-
-    public ModelMeeting GetRequestMeeting() {
-        return requestMeeting;
-    }
+    //public ModelMeeting GetRequestMeeting() {
+    //    return requestMeeting;
+    //}
 
 
 

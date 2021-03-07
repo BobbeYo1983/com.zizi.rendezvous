@@ -38,23 +38,16 @@ import com.zizi.rendezvous.R;
 public class ActivityMeetings extends AppCompatActivity {
 
     private GlobalApp globalApp; //класс для работы с функциями общими для всех активити, фрагментов, сервисов
-    //private MaterialToolbar materialToolbar; // верхняя панелька
     private FragmentManager fragmentManager; // для управления показом компонентов
-    //private FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
     private Fragment fragmentListMeetings; // фрагмент со списком заявок
     private Fragment fragmentRequestMeeting; // фрагмент с заявкой
-    //private Fragment fragmentChat; // фрагмент с чатом
-    //private Fragment currentFragment; // текущий фрагмент
-    //private Fragment fragmentListChats; // текущий фрагмент
-    private DocumentReference documentReference; // ссылка на документ
-    //private Map<String, Object> mapDocument; //Документ с информацией о встрече
-    //private Dialog dialog; //класс для показа всплывающих окон
-    private ActionBarDrawerToggle  actionBarDrawerToggle;
+    //private DocumentReference documentReference; // ссылка на документ
+    private ActionBarDrawerToggle  actionBarDrawerToggle; //связыватель drawerLayout и materialToolbar типа если открыта шторка или закрыта, то иконка гамбургера соответствующая
 
+    //виджеты
     private DrawerLayout drawerLayout; //шторка меню слева
     private MaterialToolbar materialToolbar; //верхняя панелька
     private TextView tvUserID; //поле с идентификатором пользователя в заголовке шторки
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,17 +58,14 @@ public class ActivityMeetings extends AppCompatActivity {
         globalApp = (GlobalApp) getApplicationContext();
         globalApp.Log(getClass().getSimpleName(), "onCreate", "Начинаю создавать активити", false);
 
-        globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
+        globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля и не будут null
 
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
         Fragment fragmentChat = new FragmentChat();
-        //fragmentListChats = new FragmentListChats();
-        //mapDocument = new HashMap<String, Object>();
-        //dialog = new Dialog(); // класс для показа всплывающих окон
 
-        //ищем нужные элементы
+        //ищем нужные виджеты
         materialToolbar = findViewById(R.id.material_toolbar); // верхняя панель с кнопками
         drawerLayout = findViewById(R.id.drawerLayout); //слой левой шторки
         NavigationView navigationView = findViewById(R.id.navigationView);
@@ -85,7 +75,6 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
         //drawerLayout шторка///////////////////////////////////////////////////////////////////////
-
         //связыватель drawerLayout и materialToolbar типа если открыта шторка или закрыта, то иконка гамбургера соответствующая
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 materialToolbar, R.string.drawerLayoutOpen, R.string.drawerLayoutClose) {
@@ -285,7 +274,7 @@ public class ActivityMeetings extends AppCompatActivity {
      */
     private void GetRequestMeetingFromDB() {
 
-        documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid()); // формируем путь к документу
+        DocumentReference documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
@@ -385,7 +374,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
         globalApp.Log(getClass().getSimpleName(), "RefreshDeviceTokenInMeeting", "Обновляем tokenDevice в заявке в БД", false);
 
-        documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid()); // документ со встречей текущего пользователя
+        DocumentReference documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid()); // документ со встречей текущего пользователя
         documentReference.update("tokenDevice", globalApp.GetTokenDevice()).addOnCompleteListener(new OnCompleteListener<Void>() { // записываем новый tokenDevice в БД в заявку встречи
             @Override
             public void onComplete(@NonNull Task<Void> task) { // если задача работы с БД выполнена

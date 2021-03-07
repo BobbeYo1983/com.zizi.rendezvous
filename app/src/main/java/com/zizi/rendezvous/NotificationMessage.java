@@ -52,8 +52,8 @@ public class NotificationMessage extends AsyncTask<String,Void,Void> {
             data.put("body", "У вас есть новое сообщение"); // Notification body
             data.put("userID", globalApp.GetCurrentUserUid()); // ID пользователя отправителя
             data.put("tokenDevice", globalApp.GetTokenDevice()); // tokenDevice отправителя
-            data.put("name", globalApp.GetRequestMeeting().getName()); // имя отправителя
-            data.put("age", globalApp.GetRequestMeeting().getAge()); // возраст отправителя
+            data.put("name", globalApp.requestMeeting.getName()); // имя отправителя
+            data.put("age", globalApp.requestMeeting.getAge()); // возраст отправителя
 
             ///если не добавлять в посылку раздел notification, то данные гарантированно будут доставляться в метод onMessageReceived в службу ServiceFirebaseCloudMessaging, а из этого метода и формируем уведомление
             json.put("data", data); // добавляем в json - посылку

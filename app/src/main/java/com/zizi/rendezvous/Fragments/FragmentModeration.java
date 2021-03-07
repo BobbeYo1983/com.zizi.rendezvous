@@ -143,6 +143,9 @@ public class FragmentModeration extends Fragment {
         bReject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
                 ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
             }
         });
@@ -187,8 +190,6 @@ public class FragmentModeration extends Fragment {
 
                     }
                 });
-
-
             }
         });
         //==========================================================================================

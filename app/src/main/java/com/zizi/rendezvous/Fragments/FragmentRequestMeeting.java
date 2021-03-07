@@ -199,7 +199,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_name_et //////////////////////////////////////////////////////////////////////////////
-        til_name_et.setText(globalApp.GetRequestMeeting().getName()); // восстанавливаем текст из памяти
+        til_name_et.setText(globalApp.requestMeeting.getName()); // восстанавливаем текст из памяти
         // слушатель изменения текста
         til_name_et.addTextChangedListener(new TextWatcher() {
             @Override
@@ -219,7 +219,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // til_gender_act /////////////////////////////////////////////////////////////////////////
         til_gender_act.setThreshold(100); // чтобы при установлении текста отображался весь список, иначе будет предлагать только найденные строки по введенному тексту
-        til_gender_act.setText(globalApp.GetRequestMeeting().getGender());
+        til_gender_act.setText(globalApp.requestMeeting.getGender());
 
         //наполняем низпадающий список выбора пола для выбора пола
         String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
@@ -239,7 +239,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // til_age_act /////////////////////////////////////////////////////////////////////////////
         til_age_act.setThreshold(100);
-        til_age_act.setText(globalApp.GetRequestMeeting().getAge()); // восстанавливаем выбранное значение из памяти
+        til_age_act.setText(globalApp.requestMeeting.getAge()); // восстанавливаем выбранное значение из памяти
 
         // набиваем список для выбора
         ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
@@ -256,7 +256,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         //til_phone_et ////////////////////////////////////////////////////////////////////////////
-        til_phone_et.setText(globalApp.GetRequestMeeting().getPhone()); // восстанавливаем выбранное значение из памяти
+        til_phone_et.setText(globalApp.requestMeeting.getPhone()); // восстанавливаем выбранное значение из памяти
 
         //слушатель введенного текста, нужен для показать или спрятать подсказку
         til_phone_et.addTextChangedListener(new TextWatcher() {
@@ -282,7 +282,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // cb_only_write ////////////////////////////////////////////////////////////////////////////////
         //восстанавливаем из памяти
-        if (globalApp.GetRequestMeeting().getOnlyWrite().equals("trueTrue")){ // если галка отмечена и сохранена
+        if (globalApp.requestMeeting.getOnlyWrite().equals("trueTrue")){ // если галка отмечена и сохранена
             cb_only_write.setChecked(true);
         } else {
             cb_only_write.setChecked(false);// то не ставим галку
@@ -292,12 +292,12 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_soc_net_et ////////////////////////////////////////////////////////////////////////////////
-        til_soc_net_et.setText(globalApp.GetRequestMeeting().getSocNet()); // восстанавливаем выбранное значение из памяти);
+        til_soc_net_et.setText(globalApp.requestMeeting.getSocNet()); // восстанавливаем выбранное значение из памяти);
         // =============================================================================================
 
 
         // til_contact ////////////////////////////////////////////////////////////////////////////
-        til_contact_et.setText(globalApp.GetRequestMeeting().getContact()); // восстанавливаем выбранное значение из памяти
+        til_contact_et.setText(globalApp.requestMeeting.getContact()); // восстанавливаем выбранное значение из памяти
 
         //слушатель введенного текста, нужен для показать или спрятать подсказку
         if (til_contact_et.getText().toString().isEmpty()) {
@@ -326,7 +326,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         //til_gender_partner_act//////////////////////////////////////////////////////////////////////////
         til_gender_partner_act.setThreshold(100);
-        til_gender_partner_act.setText(globalApp.GetRequestMeeting().getGender_partner()); // восстанавливаем выбранное значение из памяти
+        til_gender_partner_act.setText(globalApp.requestMeeting.getGender_partner()); // восстанавливаем выбранное значение из памяти
 
         til_gender_partner_act.setAdapter(adapter_gender); //список для выбора
 
@@ -345,16 +345,16 @@ public class FragmentRequestMeeting extends Fragment {
         til_age_min_act.setThreshold(100);
         til_age_max_act.setThreshold(100);
 
-        if (globalApp.GetRequestMeeting().getAge_min().equals("")){
+        if (globalApp.requestMeeting.getAge_min().equals("")){
             til_age_min_act.setText("18");
         } else {
-            til_age_min_act.setText(globalApp.GetRequestMeeting().getAge_min()); // восстанавливаем выбранное значение из памяти
+            til_age_min_act.setText(globalApp.requestMeeting.getAge_min()); // восстанавливаем выбранное значение из памяти
         }
 
-        if (globalApp.GetRequestMeeting().getAge_max().equals("")) {
+        if (globalApp.requestMeeting.getAge_max().equals("")) {
             til_age_max_act.setText("70");
         } else {
-            til_age_max_act.setText(globalApp.GetRequestMeeting().getAge_max()); // восстанавливаем выбранное значение из памяти
+            til_age_max_act.setText(globalApp.requestMeeting.getAge_max()); // восстанавливаем выбранное значение из памяти
         }
         //  связываем адаптер с данными
         ArrayAdapter<String> arrayAdapterMinAge = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70));
@@ -385,7 +385,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // til_region_act //////////////////////////////////////////////////////////////////////////////////////
         til_region_act.setThreshold(100);
-        til_region_act.setText(globalApp.GetRequestMeeting().getRegion());  // восстанавливаем выбранное значение из памяти
+        til_region_act.setText(globalApp.requestMeeting.getRegion());  // восстанавливаем выбранное значение из памяти
 
         //формируем список для выбора
         ArrayAdapter<String> adapter_regions = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.regionsTmp);
@@ -416,8 +416,8 @@ public class FragmentRequestMeeting extends Fragment {
         } else {
             til_town.setEnabled(true);
             til_town_act.setEnabled(true); // то делаем активным
-            til_town_act.setText(globalApp.GetRequestMeeting().getTown()); // подгружаем имя города из памяти
-            til_town_act.setAdapter(CreateAdapterTowns(globalApp.GetRequestMeeting().getRegion()));//тут нужно дернуть слушатель, чтобы подгрузил города
+            til_town_act.setText(globalApp.requestMeeting.getTown()); // подгружаем имя города из памяти
+            til_town_act.setAdapter(CreateAdapterTowns(globalApp.requestMeeting.getRegion()));//тут нужно дернуть слушатель, чтобы подгрузил города
         }
 
         til_town_act.setOnItemClickListener(new AdapterView.OnItemClickListener() { //при нажатии на выбранный элемент
@@ -432,7 +432,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         //til_place_et //////////////////////////////////////////////////////////////////////////////
         //til_place_et.setText(LoadFromMemory());
-        til_place_et.setText(globalApp.GetRequestMeeting().CreateStringFromArrayListPlaces());
+        til_place_et.setText(globalApp.requestMeeting.CreateStringFromArrayListPlaces());
 
         // Слушатель при нажатии на поле
         til_place_et.setOnClickListener(new View.OnClickListener() {
@@ -449,7 +449,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // til_time_act /////////////////////////////////////////////////////////////////////////////
         til_time_act.setThreshold(100);
-        til_time_act.setText(globalApp.GetRequestMeeting().getTime()); // восстанавливаем выбранное значение из памяти
+        til_time_act.setText(globalApp.requestMeeting.getTime()); // восстанавливаем выбранное значение из памяти
 
         //формируем список для сохранения времени
         ArrayAdapter<String> adapter_time = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.times);
@@ -466,7 +466,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_comment ///////////////////////////////////////////////////////////////////////////////
-        til_comment_et.setText(globalApp.GetRequestMeeting().getComment()); // восстанавливаем выбранное значение из памяти
+        til_comment_et.setText(globalApp.requestMeeting.getComment()); // восстанавливаем выбранное значение из памяти
 
         // показывать/не показывать подсказку
         if (til_comment_et.getText().toString().isEmpty()) {
@@ -525,7 +525,7 @@ public class FragmentRequestMeeting extends Fragment {
 
                         // сохраняем заявку в БД
                         documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid());
-                        documentReference.set(globalApp.GetRequestMeeting()).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
+                        documentReference.set(globalApp.requestMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
                             @Override
                             public void onComplete(@NonNull Task<Void> task) { //если задачка по работе с БД выполнилась
                                 if (task.isSuccessful()) { //если задача по работе с БД выполнилась успешно
@@ -676,9 +676,9 @@ public class FragmentRequestMeeting extends Fragment {
             | til_contact_et.getText().toString().toLowerCase().contains(" бля")
 
         ) {
-            globalApp.GetRequestMeeting().setModeration(false);
+            globalApp.requestMeeting.setModeration(false);
         } else {
-            globalApp.GetRequestMeeting().setModeration(true);
+            globalApp.requestMeeting.setModeration(true);
         }
 
     }
@@ -753,27 +753,27 @@ public class FragmentRequestMeeting extends Fragment {
      */
     private void SaveParamsToRAM () {
 
-        globalApp.GetRequestMeeting().setName(til_name_et.getText().toString());
-        globalApp.GetRequestMeeting().setGender(til_gender_act.getEditableText().toString());
-        globalApp.GetRequestMeeting().setAge(til_age_act.getText().toString());
-        globalApp.GetRequestMeeting().setPhone(til_phone_et.getText().toString().trim());
+        globalApp.requestMeeting.setName(til_name_et.getText().toString());
+        globalApp.requestMeeting.setGender(til_gender_act.getEditableText().toString());
+        globalApp.requestMeeting.setAge(til_age_act.getText().toString());
+        globalApp.requestMeeting.setPhone(til_phone_et.getText().toString().trim());
 
         if (cb_only_write.isChecked()){
-            globalApp.GetRequestMeeting().setOnlyWrite("trueTrue");
+            globalApp.requestMeeting.setOnlyWrite("trueTrue");
         } else {
-            globalApp.GetRequestMeeting().setOnlyWrite("");
+            globalApp.requestMeeting.setOnlyWrite("");
         }
 
-        globalApp.GetRequestMeeting().setSocNet(til_soc_net_et.getText().toString().trim());
-        globalApp.GetRequestMeeting().setContact( til_contact_et.getText().toString().trim());
-        globalApp.GetRequestMeeting().setGender_partner( til_gender_partner_act.getEditableText().toString());
-        globalApp.GetRequestMeeting().setAge_min( til_age_min_act.getText().toString());
-        globalApp.GetRequestMeeting().setAge_max( til_age_max_act.getText().toString());
-        globalApp.GetRequestMeeting().setRegion( til_region_act.getEditableText().toString());
-        globalApp.GetRequestMeeting().setTown( til_town_act.getEditableText().toString());
+        globalApp.requestMeeting.setSocNet(til_soc_net_et.getText().toString().trim());
+        globalApp.requestMeeting.setContact( til_contact_et.getText().toString().trim());
+        globalApp.requestMeeting.setGender_partner( til_gender_partner_act.getEditableText().toString());
+        globalApp.requestMeeting.setAge_min( til_age_min_act.getText().toString());
+        globalApp.requestMeeting.setAge_max( til_age_max_act.getText().toString());
+        globalApp.requestMeeting.setRegion( til_region_act.getEditableText().toString());
+        globalApp.requestMeeting.setTown( til_town_act.getEditableText().toString());
         //classGlobalApp.GetRequestMeeting().setPlace( til_place_et.getEditableText().toString());
-        globalApp.GetRequestMeeting().setTime( til_time_act.getEditableText().toString());
-        globalApp.GetRequestMeeting().setComment( til_comment_et.getText().toString().trim());
+        globalApp.requestMeeting.setTime( til_time_act.getEditableText().toString());
+        globalApp.requestMeeting.setComment( til_comment_et.getText().toString().trim());
 
 
 
