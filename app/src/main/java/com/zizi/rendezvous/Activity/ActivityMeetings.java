@@ -32,7 +32,7 @@ import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.Fragments.FragmentChat;
 import com.zizi.rendezvous.Fragments.FragmentListMeetings;
 import com.zizi.rendezvous.Fragments.FragmentRequestMeeting;
-import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.R;
 
 public class ActivityMeetings extends AppCompatActivity {
@@ -299,7 +299,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
                         globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Документ с заявкой есть в БД", false);
 
-                        ModelSingleMeeting requestMeetingCurrentUser = document.toObject(ModelSingleMeeting.class); // получаем заявку текущего пользователя из БД
+                        ModelMeeting requestMeetingCurrentUser = document.toObject(ModelMeeting.class); // получаем заявку текущего пользователя из БД
                         globalApp.SetRequestMeeting(requestMeetingCurrentUser); // записываем заявку пользователя в текущий класс
 
                         globalApp.SaveRequestMeetingToMemory(); //сохраняем заявку в память телефона

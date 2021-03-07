@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Random;
 
 /** Класс заявки на встречу */
-public class ModelSingleMeeting {
+public class ModelMeeting {
 
     //!обратить внимание на регистр, далее этот класс используется при читке и записи с БД,
     //!везде регистр сделал маленькими, заработало, пока дальше не стал разбираться
@@ -41,7 +41,7 @@ public class ModelSingleMeeting {
 
 
 
-    public ModelSingleMeeting() {}
+    public ModelMeeting() {}
 
     public String getUserID() {
         return userID;

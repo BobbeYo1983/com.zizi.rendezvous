@@ -21,14 +21,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.GlobalApp;
-import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.R;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class FragmentDetailsMeeting extends Fragment {
@@ -142,7 +138,7 @@ public class FragmentDetailsMeeting extends Fragment {
                 if (task.isSuccessful()) { // если выполнилась успешно
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
-                        ModelSingleMeeting requestMeetingPartner = document.toObject(ModelSingleMeeting.class); // получаем заявку текущего пользователя из БД
+                        ModelMeeting requestMeetingPartner = document.toObject(ModelMeeting.class); // получаем заявку текущего пользователя из БД
                         UpdateUI(requestMeetingPartner); // обновляем данные в полях
                     } else { // если документа не существует
 
@@ -161,7 +157,7 @@ public class FragmentDetailsMeeting extends Fragment {
     /**
      * Обновляет пользовательский интерфейс
      */
-    void UpdateUI(ModelSingleMeeting requestMeetingPartner) {
+    void UpdateUI(ModelMeeting requestMeetingPartner) {
 
         til_name_et.setText(requestMeetingPartner.getName());
         til_age_et.setText(requestMeetingPartner.getAge());

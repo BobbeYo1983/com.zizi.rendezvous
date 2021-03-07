@@ -35,7 +35,7 @@ import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.Activity.ActivityMeetings;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
-import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.R;
 
 import java.util.ArrayList;
@@ -52,12 +52,12 @@ public class FragmentListMeetings extends Fragment {
     private FirebaseFirestore firebaseFirestore; // база данных
     private RecyclerView recyclerView; // список со встречами
     private Query query; // запрос к БД
-    private FirestoreRecyclerOptions<ModelSingleMeeting> options; // штука для построения контента для списка встречь из БД
+    private FirestoreRecyclerOptions<ModelMeeting> options; // штука для построения контента для списка встречь из БД
     private FirestoreRecyclerAdapter adapter; //связывает вьюху и БД
     private FragmentListChats fragmentListChats; //фрагмент с чатами
     private FragmentChat fragmentChat; // фрагмент с одним чатом
     private Map<String, String> userInfo; // коллекция ключ-значение для информации о пользователях
-    private ArrayList<ModelSingleMeeting> usersInfoAll; // информация по всем пользователям
+    private ArrayList<ModelMeeting> usersInfoAll; // информация по всем пользователям
     private BadgeDrawable badgeDrawable; // для изменения количества непрочитанных сообщений
     private int countUnreads;
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
@@ -201,8 +201,8 @@ public class FragmentListMeetings extends Fragment {
                 .whereEqualTo("town", globalApp.GetRequestMeeting().getTown()) //совпадает город в запросе и в заявке партнера
                 ;
 
-        options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч
-        adapter = new FirestoreRecyclerAdapter<ModelSingleMeeting, FragmentListMeetings.SingleMeetingViewHolder>(options) { //показываем адаптеру класс одной встречи, вид встречи и подсовываем выборку из БД
+        options = new FirestoreRecyclerOptions.Builder<ModelMeeting>().setQuery(query, ModelMeeting.class).build(); // строим наполнение для списка встреч
+        adapter = new FirestoreRecyclerAdapter<ModelMeeting, FragmentListMeetings.SingleMeetingViewHolder>(options) { //показываем адаптеру класс одной встречи, вид встречи и подсовываем выборку из БД
             @NonNull
             @Override
             public FragmentListMeetings.SingleMeetingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { // метод когда создается одна ячейка списка, тут нужно знать как работает RecyclerView
@@ -213,7 +213,7 @@ public class FragmentListMeetings extends Fragment {
 
             // метод при обновлении данных
             @Override
-            protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) {
+            protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelMeeting model) {
 
                 DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД, один из списка
 

@@ -9,11 +9,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,25 +18,20 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.GlobalApp;
-import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.R;
 
 import java.util.Random;
@@ -48,7 +40,7 @@ import java.util.Random;
 public class FragmentModeration extends Fragment {
 
     private GlobalApp globalApp; //глобальный класс приложения, общий для всех компонентов
-    private ModelSingleMeeting randomMeeting; //рандомная заявка из всех непрошедших модерацию
+    private ModelMeeting randomMeeting; //рандомная заявка из всех непрошедших модерацию
 
     //виджеты
     private TextInputLayout til_name;
@@ -252,7 +244,7 @@ public class FragmentModeration extends Fragment {
 
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0); //получаем документ фаресторе
 
-                        randomMeeting = documentSnapshot.toObject(ModelSingleMeeting.class); //сериализация в класс
+                        randomMeeting = documentSnapshot.toObject(ModelMeeting.class); //сериализация в класс
 
                         UpdateUI(randomMeeting); //обновляем интерфейс пользователя
 
@@ -306,30 +298,30 @@ public class FragmentModeration extends Fragment {
 
     /**
      * Обновляет данные интерфейса пользователя
-     * @param modelSingleMeeting заявка на встречу
+     * @param modelMeeting заявка на встречу
      */
-    private void UpdateUI(ModelSingleMeeting modelSingleMeeting) {
+    private void UpdateUI(ModelMeeting modelMeeting) {
 
-        til_name_et.setText(modelSingleMeeting.getName());
-        til_age_et.setText(modelSingleMeeting.getAge());
-        til_phone_et.setText(modelSingleMeeting.getPhone());
+        til_name_et.setText(modelMeeting.getName());
+        til_age_et.setText(modelMeeting.getAge());
+        til_phone_et.setText(modelMeeting.getPhone());
 
-        if (modelSingleMeeting.getOnlyWrite().equals("trueTrue")) {
+        if (modelMeeting.getOnlyWrite().equals("trueTrue")) {
             cb_only_write.setChecked(true);
         } else {
             cb_only_write.setChecked(false);
         }
 
-        til_soc_net_et.setText(modelSingleMeeting.getSocNet());
+        til_soc_net_et.setText(modelMeeting.getSocNet());
         Linkify.addLinks(til_soc_net_et, Linkify.ALL); // для распознования ссылок
         til_soc_net_et.setLinkTextColor(Color.BLUE);
 
-        til_contact_et.setText(modelSingleMeeting.getContact());
-        til_region_et.setText(modelSingleMeeting.getRegion());
-        til_town_et.setText(modelSingleMeeting.getTown());
-        til_place_et.setText(modelSingleMeeting.CreateStringFromArrayListPlaces());
-        til_time_et.setText(modelSingleMeeting.getTime());
-        til_comment_et.setText(modelSingleMeeting.getComment());
+        til_contact_et.setText(modelMeeting.getContact());
+        til_region_et.setText(modelMeeting.getRegion());
+        til_town_et.setText(modelMeeting.getTown());
+        til_place_et.setText(modelMeeting.CreateStringFromArrayListPlaces());
+        til_time_et.setText(modelMeeting.getTime());
+        til_comment_et.setText(modelMeeting.getComment());
 
         ShowProgressBar(false);
 

@@ -15,7 +15,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.zizi.rendezvous.Data.Data;
-import com.zizi.rendezvous.Models.ModelSingleMeeting;
+import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.Models.ModelUser;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class GlobalApp extends Application {
 
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
     private String visibleWidget; // фрагмент или активити который в данный момент открыт
-    public ModelSingleMeeting requestMeeting; // заявка на встречу текущего пользователя
+    public ModelMeeting requestMeeting; // заявка на встречу текущего пользователя
     public ModelUser currentUser; // информация и настройки текущего пользователя
 
 
@@ -86,7 +86,7 @@ public class GlobalApp extends Application {
         //Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
         CreateNotificationChannel();
 
-        requestMeeting = new ModelSingleMeeting();
+        requestMeeting = new ModelMeeting();
 
         //LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
 
@@ -359,13 +359,13 @@ public class GlobalApp extends Application {
 
 
 
-    public ModelSingleMeeting GetRequestMeeting() {
+    public ModelMeeting GetRequestMeeting() {
         return requestMeeting;
     }
 
 
 
-    public void SetRequestMeeting(ModelSingleMeeting requestMeeting) {
+    public void SetRequestMeeting(ModelMeeting requestMeeting) {
         this.requestMeeting = requestMeeting;
     }
 
