@@ -38,7 +38,6 @@ public class GlobalApp extends Application {
     private FirebaseAuth firebaseAuth;
 
     private FirebaseDatabase firebaseDatabase; // БД Realtime Database
-    //private DatabaseReference databaseReference; //ссылка на данные в базе
     private Map<String, Object> msg; // сообщение в БД
 
     private FirebaseFirestore firebaseFirestore; // база данных
@@ -47,12 +46,7 @@ public class GlobalApp extends Application {
 
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
     private String visibleWidget; // фрагмент или активити который в данный момент открыт
-
-    /**
-     * Заявка на встречу текущего пользователя
-     */
-    private ModelSingleMeeting requestMeeting; // заявка на встречу текущего пользователя
-
+    public ModelSingleMeeting requestMeeting; // заявка на встречу текущего пользователя
     public ModelUser currentUser; // информация и настройки текущего пользователя
 
 

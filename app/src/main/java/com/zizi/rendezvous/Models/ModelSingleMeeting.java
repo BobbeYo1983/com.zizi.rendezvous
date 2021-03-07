@@ -248,6 +248,10 @@ public class ModelSingleMeeting {
         this.meetingID = meetingID;
     }
 
+    /**
+     * Отметить, пройдена или не пройдена модерация
+     * @param moderation true - пройдена
+     */
     public void setModeration(boolean moderation) {
         this.moderation = moderation;
     }

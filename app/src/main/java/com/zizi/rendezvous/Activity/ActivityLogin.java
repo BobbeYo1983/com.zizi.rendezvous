@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -22,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.zizi.rendezvous.Dialog;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.R;
@@ -40,7 +42,7 @@ public class ActivityLogin extends AppCompatActivity {
     private String password; // пароль пользователя
     private Map<String, Object> user; // коллекция ключ-значение для сохранения профиля в БД
     private FragmentManager fragmentManager; //менеджер фрагментов
-    private Dialog dialog; //класс для показа всплывающих окон
+    //private Dialog dialog; //класс для показа всплывающих окон
     private Display display; // для разрешения экрана
     private Point point; // для разрешения экрана
 
@@ -70,7 +72,7 @@ public class ActivityLogin extends AppCompatActivity {
         user = new HashMap<>(); // коллекция ключ-значение для сохранения профиля в БД
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         fragmentManager = getSupportFragmentManager();
-        dialog = new Dialog(); // класс для показа всплывающих окон
+        //dialog = new Dialog(); // класс для показа всплывающих окон
         point = new Point();
         //==========================================================================================
 
@@ -243,10 +245,30 @@ public class ActivityLogin extends AppCompatActivity {
                                 if (exceptionMessage.contains(error.getKey())) { //если в тексте исключения есть ошибка из словаря
                                     switch (error.getValue()) {
                                         case 0:
+                                            //Покажем пользователю сообщение/////////////////////////////
+                                            new AlertDialog.Builder(ActivityLogin.this)
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle("Ошибка входа")
+                                                    .setMessage("Много неуспешных попыток входа. Повторите вход позже.")
+                                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                                    //.setNegativeButton("No", null)
+                                                    .show();
+                                            //===============================================================================
+
+
+
                                             //показываем всплывающее окно
-                                            dialog.setTitle("Ошибка входа");
-                                            dialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
-                                            dialog.show(fragmentManager, "classDialog");
+                                            //dialog.setTitle("Ошибка входа");
+                                            //dialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
+                                            //dialog.show(fragmentManager, "classDialog");
+
+
+
                                             break;
                                         case 1:
                                             til_password.setError("Неверный пароль.");
@@ -258,28 +280,98 @@ public class ActivityLogin extends AppCompatActivity {
                                             til_email.setError("Нет пользователя с таким email. Возможно он был удален.");
                                             break;
                                         case 4:
+                                            //Покажем пользователю сообщение/////////////////////////////
+                                            new AlertDialog.Builder(ActivityLogin.this)
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle("Ошибка входа")
+                                                    .setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.")
+                                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                                    //.setNegativeButton("No", null)
+                                                    .show();
+                                            //===============================================================================
+
+
                                             //показываем всплывающее окно
-                                            dialog.setTitle("Ошибка входа");
-                                            dialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
-                                            dialog.show(fragmentManager, "classDialog");
+                                            //dialog.setTitle("Ошибка входа");
+                                            //dialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
+                                            //dialog.show(fragmentManager, "classDialog");
+
                                             break;
                                         case 5:
+                                            //Покажем пользователю сообщение////////////////////////////////////////////////
+                                            new AlertDialog.Builder(ActivityLogin.this)
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle("Ошибка входа")
+                                                    .setMessage("Нет подключения к интернет, возможно интернет не доступен.")
+                                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                                    //.setNegativeButton("No", null)
+                                                    .show();
+                                            //===============================================================================
+
+
+
                                             //показываем всплывающее окно
-                                            dialog.setTitle("Ошибка входа");
-                                            dialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
-                                            dialog.show(fragmentManager, "classDialog");
+                                            //dialog.setTitle("Ошибка входа");
+                                            //dialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
+                                            //dialog.show(fragmentManager, "classDialog");
+
                                             break;
                                         case 6:
+                                            //Покажем пользователю сообщение////////////////////////////////////////////////
+                                            new AlertDialog.Builder(ActivityLogin.this)
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle("Ошибка входа")
+                                                    .setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.")
+                                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                                    //.setNegativeButton("No", null)
+                                                    .show();
+                                            //===============================================================================
+
+
+
                                             //показываем всплывающее окно
-                                            dialog.setTitle("Ошибка входа");
-                                            dialog.setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.");
-                                            dialog.show(fragmentManager, "classDialog");
+                                            //dialog.setTitle("Ошибка входа");
+                                            //dialog.setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.");
+                                            //dialog.show(fragmentManager, "classDialog");
+
                                             break;
                                         default:
+                                            //Покажем пользователю сообщение////////////////////////////////////////////////
+                                            new AlertDialog.Builder(ActivityLogin.this)
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .setTitle("Ошибка входа")
+                                                    .setMessage("Ошибка при входе пользователя: " + exceptionMessage)
+                                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                                    //.setNegativeButton("No", null)
+                                                    .show();
+                                            //===============================================================================
+
+
+
                                             //показываем пользователю
-                                            dialog.setTitle("Ошибка входа");
-                                            dialog.setMessage("Ошибка при входе пользователя: " + exceptionMessage);
-                                            dialog.show(fragmentManager, "classDialog");
+                                            //dialog.setTitle("Ошибка входа");
+                                            //dialog.setMessage("Ошибка при входе пользователя: " + exceptionMessage);
+                                            //dialog.show(fragmentManager, "classDialog");
 
                                             //добавляем в лог и в БД
                                             globalApp.Log("ActivityLogin",
@@ -289,10 +381,8 @@ public class ActivityLogin extends AppCompatActivity {
                                             );
                                             break;
                                     }
-                                    //break;
                                 }
                             }
-
                         }
                     }
                 });
@@ -313,6 +403,7 @@ public class ActivityLogin extends AppCompatActivity {
         globalApp.Log("ActivityLogin", "onStart/Registration", "Метод запущен.", false);
         if (!email.equals("")){ // если поля почты и пароля не пустые, то пытаемся делать регистрацию
             if (password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")) {//если пароль соответствует политике
+                //! разъяснения
                 //^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$
                 //^                 # start-of-string
                 //(?=.*[0-9])       # a digit must occur at least once
@@ -330,8 +421,9 @@ public class ActivityLogin extends AppCompatActivity {
                         SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача регистрации выполнена успешно, то юзер автоматои и авторизируется
-                            //SaveProfile();
+
                             LoadProfileToRAM(); // загружаем профайл в оперативку
+
                         } else { // если регистрация не успешна
 
                             SetVisibilityViews(true); //показываем вьюхи
@@ -346,11 +438,26 @@ public class ActivityLogin extends AppCompatActivity {
                                     break;
 
                                 default:
+                                    //Покажем пользователю сообщение////////////////////////////////////////////////
+                                    new AlertDialog.Builder(ActivityLogin.this)
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle("Ошибка регистрации")
+                                            .setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage())
+                                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.cancel();
+                                                }
+                                            })
+                                            //.setNegativeButton("No", null)
+                                            .show();
+                                    //===============================================================================
+
 
                                     //показываем пользователю
-                                    dialog.setTitle("Ошибка регистрации");
-                                    dialog.setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage());
-                                    dialog.show(fragmentManager, "classDialog");
+                                    //dialog.setTitle("Ошибка регистрации");
+                                    //dialog.setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage());
+                                    //dialog.show(fragmentManager, "classDialog");
 
                                     //добавляем в лог и в БД
                                     globalApp.Log("ActivityLogin",
@@ -381,19 +488,6 @@ public class ActivityLogin extends AppCompatActivity {
     public void SaveProfile (){
         globalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
-        //готовим коллекцию профайла пользователя для сохранениния
-        //user.put("email", classGlobalApp.GetCurrentUserEmail());
-        //user.put("userID", classGlobalApp.GetCurrentUserUid());
-        //user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
-
-        //display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
-        //display.getSize(point); // получаем расширение экрана
-        //classGlobalApp.Log(getClass().getSimpleName(), "SaveProfile", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
-
-        //user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
-
-        //LoadProfileToRAM();
-
         //сохраняем в профайл пользователя в БД
         documentReference = globalApp.GenerateDocumentReference("users", globalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.set(globalApp.currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -409,10 +503,25 @@ public class ActivityLogin extends AppCompatActivity {
 
                     globalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), true);
 
+                    //Покажем пользователю сообщение////////////////////////////////////////////////
+                    new AlertDialog.Builder(ActivityLogin.this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка входа")
+                            .setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException())
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+
                     //показываем всплывающее окно
-                    dialog.setTitle("Ошибка входа");
-                    dialog.setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException());
-                    dialog.show(fragmentManager, "classDialog");
+                    //dialog.setTitle("Ошибка входа");
+                    //dialog.setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException());
+                    //dialog.show(fragmentManager, "classDialog");
 
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);
@@ -469,10 +578,26 @@ public class ActivityLogin extends AppCompatActivity {
 
                     globalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter/onComplete", "Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException(), true);
 
+                    //Покажем пользователю сообщение////////////////////////////////////////////////
+                    new AlertDialog.Builder(ActivityLogin.this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка входа")
+                            .setMessage("Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException())
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+
+
                     //показываем всплывающее окно
-                    dialog.setTitle("Ошибка входа");
-                    dialog.setMessage("Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException());
-                    dialog.show(fragmentManager, "classDialog");
+                    //dialog.setTitle("Ошибка входа");
+                    //dialog.setMessage("Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException());
+                    //dialog.show(fragmentManager, "classDialog");
 
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);

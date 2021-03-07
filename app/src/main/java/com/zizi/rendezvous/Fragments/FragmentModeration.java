@@ -48,6 +48,7 @@ import java.util.Random;
 public class FragmentModeration extends Fragment {
 
     private GlobalApp globalApp; //глобальный класс приложения, общий для всех компонентов
+    private ModelSingleMeeting randomMeeting; //рандомная заявка из всех непрошедших модерацию
 
     //виджеты
     private TextInputLayout til_name;
@@ -134,6 +135,7 @@ public class FragmentModeration extends Fragment {
         //==========================================================================================
 
 
+
         // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +162,41 @@ public class FragmentModeration extends Fragment {
         bAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
+
+                randomMeeting.setModeration(true); //отмечаем, что модерация пройдена
+                DocumentReference documentReference = globalApp.GenerateDocumentReference("meetings", randomMeeting.getUserID()); //ссылка на заявку текущего пользователя
+                documentReference.set(randomMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //записываем в БД
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) { //если запись успешна
+
+                            ReadRandomMeeting(); //читаем следующую случайную неморерированую заявку
+
+                        } else { //если запись не
+
+                            globalApp.Log(getClass().getSimpleName(), "bAccept.setOnClickListener",
+                                    "Ошибка записи отметки об успешной модерации в БД: " + task.getException(), true);
+
+                            //Покажем пользователю сообщение/////////////////////////////
+                            new AlertDialog.Builder(getContext())
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("Ошибка записи в БД")
+                                    .setMessage("Ошибка записи отметки об успешной модерации в БД, повторите попытку еще раз.")
+                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    //.setNegativeButton("No", null)
+                                    .show();
+                            //===============================================================================
+                        }
+
+                    }
+                });
+
+
             }
         });
         //==========================================================================================
@@ -216,7 +252,7 @@ public class FragmentModeration extends Fragment {
 
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0); //получаем документ фаресторе
 
-                        ModelSingleMeeting randomMeeting = documentSnapshot.toObject(ModelSingleMeeting.class); //сериализация в класс
+                        randomMeeting = documentSnapshot.toObject(ModelSingleMeeting.class); //сериализация в класс
 
                         UpdateUI(randomMeeting); //обновляем интерфейс пользователя
 

@@ -10,10 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -24,7 +25,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.zizi.rendezvous.Dialog;
 import com.zizi.rendezvous.Fragments.FragmentAbout;
 import com.zizi.rendezvous.Fragments.FragmentAdmin;
 import com.zizi.rendezvous.GlobalApp;
@@ -48,7 +48,7 @@ public class ActivityMeetings extends AppCompatActivity {
     //private Fragment fragmentListChats; // текущий фрагмент
     private DocumentReference documentReference; // ссылка на документ
     //private Map<String, Object> mapDocument; //Документ с информацией о встрече
-    private Dialog dialog; //класс для показа всплывающих окон
+    //private Dialog dialog; //класс для показа всплывающих окон
     private ActionBarDrawerToggle  actionBarDrawerToggle;
 
     private DrawerLayout drawerLayout; //шторка меню слева
@@ -73,7 +73,7 @@ public class ActivityMeetings extends AppCompatActivity {
         Fragment fragmentChat = new FragmentChat();
         //fragmentListChats = new FragmentListChats();
         //mapDocument = new HashMap<String, Object>();
-        dialog = new Dialog(); // класс для показа всплывающих окон
+        //dialog = new Dialog(); // класс для показа всплывающих окон
 
         //ищем нужные элементы
         materialToolbar = findViewById(R.id.material_toolbar); // верхняя панель с кнопками
@@ -281,7 +281,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
     /**
-     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в глобальную переменную requestMeetingCurrentUser, если нет, в нее же null
+     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в переменную глобального класса requestMeetingCurrentUser, если нет, в нее же null
      */
     private void GetRequestMeetingFromDB() {
 
@@ -320,11 +320,33 @@ public class ActivityMeetings extends AppCompatActivity {
 
                     globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Ошибка чтения БД: " + task.getException(), true);
 
+                    //Показать сообщение пользователю ///////////////////////////////////////////////
+                    new AlertDialog.Builder(ActivityMeetings.this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка чтения БД")
+                            .setMessage("Ошибка проверки статуса заявки на встречу пользователя, попробуйте войти позже. Подробности ошибки: " + task.getException())
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    //создаем намерение, что хотим перейти на другую активити
+                                    Intent intent = new Intent(getApplicationContext(), ActivityLogin.class);
+                                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                                            |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                                            );
+
+                                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+
                     //показываем всплывающее окно
-                    dialog.setTitle("Ошибка чтения БД");
-                    dialog.setMessage("Ошибка проверки статуса заявки на встречу пользователя, попробуйте войти позже. Подробности ошибки: " + task.getException());
-                    dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
-                    dialog.show(fragmentManager, "classDialog");
+                    //dialog.setTitle("Ошибка чтения БД");
+                    //dialog.setMessage("Ошибка проверки статуса заявки на встречу пользователя, попробуйте войти позже. Подробности ошибки: " + task.getException());
+                    //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
+                    //dialog.show(fragmentManager, "classDialog");
 
                 }
             }

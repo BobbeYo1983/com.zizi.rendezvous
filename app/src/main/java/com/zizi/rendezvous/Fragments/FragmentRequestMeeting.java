@@ -1,5 +1,7 @@
 package com.zizi.rendezvous.Fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -30,7 +32,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.Activity.ActivityMeetings;
 import com.zizi.rendezvous.Activity.ActivityPay;
-import com.zizi.rendezvous.Dialog;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.R;
@@ -46,8 +47,8 @@ public class FragmentRequestMeeting extends Fragment {
     private FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     private FragmentPlace fragmentPlace; // фрагмент с выбором места
     private ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
-    private Dialog dialog; //класс для показа всплывающих окон
-    private FragmentManager fragmentManager; // для управления показом компонентов
+  //  private Dialog dialog; //класс для показа всплывающих окон
+    //private FragmentManager fragmentManager; // для управления показом компонентов
 
     //виджеты
     private MaterialToolbar materialToolbar; // верхняя панелька
@@ -103,8 +104,8 @@ public class FragmentRequestMeeting extends Fragment {
         activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
-        dialog = new Dialog(); // класс для показа всплывающих окон
-        fragmentManager = getActivity().getSupportFragmentManager();
+        //dialog = new Dialog(); // класс для показа всплывающих окон
+        //fragmentManager = getActivity().getSupportFragmentManager();
 
         // находим все вьюхи на активити
         til_name = getActivity().findViewById(R.id.til_name);
@@ -542,11 +543,34 @@ public class FragmentRequestMeeting extends Fragment {
 
                                     globalApp.Log(getClass().getSimpleName(), "UpdateUI/onComplete", "Ошибка при подаче заявки. Ошибка записи заявки в БД: " + task.getException(), true);
 
+                                    //Показать сообщение пользователю ///////////////////////////////////////////////
+                                    new AlertDialog.Builder(getContext()) //в фрагментах getContext(), в активити ActivityName.this
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle("Ошибка записи в БД")
+                                            .setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException())
+                                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    //создаем намерение, что хотим перейти на другую активити
+                                                    Intent intent = new Intent(getActivity().getApplicationContext(), ActivityLogin.class);
+                                                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                                                            |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                                                    );
+
+                                                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+                                                }
+                                            })
+                                            //.setNegativeButton("No", null)
+                                            .show();
+                                    //===============================================================================
+
+
                                     //показываем всплывающее окно
-                                    dialog.setTitle("Ошибка записи в БД");
-                                    dialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
-                                    dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
-                                    dialog.show(fragmentManager, "classDialog");
+                                    //dialog.setTitle("Ошибка записи в БД");
+                                    //dialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
+                                    //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
+                                    //dialog.show(fragmentManager, "classDialog");
 
                                 }
 
@@ -607,10 +631,25 @@ public class FragmentRequestMeeting extends Fragment {
                         til_time.setError("Выберите время встречи");
                     }
 
+                    //Покажем пользователю сообщение/////////////////////////////////////////////////
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Заполните все поля")
+                            .setMessage("Заполните обязательные поля выделенные красным цветом")
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+
                     //Toast.makeText(getActivity().getApplicationContext(), "Заполните обязательные поля выделенные красным цветом", Toast.LENGTH_LONG).show();
-                    dialog.setTitle("Заполните все поля");
-                    dialog.setMessage("Заполните обязательные поля выделенные красным цветом");
-                    dialog.show(fragmentManager, "classDialog");
+                    //dialog.setTitle("Заполните все поля");
+                    //dialog.setMessage("Заполните обязательные поля выделенные красным цветом");
+                    //dialog.show(fragmentManager, "classDialog");
 
                 }
 
