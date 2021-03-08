@@ -168,81 +168,88 @@ public class FragmentRequestMeeting extends Fragment {
 
                 ) { // Если поля все введены корректно
 
-                    //нужно проверить есть ли бесплатные заявки
-                    int countRequestMeetings = Integer.valueOf(globalApp.currentUser.getCountRequestMeetings());
-                    globalApp.Log(getClass().getSimpleName(), "btn_apply_request.setOnClickListener", "Количество бесплатных заявок = " + countRequestMeetings, false);
-                    if (countRequestMeetings > 0) {
-
-                        CheckModeration(); //проверка на модерацию
-
-                        globalApp.requestMeeting.setStatus(Data.STATUS_ACTIVE);
-
-                        SaveParamsToRAM(); // сохранение в оперативную память
-
-                        // сохраняем заявку в БД
-                        documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid());
-                        documentReference.set(globalApp.requestMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) { //если задачка по работе с БД выполнилась
-                                if (task.isSuccessful()) { //если задача по работе с БД выполнилась успешно
-
-                                    globalApp.SaveRequestMeetingToMemory(); // сохраняем заявку в память
-
-                                    //globalApp.PreparingToSave("statusRequestMeeting", Data.STATUS_ACTIVE); // отмечаем статус заявки активным
-                                    //globalApp.SaveParams();
-
-                                    DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в профиль в БД
-
-                                    activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
-
-                                } else { //если задача по работе с БД выполнилась не успешно
-
-                                    globalApp.Log(getClass().getSimpleName(), "UpdateUI/onComplete", "Ошибка при подаче заявки. Ошибка записи заявки в БД: " + task.getException(), true);
-
-                                    //Показать сообщение пользователю ///////////////////////////////////////////////
-                                    new AlertDialog.Builder(getContext()) //в фрагментах getContext(), в активити ActivityName.this
-                                            .setIcon(android.R.drawable.ic_dialog_alert)
-                                            .setTitle("Ошибка записи в БД")
-                                            .setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException())
-                                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                    //создаем намерение, что хотим перейти на другую активити
-                                                    Intent intent = new Intent(getActivity().getApplicationContext(), ActivityLogin.class);
-                                                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
-                                                            |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
-                                                    );
-
-                                                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
-                                                }
-                                            })
-                                            //.setNegativeButton("No", null)
-                                            .show();
-                                    //===============================================================================
+                    if(globalApp.currentUser.isAcceptRules() == true) { //если правила приняты, то двигаемся дальше
 
 
-                                    //показываем всплывающее окно
-                                    //dialog.setTitle("Ошибка записи в БД");
-                                    //dialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
-                                    //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
-                                    //dialog.show(fragmentManager, "classDialog");
+                        //нужно проверить есть ли бесплатные заявки
+                        int countRequestMeetings = Integer.valueOf(globalApp.currentUser.getCountRequestMeetings());
+                        globalApp.Log(getClass().getSimpleName(), "btn_apply_request.setOnClickListener", "Количество бесплатных заявок = " + countRequestMeetings, false);
+                        if (countRequestMeetings > 0) {
+
+                            CheckModeration(); //проверка на модерацию
+
+                            globalApp.requestMeeting.setStatus(Data.STATUS_ACTIVE);
+
+                            SaveParamsToRAM(); // сохранение в оперативную память
+
+                            // сохраняем заявку в БД
+                            documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid());
+                            documentReference.set(globalApp.requestMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //прям объект класса кидаем в БД
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) { //если задачка по работе с БД выполнилась
+                                    if (task.isSuccessful()) { //если задача по работе с БД выполнилась успешно
+
+                                        globalApp.SaveRequestMeetingToMemory(); // сохраняем заявку в память
+
+                                        //globalApp.PreparingToSave("statusRequestMeeting", Data.STATUS_ACTIVE); // отмечаем статус заявки активным
+                                        //globalApp.SaveParams();
+
+                                        DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в профиль в БД
+
+                                        activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
+
+                                    } else { //если задача по работе с БД выполнилась не успешно
+
+                                        globalApp.Log(getClass().getSimpleName(), "UpdateUI/onComplete", "Ошибка при подаче заявки. Ошибка записи заявки в БД: " + task.getException(), true);
+
+                                        //Показать сообщение пользователю ///////////////////////////////////////////////
+                                        new AlertDialog.Builder(getContext()) //в фрагментах getContext(), в активити ActivityName.this
+                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                .setTitle("Ошибка записи в БД")
+                                                .setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException())
+                                                .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        //создаем намерение, что хотим перейти на другую активити
+                                                        Intent intent = new Intent(getActivity().getApplicationContext(), ActivityLogin.class);
+                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                                                                | Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                                                        );
+
+                                                        startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+                                                    }
+                                                })
+                                                //.setNegativeButton("No", null)
+                                                .show();
+                                        //===============================================================================
+
+
+                                        //показываем всплывающее окно
+                                        //dialog.setTitle("Ошибка записи в БД");
+                                        //dialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
+                                        //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
+                                        //dialog.show(fragmentManager, "classDialog");
+
+                                    }
 
                                 }
+                            });
+                        } else { //если бесплатные заявки закончились
 
-                            }
-                        });
-                    } else { //если бесплатные заявки закончились
+                            //Перейти на страничку с оплатой
+                            //создаем намерение, что хотим перейти на другую активити
+                            Intent intent = new Intent(getActivity().getApplicationContext(), ActivityPay.class);
+                            //intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                            //                  |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                            //                );
 
-                        //Перейти на страничку с оплатой
-                        //создаем намерение, что хотим перейти на другую активити
-                        Intent intent = new Intent(getActivity().getApplicationContext(), ActivityPay.class);
-                        //intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
-                        //                  |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
-                        //                );
+                            startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
 
-                        startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+                        }
+                    } else { //если правила приложения НЕ приняты
 
+                        activityMeetings.ChangeFragment(new FragmentRegulations(), false); //переходим на фрагмент с правилами
                     }
 
                 } else {// если одно из обязательных полей не заполнено в заявке

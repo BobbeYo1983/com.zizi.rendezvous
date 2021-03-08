@@ -619,6 +619,7 @@ public class ActivityLogin extends AppCompatActivity {
         globalApp.SaveParams(); // сохраним на устройство для автовхода
 
 
+
         //создаем намерение, что хотим перейти на другую активити
         Intent intent = new Intent(ActivityLogin.this, ActivityMeetings.class);
         intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей

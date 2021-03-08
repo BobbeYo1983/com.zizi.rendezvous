@@ -11,6 +11,7 @@ public class ModelUser {
     private String tokenDevice; //уникальный ключ девайса
     private String screenExtension; //расширение экрана
     private String countRequestMeetings; // оставшееся количество бесплатных заявок
+    private boolean acceptRules; //принял ли пользователь правила
 
     public String getEmail() {
         return email;
@@ -63,6 +64,13 @@ public class ModelUser {
         this.countRequestMeetings = countRequestMeetings;
     }
 
+    public boolean isAcceptRules() {
+        return acceptRules;
+    }
+
+    public void setAcceptRules(boolean acceptRules) {
+        this.acceptRules = acceptRules;
+    }
 
 
 }
