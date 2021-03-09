@@ -125,9 +125,6 @@ public class FragmentModeration extends Fragment {
         // materialToolbar //////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Модерация"); // заголовок чата
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой
-        //==========================================================================================
-
-
 
         // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -141,6 +138,7 @@ public class FragmentModeration extends Fragment {
 
 
         //bReject///////////////////////////////////////////////////////////////////////////////////
+        //отклонение заявки
         bReject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,6 +183,7 @@ public class FragmentModeration extends Fragment {
 
 
         //bAccept///////////////////////////////////////////////////////////////////////////////////
+        //принятие заявки
         bAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

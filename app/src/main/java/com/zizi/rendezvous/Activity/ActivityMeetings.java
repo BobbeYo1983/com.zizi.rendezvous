@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.zizi.rendezvous.Fragments.FragmentAbout;
 import com.zizi.rendezvous.Fragments.FragmentAdmin;
+import com.zizi.rendezvous.Fragments.FragmentRegulations;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.Fragments.FragmentChat;
@@ -343,6 +344,7 @@ public class ActivityMeetings extends AppCompatActivity {
                     //globalApp.PreparingToSave("statusRequestMeeting", Data.STATUS_NOT_ACTIVE); // отмечаем статус заявки неактивным
                     //globalApp.SaveParams(); // сохраняем в девайс
 
+                    //TODO сюда попали по ошибке, когда пользователя направляем на фрагмент с заявкой, нужно что-то сообщить ему, показать сообщение
                     ChangeFragment(fragmentRequestMeeting, false); // показываем заявку
 
                 }
@@ -373,7 +375,10 @@ public class ActivityMeetings extends AppCompatActivity {
                 //TODO направить на фрагмент с правилами и разъяснить пользователю
                 globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки STATUS_MODERATION_FAIL, нужно предупредить пользователя", false);
 
-                ChangeFragment(fragmentRequestMeeting, false); // показываем заявку на встречу
+                globalApp.ClearBundle();
+                globalApp.AddBundle("moderation", "false"); //отмечаем, что модерация не пройдена
+
+                ChangeFragment(new FragmentRegulations(), false); // показываем заявку на встречу
 
                 break;
 

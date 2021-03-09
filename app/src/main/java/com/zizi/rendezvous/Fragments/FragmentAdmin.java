@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -32,11 +34,13 @@ public class FragmentAdmin extends Fragment {
 
     private GlobalApp globalApp; // глобальный класс приложения
     private ActivityMeetings activityMeetings; //Активити со встречами
+    private boolean tietCountMeetingsIsUpdate; // поле обновлено/вычитано из БД
 
+    //виджеты
     private MaterialToolbar materialToolbar; // верхняя панелька
     private ProgressBar progressBar; //крутилка
+    private DrawerLayout drawerLayout; //шторка меню слева
     private TextInputEditText tietCountMeetings; //количество активных заявок на встречи
-    private boolean tietCountMeetingsIsUpdate; // поле обновлено/вычитано из БД
     private Button bModeration; //кнопка с модерацией
 
 
@@ -66,6 +70,7 @@ public class FragmentAdmin extends Fragment {
         progressBar = getActivity().findViewById(R.id.progressBar);
         tietCountMeetings = getActivity().findViewById(R.id.tietCountMeetings);
         bModeration = getActivity().findViewById(R.id.bModeration);
+        drawerLayout = getActivity().findViewById(R.id.drawerLayout); //слой левой шторки
 
 
 
@@ -77,7 +82,16 @@ public class FragmentAdmin extends Fragment {
 
         // materialToolbar /////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle(globalApp.GetBundle("title")); //устанавливаем название из аргументов
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
+        // событие при клике на кнопку навигации/гамбургер на верхней панельке
+        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
         //==========================================================================================
 
         ShowProgressBar(true);//показать экран ожидания

@@ -676,6 +676,11 @@ public class FragmentRequestMeeting extends Fragment {
         svRequestMeeting.setVisibility(View.VISIBLE); // Показываем UI
         pbRequestMeeting.setVisibility(View.GONE); // крутилку скрываем
 
+        //дальше нужно показать диалоги пользователю, если нужно
+        //if (globalApp.GetBundle("moderation").equals("false")) { //если заявка пользователя отклонена на модерации, то показать правила
+
+        //}
+
     }
 
 
