@@ -8,20 +8,57 @@ public class Data {
     public static final String channelID = "Сообщения";
     public static final String tagLog = "!@#";
     public static final String FRAGMENT_CHAT = "FragmentChat";
+    public static final String OTHER = "Прочее";
+    public static final String DEFAULT_COUNT_REQUEST_MEETINGS = "31"; // количество бесплатных встреч по умолчанию
 
     //статусы заявки на встречу
     public static final String STATUS_ACTIVE = "STATUS_ACTIVE";
     public static final String STATUS_NOT_ACTIVE = "STATUS_NOT_ACTIVE";
     public static final String STATUS_MODERATION_FAIL = "STATUS_MODERATION_FAIL";
 
-    public static final String OTHER = "Прочее";
-    public static final String DEFAULT_COUNT_REQUEST_MEETINGS = "31"; // количество бесплатных встреч по умолчанию
 
+
+    //массив с временами
+    public static final String[] times = new String[]{
+            //"Любое время",
+            anyTime,
+            "Сейчас",
+            "00:00",
+            "01:00",
+            "02:00",
+            "03:00",
+            "04:00",
+            "05:00",
+            "06:00",
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
+            "22:00",
+            "23:00"
+    };
+
+
+
+    //описание регионов временное, пока приложение на стартапе
     public static final String[] regionsTmp = new String[]{
         "Нижегородская область",
         "Республика Мордовия"
     };
 
+
+    //список всех регионов
     public static final String[] regions = new String[]{
         "Алтайский край",
         "Амурская область",
@@ -112,6 +149,9 @@ public class Data {
 
     };
 
+
+
+    //Республика Мордовия - список городов
     public static final String[] theRepublicOfMordovia = new String[]{
         "Ардатов",
         "Инсар",
@@ -123,6 +163,9 @@ public class Data {
 
     };
 
+
+
+    //Нижегородская область - список городов
     public static final String[] nizhnyNovgorodRegion = new String[]{
         "Арзамас",
         "Балахна",
@@ -154,34 +197,6 @@ public class Data {
         "Шахунья"
     };
 
-    public static final String[] times = new String[]{
-        //"Любое время",
-        anyTime,
-        "Сейчас",
-        "00:00",
-        "01:00",
-        "02:00",
-        "03:00",
-        "04:00",
-        "05:00",
-        "06:00",
-        "07:00",
-        "08:00",
-        "09:00",
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-        "18:00",
-        "19:00",
-        "20:00",
-        "21:00",
-        "22:00",
-        "23:00"
-    };
+
 
 }

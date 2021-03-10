@@ -49,7 +49,6 @@ public class FragmentListMeetings extends Fragment {
     //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////
     private GlobalApp globalApp; //глобальный класс приложения, общий для всех компонентов
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
-    private FirebaseFirestore firebaseFirestore; // база данных
     private RecyclerView recyclerView; // список со встречами
     private Query query; // запрос к БД
     private FirestoreRecyclerOptions<ModelMeeting> options; // штука для построения контента для списка встречь из БД
@@ -63,7 +62,6 @@ public class FragmentListMeetings extends Fragment {
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
-    //private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
     private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
     //!private ArrayList<?> arrayListPlaces; //сюда вычитывать массив с местами будем
 
@@ -73,7 +71,7 @@ public class FragmentListMeetings extends Fragment {
     private DrawerLayout drawerLayout; //шторка меню слева
 
     public FragmentListMeetings() {
-        // Required empty public constructor
+        //! Required empty public constructor
     }
 
 
@@ -116,8 +114,6 @@ public class FragmentListMeetings extends Fragment {
         //инициализация ////////////////////////////////////////////////////////////////////////////
         globalApp = (GlobalApp) getActivity().getApplicationContext();
         globalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
-        firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
-        //firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         userInfo = new HashMap<>(); // коллекция ключ-значение для описания встречи
         usersInfoAll = new ArrayList<>(); // информация по всем пользователям
         fragmentListChats = new FragmentListChats(); //фрагмент с чатами
@@ -131,6 +127,23 @@ public class FragmentListMeetings extends Fragment {
         activityMeetings = (ActivityMeetings)getActivity();
         materialToolbar = getActivity().findViewById(R.id.material_toolbar);
         drawerLayout = getActivity().findViewById(R.id.drawerLayout); //слой левой шторки
+        //==========================================================================================
+
+
+
+        // materialToolbar /////////////////////////////////////////////////////////////////////////
+        materialToolbar.setTitle("Встречи");
+        materialToolbar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой
+
+        // событие при клике на кнопку навигации/гамбургер на верхней панельке
+        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
         //==========================================================================================
 
 
@@ -170,22 +183,6 @@ public class FragmentListMeetings extends Fragment {
             }
         });
         //============================================================================================
-
-
-        // materialToolbar ////////////////////////////////////////////////////////////////////////////////
-        materialToolbar.setTitle("Встречи");
-        materialToolbar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
-        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой
-
-        // событие при клике на кнопку навигации/гамбургер на верхней панельке
-        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
-        //==========================================================================================
 
 
 

@@ -33,6 +33,7 @@ import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Models.ModelMeeting;
+import com.zizi.rendezvous.Models.ModelUser;
 import com.zizi.rendezvous.R;
 
 import java.util.Random;
@@ -42,6 +43,7 @@ public class FragmentModeration extends Fragment {
 
     private GlobalApp globalApp; //глобальный класс приложения, общий для всех компонентов
     private ModelMeeting randomMeeting; //рандомная заявка из всех непрошедших модерацию
+    private ModelUser randomUserProfile; //профайл пользователя заявки, случайным образом выбранной из БД
 
     //виджеты
     private TextInputLayout til_name;
@@ -120,7 +122,7 @@ public class FragmentModeration extends Fragment {
         progressBar = getActivity().findViewById(R.id.progressBar);
         scrollView = getActivity().findViewById(R.id.scrollViewFragmentModeration);
 
-        //ShowProgressBar(true);
+
 
         // materialToolbar //////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Модерация"); // заголовок чата
@@ -143,38 +145,9 @@ public class FragmentModeration extends Fragment {
             @Override
             public void onClick(View v) {
 
-                randomMeeting.setStatus(Data.STATUS_MODERATION_FAIL); //делаем статус, что заявка не прошла модерацию
-                DocumentReference documentReference = globalApp.GenerateDocumentReference("meetings", randomMeeting.getUserID()); //ссылка на заявку текущего пользователя
-                documentReference.set(randomMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //записываем в БД
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) { //если запись успешна
+                ShowProgressBar(false); // показываем прогрессбар
 
-                            ReadRandomMeeting(); //читаем следующую случайную неморерированую заявку
-
-                        } else { //если запись не
-
-                            globalApp.Log(getClass().getSimpleName(), "bAccept.setOnClickListener",
-                                    "Ошибка записи статуса заявки о НЕУСПЕШНОЙ модерации в БД: " + task.getException(), true);
-
-                            //Покажем пользователю сообщение/////////////////////////////
-                            new AlertDialog.Builder(getContext())
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle("Ошибка записи в БД")
-                                    .setMessage("Ошибка записи статуса заявки о неуспешной модерации в БД, повторите попытку еще раз.")
-                                    .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    })
-                                    //.setNegativeButton("No", null)
-                                    .show();
-                            //===============================================================================
-                        }
-
-                    }
-                });
+                setAccepRulesFalse(); //пусть пользователь еще раз знакомится с правилами
 
             }
         });
@@ -226,6 +199,83 @@ public class FragmentModeration extends Fragment {
 
     }
 
+
+
+    /** Устанавливает статус хаявки, как не прошедший модерацию*/
+    private void setStatusModerationFail() {
+
+        //делаем статус у заявки, что не прошла модерацию
+        randomMeeting.setStatus(Data.STATUS_MODERATION_FAIL); //делаем статус, что заявка не прошла модерацию
+        DocumentReference documentReference = globalApp.GenerateDocumentReference("meetings", randomMeeting.getUserID()); //ссылка на заявку текущего пользователя
+        documentReference.set(randomMeeting).addOnCompleteListener(new OnCompleteListener<Void>() { //записываем в БД
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) { //если запись успешна
+
+                    ReadRandomMeeting(); //читаем следующую случайную неморерированую заявку
+
+                } else { //если запись не
+
+                    globalApp.Log(getClass().getSimpleName(), "bAccept.setOnClickListener",
+                            "Ошибка записи статуса заявки о НЕУСПЕШНОЙ модерации в БД: " + task.getException(), true);
+
+                    //Покажем пользователю сообщение/////////////////////////////
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка записи в БД")
+                            .setMessage("Ошибка записи статуса заявки о неуспешной модерации в БД, повторите попытку еще раз.")
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+                }
+
+            }
+        });
+    }
+
+    /** Отмечает в профайле пользователя, что он не ознакомлен с правилами, чтобы он ознакомился еще раз*/
+    private void setAccepRulesFalse() {
+        //убираем отметку, что правила были приняты, чтобы пользователь их принял по новой
+        randomUserProfile.setAcceptRules(false);
+        DocumentReference documentReference = globalApp.GenerateDocumentReference("users", randomUserProfile.getUserID()); //ссылка на документ с профелем пользователя
+        documentReference.set(randomUserProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){ //если запись в БД успешна
+
+                    setStatusModerationFail(); //делаем стутус заявке пользователя, как не прошедшая модерацию
+
+                } else { //если запись в БД не успешна
+
+                    globalApp.Log(getClass().getSimpleName(), "bAccept.setOnClickListener",
+                            "Ошибка записи в БД отметки, о том, что пользователь должен опять ознакомиться с правилами: " + task.getException(), true);
+
+                    //Покажем пользователю сообщение/////////////////////////////
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка записи в БД")
+                            .setMessage("Ошибка записи в БД отметки, о том, что пользователь должен опять ознакомиться с правилами, повторите попытку еще раз.")
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+
+                }
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -233,10 +283,10 @@ public class FragmentModeration extends Fragment {
         if (!globalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
+        } else {
+
+            ReadRandomMeeting(); //читаем одну случайную немодерированую заявку
         }
-
-        ReadRandomMeeting(); //читаем одну случайную неморерированую заявку
-
     }
 
 
@@ -277,7 +327,9 @@ public class FragmentModeration extends Fragment {
 
                         randomMeeting = documentSnapshot.toObject(ModelMeeting.class); //сериализация в класс
 
-                        UpdateUI(randomMeeting); //обновляем интерфейс пользователя
+                        readRandomUserProfile(randomMeeting); //читаем профайл пользователя из заявки
+
+                        //UpdateUI(randomMeeting); //обновляем интерфейс пользователя
 
                     } else { //если нет ни одного документа на модерацию
 
@@ -303,6 +355,9 @@ public class FragmentModeration extends Fragment {
 
                 } else { //если чтение из БД не успешно
 
+                    scrollView.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+
                     globalApp.Log(getClass().getSimpleName(), "ReadRandomMeeting/onComplete",
                             "Ошибка чтения случайной заявки из БД: " + task.getException(), true);
 
@@ -325,6 +380,53 @@ public class FragmentModeration extends Fragment {
             }
         });
     }
+
+
+    /**
+     * Читает профайл пользователя из заявки и записывает в глобальную переменную randomUserProfile
+     * @param modelMeeting - заявка пользователя
+     */
+    private void readRandomUserProfile(ModelMeeting modelMeeting) {
+
+        DocumentReference documentReference = globalApp.GenerateDocumentReference("users", modelMeeting.getUserID());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) { //если чтение из БД успешно
+
+                    DocumentSnapshot documentSnapshot = task.getResult(); //получаем документ из БД
+                    randomUserProfile = documentSnapshot.toObject(ModelUser.class); //преобразовываем в класс
+
+                    UpdateUI(modelMeeting); //обновляем интерфейс пользователя
+
+                } else { //если чтение из БД не успешно
+
+                    scrollView.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                    globalApp.Log(getClass().getSimpleName(), "readRandomUserProfile/onComplete",
+                            "Ошибка чтения профиля пользователя из БД: " + task.getException(), true);
+
+                    //Покажем пользователю и разрешаем повторить чтение/////////////////////////////
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка чтения БД")
+                            .setMessage("Ошибка чтения профиля пользователя из БД: " + task.getException())
+                            .setPositiveButton("Повторить", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ReadRandomMeeting();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+                }
+
+            }
+        });
+    }
+
 
 
     /**

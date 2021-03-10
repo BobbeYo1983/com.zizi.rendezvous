@@ -109,21 +109,25 @@ public class ActivityMeetings extends AppCompatActivity {
                 switch (item.getItemId()){
 
                     case (R.id.itemMeetings):
-                        ChangeFragment(fragmentListMeetings,false);
+
+                        //если статус заявки активный
+                        if (globalApp.requestMeeting.getStatus().equals(Data.STATUS_ACTIVE)){
+                            ChangeFragment(new FragmentListMeetings(),false);
+                        } else { //если не активный, то отправляем заполнять заявку
+                            ChangeFragment(new FragmentRequestMeeting(),false);
+                        }
                         break;
 
                     case (R.id.itemAbout):
                         globalApp.ClearBundle();
                         globalApp.AddBundle("title", item.getTitle().toString());
-                        FragmentAbout fragmentAbout = new FragmentAbout();
-                        ChangeFragment(fragmentAbout,false);
+                        ChangeFragment(new FragmentAbout(),false);
                         break;
 
                     case (R.id.itemAdmin):
                         globalApp.ClearBundle();
                         globalApp.AddBundle("title", item.getTitle().toString());
-                        FragmentAdmin fragmentAdmin = new FragmentAdmin();
-                        ChangeFragment(fragmentAdmin,false);
+                        ChangeFragment(new FragmentAdmin(),false);
                         break;
 
                     default:

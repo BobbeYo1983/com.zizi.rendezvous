@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.firestore.DocumentReference;
 import com.zizi.rendezvous.Activity.ActivityMeetings;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.R;
@@ -61,6 +62,9 @@ public class FragmentRegulations extends Fragment {
             @Override
             public void onClick(View v) {
                 if (cb_18_years.isChecked()) { //если отмечено, что исполнилось 18
+
+                    //TODO отмечаем в БД, что с правилами ознакомлен
+                    //DocumentReference documentReference = globalApp.
 
                     activityMeetings.ChangeFragment(new FragmentRequestMeeting(), false);
                     

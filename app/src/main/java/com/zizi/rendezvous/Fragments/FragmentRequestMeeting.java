@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -47,7 +49,7 @@ public class FragmentRequestMeeting extends Fragment {
     private FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     private FragmentPlace fragmentPlace; // фрагмент с выбором места
     private ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
-  //  private Dialog dialog; //класс для показа всплывающих окон
+    //private Dialog dialog; //класс для показа всплывающих окон
     //private FragmentManager fragmentManager; // для управления показом компонентов
 
     //виджеты
@@ -82,6 +84,7 @@ public class FragmentRequestMeeting extends Fragment {
     private Button btn_apply_request; // кнопка подачи заявки
     private ScrollView svRequestMeeting; // прокручиваемый слой
     private ProgressBar pbRequestMeeting; // крутилка
+    private DrawerLayout drawerLayout; //шторка меню слева
 
 
 
@@ -140,6 +143,7 @@ public class FragmentRequestMeeting extends Fragment {
         btn_apply_request = getActivity().findViewById(R.id.btn_apply_request);
         svRequestMeeting = getActivity().findViewById(R.id.svRequestMeeting);
         pbRequestMeeting = getActivity().findViewById(R.id.pbRequestMeeting);
+        drawerLayout = getActivity().findViewById(R.id.drawerLayout); //слой левой шторки
         //=========================================================================================
 
 
@@ -360,6 +364,7 @@ public class FragmentRequestMeeting extends Fragment {
             materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     getActivity().onBackPressed();
                 }
             });
@@ -368,8 +373,8 @@ public class FragmentRequestMeeting extends Fragment {
             materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //ничего не делаем
-                    //getActivity().onBackPressed();
+
+                    drawerLayout.openDrawer(GravityCompat.START);
                 }
             });
         }
