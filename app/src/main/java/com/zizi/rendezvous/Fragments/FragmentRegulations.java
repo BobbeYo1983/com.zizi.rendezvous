@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.zizi.rendezvous.Activity.ActivityMeetings;
@@ -63,10 +66,38 @@ public class FragmentRegulations extends Fragment {
             public void onClick(View v) {
                 if (cb_18_years.isChecked()) { //если отмечено, что исполнилось 18
 
-                    //TODO отмечаем в БД, что с правилами ознакомлен
-                    //DocumentReference documentReference = globalApp.
+                    //отмечаем в БД, что с правилами ознакомлен
+                    globalApp.currentUser.setAcceptRules(true);
+                    globalApp.GenerateDocumentReference("users", globalApp.currentUser.getUserID())
+                            .set(globalApp.currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {//если запись в БД успешна
 
-                    activityMeetings.ChangeFragment(new FragmentRequestMeeting(), false);
+                                        activityMeetings.ChangeFragment(new FragmentRequestMeeting(), false);
+
+                                    } else { //если запись в БД успешна
+
+                                        //Покажем пользователю сообщение
+                                        new AlertDialog.Builder(getContext())
+                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                .setTitle("Ошибка записи в БД")
+                                                .setMessage("Ошибка записи в БД отметки, что правила приняты пользователем, повторите попытку позже.")
+                                                .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.cancel();
+                                                    }
+                                                })
+                                                //.setNegativeButton("No", null)
+                                                .show();
+
+                                    }
+                                }
+                            });
+
+
+
                     
                 } else { //если не исполнилось 18 лет
 
@@ -94,7 +125,7 @@ public class FragmentRegulations extends Fragment {
 
 
         //ЛОГИКА //////////////////////////////////////////////////////////////////////////////////////
-        if (globalApp.GetBundle("moderation").equals("false")) { //если заявка пользователя отклонена на модерации, то показать правила
+        if (globalApp.GetBundle("moderation") != null && globalApp.GetBundle("moderation").equals("false")) { //если заявка пользователя отклонена на модерации, то показать правила
 
             //Показать сообщение пользователю
             new AlertDialog.Builder(getContext())

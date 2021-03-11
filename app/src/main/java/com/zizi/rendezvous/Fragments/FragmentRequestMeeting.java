@@ -253,7 +253,9 @@ public class FragmentRequestMeeting extends Fragment {
                         }
                     } else { //если правила приложения НЕ приняты
 
-                        activityMeetings.ChangeFragment(new FragmentRegulations(), false); //переходим на фрагмент с правилами
+                        SaveParamsToRAM(); // сохранение в оперативную память
+
+                        activityMeetings.ChangeFragment(new FragmentRegulations(), true); //переходим на фрагмент с правилами
                     }
 
                 } else {// если одно из обязательных полей не заполнено в заявке

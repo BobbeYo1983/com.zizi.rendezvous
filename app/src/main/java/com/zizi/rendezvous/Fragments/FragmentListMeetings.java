@@ -196,6 +196,7 @@ public class FragmentListMeetings extends Fragment {
                 .whereEqualTo("gender", globalApp.requestMeeting.getGender_partner()) //совпадает пол в запросе и пол партнера
                 .whereEqualTo("region", globalApp.requestMeeting.getRegion()) //совпадает регион в запросе и в заявке партнера
                 .whereEqualTo("town", globalApp.requestMeeting.getTown()) //совпадает город в запросе и в заявке партнера
+                .whereEqualTo("status", Data.STATUS_ACTIVE); //только с активным статусом
                 ;
 
         options = new FirestoreRecyclerOptions.Builder<ModelMeeting>().setQuery(query, ModelMeeting.class).build(); // строим наполнение для списка встреч

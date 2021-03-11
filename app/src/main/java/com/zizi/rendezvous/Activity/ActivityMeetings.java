@@ -62,7 +62,7 @@ public class ActivityMeetings extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
-        Fragment fragmentChat = new FragmentChat();
+        //Fragment fragmentChat = new FragmentChat();
 
         //ищем нужные виджеты
         materialToolbar = findViewById(R.id.material_toolbar); // верхняя панель с кнопками
@@ -296,16 +296,16 @@ public class ActivityMeetings extends AppCompatActivity {
     /**
      * Меняет фрагмент на экране (в активити)
      * @param fragment новый фрагмент, который надо показать
-     * @param toStack добавлять его в стек или нет, чтобы можно было переходить по кнопке назад
+     * @param saveToStackCurrentFragment сохранить ли в стеке текущий фрагмент, чтобы по кнопке назад к нему можно было перейти
      */
-    public void ChangeFragment (Fragment fragment, boolean toStack){ // меняет отображение фрагмента
+    public void ChangeFragment (Fragment fragment, boolean saveToStackCurrentFragment){ // меняет отображение фрагмента
 
         globalApp.Log(getClass().getSimpleName(), "ChangeFragment", "Имя класса нового фрагмента = " + fragment.getClass().getSimpleName(), false);
 
         FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
         fragmentTransaction = fragmentManager.beginTransaction();                // начинаем транзакцию
         fragmentTransaction.replace(R.id.fragment_replace, fragment, fragment.getClass().getSimpleName());  // обновляем фрагмент
-        if (toStack) { // если нужно добавить для навигации в стек фрагментов
+        if (saveToStackCurrentFragment) { // если нужно добавить для навигации в стек фрагментов
             fragmentTransaction.addToBackStack(null);                           // добавляем в конец стека фрагментов для навигации
         }
         fragmentTransaction.commit();                                       // применяем
