@@ -85,27 +85,6 @@ public class FragmentListMeetings extends Fragment {
 
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (!globalApp.IsAuthorized()) { // если пользователь не авторизован
-            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
-            getActivity().finish(); // убиваем активити
-        }
-
-        adapter.startListening(); // адаптер начинает слушать БД
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        adapter.stopListening(); // адаптер прекращает слушать БД
-    }
-
-
     @Override //Вызывается, когда отработает метод активности onCreate(), а значит фрагмент может обратиться к компонентам активности
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -197,7 +176,7 @@ public class FragmentListMeetings extends Fragment {
                 .whereEqualTo("region", globalApp.requestMeeting.getRegion()) //совпадает регион в запросе и в заявке партнера
                 .whereEqualTo("town", globalApp.requestMeeting.getTown()) //совпадает город в запросе и в заявке партнера
                 .whereEqualTo("status", Data.STATUS_ACTIVE); //только с активным статусом
-                ;
+        ;
 
         options = new FirestoreRecyclerOptions.Builder<ModelMeeting>().setQuery(query, ModelMeeting.class).build(); // строим наполнение для списка встреч
         adapter = new FirestoreRecyclerAdapter<ModelMeeting, FragmentListMeetings.SingleMeetingViewHolder>(options) { //показываем адаптеру класс одной встречи, вид встречи и подсовываем выборку из БД
@@ -224,7 +203,7 @@ public class FragmentListMeetings extends Fragment {
                 arrayListPlaces = model.getPlaceArray();
 
                 //отфильтровываем встречи по фильтру текущего пользователя и свою заявку тоже скрываем
-                if (snapshot.getId().equals(globalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
+                if (snapshot.getId().equals(globalApp.currentUser.getUserID()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
                         !(age >= age_min && age <= age_max) || //если возраст не попадает в диапазон запроса
                         !IsPlace(arrayListPlaces) || //если нет общих мест для встречи
                         !IsTime(model.getTime()) // если не совпадает время встречи
@@ -237,9 +216,9 @@ public class FragmentListMeetings extends Fragment {
 
                 } else { // связываем данные и представление
 
-                        holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
-                        holder.tv_age.setText(model.getAge());
-                        holder.tv_comment.setText(model.getComment());
+                    holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
+                    holder.tv_age.setText(model.getAge());
+                    holder.tv_comment.setText(model.getComment());
 
                 }
 
@@ -258,6 +237,30 @@ public class FragmentListMeetings extends Fragment {
 
 
 
+    }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!globalApp.IsAuthorized()) { // если пользователь не авторизован
+            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
+            getActivity().finish(); // убиваем активити
+        }
+
+        adapter.startListening(); // адаптер начинает слушать БД
+
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        adapter.stopListening(); // адаптер прекращает слушать БД
     }
 
 
