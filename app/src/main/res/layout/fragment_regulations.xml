@@ -48,7 +48,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
-        android:text="Ознакомьтесь и примите правила нашего приложения"
+        android:text="Ознакомьтесь и примите правила нашего приложения, затем подайте заявку на встречу"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

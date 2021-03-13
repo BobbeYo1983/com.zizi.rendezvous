@@ -760,12 +760,18 @@ public class FragmentRequestMeeting extends Fragment {
         ArrayAdapter<String> adapter_towns;
 
         switch(region) {
-            case "Республика Мордовия":
-                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfMordovia);
+            case "Московская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.moscowRegion);
                 break;
+
             case "Нижегородская область":
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.nizhnyNovgorodRegion);
                 break;
+
+            case "Республика Мордовия":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfMordovia);
+                break;
+
             default:
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list); // наверное пустой будет, не проверял
                 break;
