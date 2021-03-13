@@ -64,7 +64,7 @@ public class FragmentRequestMeeting extends Fragment {
     private CheckBox cb_only_write; //галка можно ли звонить
     private TextInputEditText til_soc_net_et; // страничка в соц сети
     private TextInputLayout til_contact;
-    private TextInputEditText til_contact_et;
+    private TextInputEditText til_contact_et; //контактные данные
     private TextInputLayout til_gender_partner;
     private AutoCompleteTextView til_gender_partner_act; // пол партнера
     private TextInputLayout til_age_min;
@@ -198,7 +198,7 @@ public class FragmentRequestMeeting extends Fragment {
                                         //globalApp.PreparingToSave("statusRequestMeeting", Data.STATUS_ACTIVE); // отмечаем статус заявки активным
                                         //globalApp.SaveParams();
 
-                                        DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в профиль в БД
+                                        //!!!DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в профиль в БД
 
                                         activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
 

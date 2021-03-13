@@ -52,10 +52,20 @@ public class FragmentRegulations extends Fragment {
         CheckBox cb_18_years = getActivity().findViewById(R.id.cb_18_years); //галка с подтверждением, что исполнилось 18 лет
         Button btn_accept_rules = getActivity().findViewById(R.id.btn_accept_rules); // кнопка принятия правил
 
+
+
         // materialToolbar //////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Правила"); // заголовок панельки
-        materialToolbar.setNavigationIcon(null);//скрываем иконку навигации
-        materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
+
+        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+        //materialToolbar.setNavigationIcon(null);//скрываем иконку навигации
+        //materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         //===========================================================================================
 
 
@@ -141,6 +151,8 @@ public class FragmentRegulations extends Fragment {
                     })
                     //.setNegativeButton("No", null)
                     .show();
+
+            materialToolbar.setNavigationIcon(null);//скрываем иконку навигации
 
         }
         //=======================================================================================

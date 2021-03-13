@@ -27,6 +27,7 @@
             android:icon="@drawable/ic_outline_tune_24"
             android:title="@string/request"
             android:contentDescription="@string/content_description_request"
+            android:visible="false"
             app:showAsAction="ifRoom"
             />
 

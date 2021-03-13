@@ -562,7 +562,7 @@ public class ActivityLogin extends AppCompatActivity {
                     if (documentSnapshot.get("countRequestMeetings") != null) {//если такое поле существует
 
                         String countRequestMeetings = documentSnapshot.get("countRequestMeetings").toString();
-                        globalApp.currentUser.setCountRequestMeetings(countRequestMeetings);
+                        globalApp.currentUser.setCountRequestMeetings(countRequestMeetings); //устанавливаем количество заявок вычитанное из БД
 
                     } else {
 
@@ -570,9 +570,17 @@ public class ActivityLogin extends AppCompatActivity {
                         globalApp.currentUser.setCountRequestMeetings(Data.DEFAULT_COUNT_REQUEST_MEETINGS);
                     }
 
-                    SaveProfile();
+                    //проверяем, принимал ли раньше пользователь правила приложения
+                    if (documentSnapshot.get("acceptRules") != null) {// если такое поле существует
+                        boolean acceptRules = (boolean)documentSnapshot.get("acceptRules");
+                        globalApp.currentUser.setAcceptRules(acceptRules);
+                    } else {
+                        globalApp.Log(getClass().getSimpleName(), "LoadProfileToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле acceptRules не найдено, присвоено значение по умолчанию", false);
+                        globalApp.currentUser.setAcceptRules(false);
+                    }
 
-                    //EnterInApplication(); //входим в приложение
+                    SaveProfile(); //сохраняем профайл в БД
+
 
                 } else { // если ошибка при чтении профайла из БД
 

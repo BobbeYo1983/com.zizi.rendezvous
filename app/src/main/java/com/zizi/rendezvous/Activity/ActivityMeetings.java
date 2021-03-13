@@ -97,7 +97,10 @@ public class ActivityMeetings extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
         //если пользователь админ, то показать пункт Админки
-        if (globalApp.currentUser.getEmail().equals("denis@1.com")) {
+        if (globalApp.currentUser.getEmail().equals("denis@1.com")
+                | globalApp.currentUser.getEmail().equals("880846@gmail.com")
+                | globalApp.currentUser.getEmail().equals("nadinzinina1988@gmail.com")
+        ) {
             navigationView.getMenu().findItem(R.id.itemAdmin).setVisible(true);
         }
 
