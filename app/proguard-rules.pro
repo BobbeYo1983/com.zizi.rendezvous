@@ -32,6 +32,8 @@
 # This rule will properly ProGuard all the model classes in
 # the package com.yourcompany.models. Modify to fit the structure
 # of your app.
-#-keepclassmembers class ru.zizi.rendezvous.ModelMessage { *; }
-#-keepclassmembers class ru.zizi.rendezvous.ModelChat { *; }
+-keepclassmembers class com.zizi.rendezvous.Models.ModelChat { *; }
+-keepclassmembers class com.zizi.rendezvous.Models.ModelMeeting { *; }
+-keepclassmembers class com.zizi.rendezvous.Models.ModelMessage { *; }
+-keepclassmembers class com.zizi.rendezvous.Models.ModelUser { *; }
 # ==================================================================================================

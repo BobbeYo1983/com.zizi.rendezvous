@@ -34,7 +34,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true // ProGuard выключен
+            minifyEnabled true // ProGuard включен
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release // подписываем приложение выбранной подписью
             shrinkResources true //удаляет ненужные ресурсы
