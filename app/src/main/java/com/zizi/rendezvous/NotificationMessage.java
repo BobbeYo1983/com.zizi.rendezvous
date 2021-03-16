@@ -37,7 +37,7 @@ public class NotificationMessage extends AsyncTask<String,Void,Void> {
 
             conn.setRequestMethod("POST");
             // тут ключ сервака Farebase для FCM
-            conn.setRequestProperty("Authorization", "key=" + "AAAAbdXW9sc:APA91bGqfvYgRjMgjWVs4wBMFUheGra5ADSfrjP8xqDFwgflw1qPfdlz8QeUaK0_gNw8Mk-FEF9JrhA9D7UmIWUsIwKHP3HdB8GIyelP6N7hjEcyLshq-5Lw4QFqEF1vvN90fZSqcutS");
+            conn.setRequestProperty("Authorization", "key=" + "AAAAZPuiZNE:APA91bHz2KjVHK_hraIu_DNWwsIuOOGhNaP3peg4FaE8Dnz3zM_FxUOM0Lk5IkSenB2weptEE5gAdU_H89Bnr0Zv4wod5MDki02xGuX39pTeBZkTyrRucVbtw3qYBO5xG-nYzXUa787q");
             conn.setRequestProperty("Content-Type", "application/json");
 
             JSONObject json = new JSONObject();

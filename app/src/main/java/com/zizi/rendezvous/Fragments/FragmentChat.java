@@ -51,7 +51,6 @@ public class FragmentChat extends Fragment {
     private GlobalApp globalApp; // глобальный класс для всего приложения
     private ArrayList<ModelMessage> arrayListAllMessages; // коллекция с сообщениями
     private Adapter adapter; // адаптер с данными для RecyclerView
-    //private FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
     private DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
     private TextInputEditText til_message_et; // поле с техтом ввода сообщения
     private Date dateNow; // для работы с датой

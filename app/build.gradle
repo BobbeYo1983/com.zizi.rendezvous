@@ -63,6 +63,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1' // FirebaseUI for Cloud Firestore
 
 
 
@@ -72,14 +73,12 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
-    //implementation 'com.google.firebase:firebase-analytics:18.0.0' // для Realtime Database
     implementation 'com.google.firebase:firebase-auth'
-    //implementation 'com.google.firebase:firebase-auth:20.0.1'
-    implementation 'com.google.firebase:firebase-database:19.6.0'
+    //implementation 'com.google.firebase:firebase-database:19.6.0'
+    implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-firestore'
-    //implementation 'com.google.firebase:firebase-firestore:22.0.1'
-    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1' // FirebaseUI for Cloud Firestore
-    implementation 'com.google.firebase:firebase-messaging:21.0.1'
+    implementation 'com.google.firebase:firebase-messaging'
+    //implementation 'com.google.firebase:firebase-messaging:21.0.1'
     //===============================================================================================
 
 }
