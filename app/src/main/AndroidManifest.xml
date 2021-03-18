@@ -22,12 +22,13 @@
 
         <activity
             android:name=".Activity.ActivityPay"
-            android:windowSoftInputMode="adjustPan"
             />
 
 
 
-        <activity android:name=".Activity.ActivityForTest" />
+        <activity
+            android:name=".Activity.ActivityForTest"
+            />
 
 
 
@@ -52,19 +53,15 @@
         </activity>
 
 
-
+        <!--android:windowSoftInputMode="adjustResize"-->
         <activity
             android:name=".Activity.ActivityMeetings"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            />
-        <!--
-        <intent-filter>
-            <action android:name="Open_ActivityMeetings" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-        -->
+            />
+
+
+
         <!-- Сервис для уведомлений -->
         <service
             android:name=".Services.ServiceFirebaseCloudMessaging"

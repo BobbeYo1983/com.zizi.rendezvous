@@ -30,6 +30,8 @@
 
         <!--Нижняя панель навигации с кнопками-->
         <item name="android:navigationBarColor">@color/darkThemeBackground</item>
+
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
 </resources>
