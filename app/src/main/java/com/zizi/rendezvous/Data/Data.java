@@ -6,7 +6,7 @@ public class Data {
     public static final String ANY_PLACE = "Любое место";
     public static final String anyTime = "Любое время";
     public static final String channelID = "Сообщения";
-    public static final String tagLog = "!@#";
+    public static final String TAG_LOG = "!@#";
     public static final String FRAGMENT_CHAT = "FragmentChat";
     public static final String OTHER = "Прочее";
     public static final String DEFAULT_COUNT_REQUEST_MEETINGS = "31"; // количество бесплатных встреч по умолчанию

@@ -28,7 +28,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zizi.rendezvous.Activity.ActivityLogin;
@@ -53,7 +52,7 @@ public class FragmentChat extends Fragment {
     private Adapter adapter; // адаптер с данными для RecyclerView
     private DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
     private TextInputEditText til_message_et; // поле с техтом ввода сообщения
-    private Date dateNow; // для работы с датой
+    //private Date dateNow; // для работы с датой
     private RelativeLayout.LayoutParams layoutParams; // параметры для изменениЯ геометрии поля с сообщением в чате и изменения позиции
     private Display display; // для разрешения экрана
     private Point size; // для разрешения экрана
@@ -102,7 +101,6 @@ public class FragmentChat extends Fragment {
         usersIDs = new ArrayList<String>();
         dp = getActivity().getResources().getDisplayMetrics().density; // получаем плотность экрана на 1 dp
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
-        //firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // узнаем разрешение экрана
@@ -111,7 +109,7 @@ public class FragmentChat extends Fragment {
         width = size.x;
         height = size.y;
 
-        //ищем нужные элементы
+        //ищем нужные виджеты
         floatingActionButton = getActivity().findViewById(R.id.fab);
         recyclerView = getActivity().findViewById(R.id.recyclerView);
         til_message_et = getActivity().findViewById(R.id.til_message_et);
@@ -193,6 +191,7 @@ public class FragmentChat extends Fragment {
         // recyclerView ////////////////////////////////////////////////////////////////////////////
         recyclerView.setHasFixedSize(true); // для производительности recyclerView
         linearLayoutManager.setOrientation(linearLayoutManager.VERTICAL); //вертикальная ориентация
+        linearLayoutManager.setStackFromEnd(true); //чтобы записи начинались снизу
         recyclerView.setLayoutManager(linearLayoutManager); // применяем к recyclerView ориентацию
         recyclerView.setAdapter(adapter); // применяем адаптер
         UpdateMessages(); // событийный метод по обновлению данных из БД, если будут меняться

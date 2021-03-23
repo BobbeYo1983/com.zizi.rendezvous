@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.R;
@@ -35,16 +36,17 @@ import java.util.Map;
 public class ActivityLogin extends AppCompatActivity {
 
     private GlobalApp globalApp; // класс для сервисных функций приложения, описание внутри класса
-    private FirebaseFirestore firebaseFirestore; // база данных
+    //private FirebaseFirestore firebaseFirestore; // база данных
     private FirebaseAuth firebaseAuth; // объект для работы с авторизацией в Firebase
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private String email; // почта пользователя
     private String password; // пароль пользователя
     private Map<String, Object> user; // коллекция ключ-значение для сохранения профиля в БД
     private FragmentManager fragmentManager; //менеджер фрагментов
-    //private Dialog dialog; //класс для показа всплывающих окон
     private Display display; // для разрешения экрана
     private Point point; // для разрешения экрана
+    private FirebaseRemoteConfig firebaseRemoteConfig; //получаем экземпляр удаленного конфига firebase
+    private HashMap<String, Object> settingsApp; //мапа для хранения настроек
 
 
     //Вьюхи
@@ -70,10 +72,11 @@ public class ActivityLogin extends AppCompatActivity {
         globalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         user = new HashMap<>(); // коллекция ключ-значение для сохранения профиля в БД
-        firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
+        //firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         fragmentManager = getSupportFragmentManager();
-        //dialog = new Dialog(); // класс для показа всплывающих окон
         point = new Point();
+        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance(); //получаем экземпляр удаленного конфига
+        settingsApp = new HashMap<>();
         //==========================================================================================
 
 
@@ -153,6 +156,10 @@ public class ActivityLogin extends AppCompatActivity {
 
         SetVisibilityViews(false); // делаем вьюхи невидимыми
 
+        //TODO нужно проверить версию приложения
+        //settingsApp.put(VERSION_CODE, getCurrentVersionCode());
+        //firebaseRemoteConfig.setDefaults(settingsApp);
+
 
     }
 
@@ -161,6 +168,10 @@ public class ActivityLogin extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+
+
+
 
         // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
         if (globalApp.GetParam("email").equals("") && globalApp.GetParam("password").equals("") ) {
@@ -174,8 +185,8 @@ public class ActivityLogin extends AppCompatActivity {
             //}
         } else { // если раньше заполнял пользователь логин и пароль, то автовход
             globalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
-            email = globalApp.GetParam("email");
-            password = globalApp.GetParam("password");
+            email = globalApp.GetParam("email"); //получаем из памяти телефона
+            password = globalApp.GetParam("password"); //получаем из памяти телефона
             Signin();
         }
 

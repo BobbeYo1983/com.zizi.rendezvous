@@ -55,7 +55,7 @@ public class GlobalApp extends Application {
      */
     public GlobalApp(){
 
-        Log("ClassGlobalApp", "ClassGlobalApp", "Создан объект класса", false);
+        Log(getClass().getSimpleName(), "GlobalApp", "Создан объект класса", false);
 
     }
 
@@ -72,25 +72,20 @@ public class GlobalApp extends Application {
         paramsToSave = new HashMap<>(); // коллекция ключ-значение
         paramsToBundle = new HashMap<>(); // коллекция ключ-значение
         msg = new HashMap<>();
+        currentUser = new ModelUser();
+        requestMeeting = new ModelMeeting();
+        visibleWidget = ""; //по умолчанию текущий виджет делаем пустым
 
-        sharedPreferences = getSharedPreferences("saveParams", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("saveParams", MODE_PRIVATE); //получаем настройки из памяти телефона
         editorSharedPreferences = sharedPreferences.edit(); // подготавливаем редактор работы с памятью перед записью'
+        tokenDevice = GetParam("tokenDevice"); //вычитываем токен девайса из памяти
 
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД RealTime DataBase
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
 
-        tokenDevice = GetParam("tokenDevice");
-        visibleWidget = "";
-
-        //Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
+        //!Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
         CreateNotificationChannel();
-
-        requestMeeting = new ModelMeeting();
-
-        //LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
-
-        currentUser = new ModelUser();
 
     }
 
@@ -103,10 +98,9 @@ public class GlobalApp extends Application {
     public void Log (String _class, String method, String message, boolean inDB) {
 
         if (BuildConfig.DEBUG) { // если режим отладки, то ведем ЛОГ
-            //символы !@# достаточно уникальны для фильтровки и быстро набираются на клавиатуре
-            //Log.v("!@#", "[" + _class + "." + method + "]: " +  message);
-            //Data.tagLog еще есть в классе NotificationMessage
-            Log.v(Data.tagLog, "[" + _class + "." + method + "]: " +  message);
+
+            ////символы !@# достаточно уникальны для фильтровки и быстро набираются на клавиатуре
+            Log.v(Data.TAG_LOG, "[" + _class + "." + method + "]: " +  message);
 
         }
 
