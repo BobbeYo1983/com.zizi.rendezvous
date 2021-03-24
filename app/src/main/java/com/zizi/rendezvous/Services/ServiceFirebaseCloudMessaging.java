@@ -58,7 +58,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 
             // Контент уведомления ///////////////////////////////////////////////////////////////////////////
             //Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID); //канал уведомлений ранее регистрировали в classGlobalApp.CreateNotificationChannel()
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.CHANNEL_ID); //канал уведомлений ранее регистрировали в classGlobalApp.CreateNotificationChannel()
             builder.setSmallIcon(R.drawable.ic_outline_wc_24); // устанавливаем маленькую иконку
             builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary)); // цвет иконки в уведомлении, но не в строке уведомлений
             builder.setPriority(NotificationCompat.PRIORITY_DEFAULT); // приоритет

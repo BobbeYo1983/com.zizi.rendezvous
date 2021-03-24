@@ -294,7 +294,7 @@ public class FragmentListMeetings extends Fragment {
      */
     public boolean IsTime (String time) {
 
-        if (time.equals(Data.anyTime)){ // если у текущего пользователя выбрано любое время
+        if (time.equals(Data.ANY_TIME)){ // если у текущего пользователя выбрано любое время
             return true;
         } else if (time.equals(globalApp.requestMeeting.getTime())){ //если время не любое, и есть совпадение выбранного значения текущего пользователя с партнером
                 return true;

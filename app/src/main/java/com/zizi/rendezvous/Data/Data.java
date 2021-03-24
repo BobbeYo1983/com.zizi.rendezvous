@@ -4,12 +4,13 @@ public class Data {
 
     //константы
     public static final String ANY_PLACE = "Любое место";
-    public static final String anyTime = "Любое время";
-    public static final String channelID = "Сообщения";
+    public static final String ANY_TIME = "Любое время";
+    public static final String CHANNEL_ID = "Сообщения";
     public static final String TAG_LOG = "!@#";
     public static final String FRAGMENT_CHAT = "FragmentChat";
     public static final String OTHER = "Прочее";
     public static final String DEFAULT_COUNT_REQUEST_MEETINGS = "31"; // количество бесплатных встреч по умолчанию
+    public static final String VERSION_CODE_KEY = "VERSION_CODE_KEY"; // для запроса последней версии с удаленного конфига
 
     //статусы заявки на встречу
     public static final String STATUS_ACTIVE = "STATUS_ACTIVE";
@@ -21,7 +22,7 @@ public class Data {
     //массив с временами
     public static final String[] times = new String[]{
             //"Любое время",
-            anyTime,
+            ANY_TIME,
             "Сейчас",
             "00:00",
             "01:00",

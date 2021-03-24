@@ -316,10 +316,10 @@ public class GlobalApp extends Application {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = Data.channelID;
+            CharSequence name = Data.CHANNEL_ID;
             String descriptionСhannel = "Description channel";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel notificationChannel = new NotificationChannel(Data.channelID, name, importance); //создаем канал
+            NotificationChannel notificationChannel = new NotificationChannel(Data.CHANNEL_ID, name, importance); //создаем канал
             notificationChannel.setDescription(descriptionСhannel); //добавляем описание канала
 
 

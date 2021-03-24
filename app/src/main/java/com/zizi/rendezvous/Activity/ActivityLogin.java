@@ -26,12 +26,16 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.zizi.rendezvous.BuildConfig;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.R;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.zizi.rendezvous.BuildConfig.VERSION_CODE;
 
 public class ActivityLogin extends AppCompatActivity {
 
@@ -156,11 +160,74 @@ public class ActivityLogin extends AppCompatActivity {
 
         SetVisibilityViews(false); // делаем вьюхи невидимыми
 
-        //TODO нужно проверить версию приложения
-        //settingsApp.put(VERSION_CODE, getCurrentVersionCode());
-        //firebaseRemoteConfig.setDefaults(settingsApp);
 
 
+        //Вычитываем настройки по умолчанию с сервера///////////////////////////////////////////////
+        //устанавливаем настройки по умолчанию до опроса сервера, надо хоть на каких, то работать, да и связи вдруг не будет
+        settingsApp.put(Data.VERSION_CODE_KEY, VERSION_CODE); //пока вычитываем текущую версию приложения
+        firebaseRemoteConfig.setDefaultsAsync(settingsApp); //устанавливаем значения по умолчанию
+
+/*        firebaseRemoteConfig.setConfigSettingsAsync(
+                new FirebaseRemoteConfigSettings.Builder().setDeveloperModeEnabled(BuildConfig.DEBUG)
+                        .build());*/
+
+        //получаем настройки с сервера и активируем их
+        firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(new OnCompleteListener<Boolean>() {
+            @Override
+            public void onComplete(@NonNull Task<Boolean> task) {
+                if (task.isSuccessful()) { //если задача выполнена успешно
+                    checkForUpdateApp(); //проверим, нужно ли обновлять приложение
+                } else {
+                    globalApp.Log(getClass().getSimpleName(), "onCreate/onComplete",
+                            "Ошибка при чтении удаленной конфигурации", true);
+                }
+            }
+        });
+        //==============================================================================================
+
+    } // onCreate
+
+
+    /** Проверяет, нужно ли принудительно обновить приложение. Сравнивает текущую версию с удаленной конфигой на сервере. */
+    private void checkForUpdateApp() {
+        int latestAppVersion = (int) firebaseRemoteConfig.getDouble(Data.VERSION_CODE_KEY); //получаем номер последнюю версию с сервера
+        globalApp.Log(getClass().getSimpleName(), "checkForUpdateApp",
+                "Последняя версия приложения, вычитана из удаленной конфиги = " + latestAppVersion, false);
+
+        globalApp.Log(getClass().getSimpleName(), "checkForUpdateApp",
+                "Последняя версия приложения, вычитана из удаленной конфиги = " + firebaseRemoteConfig.getString(Data.VERSION_CODE_KEY), false);
+
+        if (latestAppVersion > VERSION_CODE) { //если последняя версия больше текущей
+
+/*            new AlertDialog.Builder(this).setTitle("Please Update the App")
+                    .setMessage("A new version of this app is available. Please update it").setPositiveButton(
+                    "OK", new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast
+                                    .makeText(MainActivity.this, "Take user to Google Play Store", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }).setCancelable(false).show();*/
+
+            //Покажем пользователю сообщение/////////////////////////////
+            new AlertDialog.Builder(ActivityLogin.this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Обновление")
+                    .setMessage("Пожалуйста, обновите приложение.")
+                    .setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //dialog.cancel();
+                            //отправить пользователя в Play Market
+                        }
+                    })
+                    //.setNegativeButton("No", null)
+                    .setCancelable(false) // должно быть не закрываемое окно, проверить.
+                    .show();
+            //===============================================================================
+
+        }
     }
 
 
@@ -168,10 +235,6 @@ public class ActivityLogin extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-
-
-
 
         // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
         if (globalApp.GetParam("email").equals("") && globalApp.GetParam("password").equals("") ) {
