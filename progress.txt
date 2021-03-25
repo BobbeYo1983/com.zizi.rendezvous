@@ -82,5 +82,6 @@ https://firebase.google.cn/docs/database/security/rules-conditions?authuser=3&hl
 Протестировать релизную версию.
 Выложить (обновить информацию, скриншоты).
 Слить в мастер ветку.
+Ответвиться в релизную ветку.
 Изменить в RemoteConfig новую версию.
 
