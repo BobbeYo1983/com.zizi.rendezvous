@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,7 +41,6 @@ import static com.zizi.rendezvous.BuildConfig.VERSION_CODE;
 public class ActivityLogin extends AppCompatActivity {
 
     private GlobalApp globalApp; // класс для сервисных функций приложения, описание внутри класса
-    //private FirebaseFirestore firebaseFirestore; // база данных
     private FirebaseAuth firebaseAuth; // объект для работы с авторизацией в Firebase
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private String email; // почта пользователя
@@ -76,7 +76,6 @@ public class ActivityLogin extends AppCompatActivity {
         globalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         user = new HashMap<>(); // коллекция ключ-значение для сохранения профиля в БД
-        //firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         fragmentManager = getSupportFragmentManager();
         point = new Point();
         firebaseRemoteConfig = FirebaseRemoteConfig.getInstance(); //получаем экземпляр удаленного конфига
@@ -144,7 +143,6 @@ public class ActivityLogin extends AppCompatActivity {
 
 
 
-
         // btn_reg /////////////////////////////////////////////////////////////////////////////////
         btn_reg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,20 +156,25 @@ public class ActivityLogin extends AppCompatActivity {
 
 
 
-        SetVisibilityViews(false); // делаем вьюхи невидимыми
+    } // onCreate
 
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        SetVisibilityViews(false); // делаем вьюхи невидимыми, показываем прогрессбар
 
         //Вычитываем настройки по умолчанию с сервера///////////////////////////////////////////////
         //устанавливаем настройки по умолчанию до опроса сервера, надо хоть на каких, то работать, да и связи вдруг не будет
         settingsApp.put(Data.VERSION_CODE_KEY, VERSION_CODE); //пока вычитываем текущую версию приложения
         firebaseRemoteConfig.setDefaultsAsync(settingsApp); //устанавливаем значения по умолчанию
 
-/*        firebaseRemoteConfig.setConfigSettingsAsync(
-                new FirebaseRemoteConfigSettings.Builder().setDeveloperModeEnabled(BuildConfig.DEBUG)
-                        .build());*/
+        ///firebaseRemoteConfig.setConfigSettingsAsync(
+        ///        new FirebaseRemoteConfigSettings.Builder().setDeveloperModeEnabled(BuildConfig.DEBUG).build());
 
-        //получаем настройки с сервера и активируем их
+        //получаем настройки с сервера и активируем их. Если настройки обновить на сервере, будут доступны через 12 часов.
         firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(new OnCompleteListener<Boolean>() {
             @Override
             public void onComplete(@NonNull Task<Boolean> task) {
@@ -183,9 +186,10 @@ public class ActivityLogin extends AppCompatActivity {
                 }
             }
         });
-        //==============================================================================================
+        //==========================================================================================
 
-    } // onCreate
+    }
+
 
 
     /** Проверяет, нужно ли принудительно обновить приложение. Сравнивает текущую версию с удаленной конфигой на сервере. */
@@ -194,21 +198,9 @@ public class ActivityLogin extends AppCompatActivity {
         globalApp.Log(getClass().getSimpleName(), "checkForUpdateApp",
                 "Последняя версия приложения, вычитана из удаленной конфиги = " + latestAppVersion, false);
 
-        globalApp.Log(getClass().getSimpleName(), "checkForUpdateApp",
-                "Последняя версия приложения, вычитана из удаленной конфиги = " + firebaseRemoteConfig.getString(Data.VERSION_CODE_KEY), false);
-
         if (latestAppVersion > VERSION_CODE) { //если последняя версия больше текущей
 
-/*            new AlertDialog.Builder(this).setTitle("Please Update the App")
-                    .setMessage("A new version of this app is available. Please update it").setPositiveButton(
-                    "OK", new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast
-                                    .makeText(MainActivity.this, "Take user to Google Play Store", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }).setCancelable(false).show();*/
+            progressBar.setVisibility(View.GONE); //прогрессбар скрываем
 
             //Покажем пользователю сообщение/////////////////////////////
             new AlertDialog.Builder(ActivityLogin.this)
@@ -218,8 +210,10 @@ public class ActivityLogin extends AppCompatActivity {
                     .setPositiveButton("Обновить", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //dialog.cancel();
                             //отправить пользователя в Play Market
+                            Intent browserIntent = new
+                                    Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=ru.zizi.gift&hl=ru&gl=US"));
+                            startActivity(browserIntent);
                         }
                     })
                     //.setNegativeButton("No", null)
@@ -227,33 +221,20 @@ public class ActivityLogin extends AppCompatActivity {
                     .show();
             //===============================================================================
 
-        }
-    }
+        } else { // если обновлять приложуху не нужно, то
 
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
-        if (globalApp.GetParam("email").equals("") && globalApp.GetParam("password").equals("") ) {
-            //if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
-                //email = "999999@1.com";
-                //email = "emul@1.com";
-                //password = "Qwerty123";
-                //Signin();
-            //} else { // если сборка релизная
+            // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
+            if (globalApp.GetParam("email").equals("") && globalApp.GetParam("password").equals("") ) {
                 SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
-            //}
-        } else { // если раньше заполнял пользователь логин и пароль, то автовход
-            globalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
-            email = globalApp.GetParam("email"); //получаем из памяти телефона
-            password = globalApp.GetParam("password"); //получаем из памяти телефона
-            Signin();
+            } else { // если раньше заполнял пользователь логин и пароль, то автовход
+                globalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
+                email = globalApp.GetParam("email"); //получаем из памяти телефона
+                password = globalApp.GetParam("password"); //получаем из памяти телефона
+                Signin();
+            }
         }
-
     }
+
 
 
     /**
