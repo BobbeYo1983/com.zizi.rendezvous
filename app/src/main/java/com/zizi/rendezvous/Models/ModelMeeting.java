@@ -31,11 +31,11 @@ public class ModelMeeting {
     private String placeAnyPlace;
     private ArrayList<String> placeArray;
     private String placeOtherDescription;
-    private String time;
+    private String time; //время встречи
     private String comment;
 
     @ServerTimestamp //если поле null, то в БД будет писаться метка времени FareStore, если задать, то заданная
-    private Date timeStamp;
+    private Date timeStamp; //метка времени подачи заявки
 
     private Long meetingID; //идентификатор встречи
     private boolean moderation; //отметка, прошла ли заявка автоматическую модерацию

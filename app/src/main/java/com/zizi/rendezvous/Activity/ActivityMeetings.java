@@ -62,14 +62,12 @@ public class ActivityMeetings extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
-        //Fragment fragmentChat = new FragmentChat();
 
         //ищем нужные виджеты
         materialToolbar = findViewById(R.id.material_toolbar); // верхняя панель с кнопками
         drawerLayout = findViewById(R.id.drawerLayout); //слой левой шторки
         NavigationView navigationView = findViewById(R.id.navigationView);
-        //tvUserID = findViewById(R.id.tv_user_id);
-        //============================================================================================
+
 
 
 
@@ -216,7 +214,7 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
     /**
-     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в переменную глобального класса requestMeetingCurrentUser, если нет, в нее же null
+     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в переменную глобального класса globalApp.requestMeeting, если нет, в нее же null
      */
     private void GetRequestMeetingFromDB() {
 
@@ -245,9 +243,6 @@ public class ActivityMeetings extends AppCompatActivity {
                     } else { // если запрошенного документа не существует в БД
 
                         globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Запрошенного документа нет в БД", false);
-
-                        //classGlobalApp.SetRequestMeeting(null); // делаем заявку в глобальном классе пустой
-                        //globalApp.PreparingToSave("statusRequestMeeting", "NotActive"); // отмечаем статус заявки неактивным
 
                         globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти
                         globalApp.requestMeeting.setStatus(Data.STATUS_NOT_ACTIVE);//отмечаем статус заявки не активным
@@ -281,17 +276,9 @@ public class ActivityMeetings extends AppCompatActivity {
                             //.setNegativeButton("No", null)
                             .show();
                     //===============================================================================
-
-                    //показываем всплывающее окно
-                    //dialog.setTitle("Ошибка чтения БД");
-                    //dialog.setMessage("Ошибка проверки статуса заявки на встречу пользователя, попробуйте войти позже. Подробности ошибки: " + task.getException());
-                    //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
-                    //dialog.show(fragmentManager, "classDialog");
-
                 }
             }
         });
-
     }
 
 

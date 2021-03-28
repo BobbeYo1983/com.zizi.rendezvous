@@ -1,5 +1,7 @@
 package com.zizi.rendezvous.Fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,13 +23,18 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zizi.rendezvous.Activity.ActivityMeetings;
 import com.zizi.rendezvous.BuildConfig;
+import com.zizi.rendezvous.Data.Data;
 import com.zizi.rendezvous.GlobalApp;
+import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.R;
 
 import java.sql.Struct;
+import java.util.Date;
+import java.util.Random;
 
 /** Фрагмент с функциями администратора */
 public class FragmentAdmin extends Fragment {
@@ -42,7 +49,7 @@ public class FragmentAdmin extends Fragment {
     private DrawerLayout drawerLayout; //шторка меню слева
     private TextInputEditText tietCountMeetings; //количество активных заявок на встречи
     private Button bModeration; //кнопка с модерацией
-
+    private Button bTimeCheck; //кнопка проверки просрочки заявок
 
 
 
@@ -71,6 +78,7 @@ public class FragmentAdmin extends Fragment {
         tietCountMeetings = getActivity().findViewById(R.id.tietCountMeetings);
         bModeration = getActivity().findViewById(R.id.bModeration);
         drawerLayout = getActivity().findViewById(R.id.drawerLayout); //слой левой шторки
+        bTimeCheck = getActivity().findViewById(R.id.bTimeCheck);
 
 
 
@@ -94,25 +102,15 @@ public class FragmentAdmin extends Fragment {
         });
         //==========================================================================================
 
+
+
         ShowProgressBar(true);//показать экран ожидания
+
+
 
         //tietCountMeetings //////////////////////////////////////////////////////////////////////////
         // Запрос количества заявок
-        CollectionReference collectionReference = globalApp.GenerateCollectionReference("meetings");
-        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    globalApp.Log(getClass().getSimpleName(), "onStart/onComplete", "Количество заявок на встречу = " + task.getResult().size(), false);
-                    int countMeetings = task.getResult().size(); //количество встреч
-                    tietCountMeetings.setText(String.valueOf(countMeetings));
-                    tietCountMeetingsIsUpdate = true; //отмечаем, что поле обновлено
-                    UpdateUI(); //пробуем обновить интерфейс, сейчас там крутится прогрессбар
-                } else {
-                    globalApp.Log(getClass().getSimpleName(), "onStart/onComplete", "Ошибка при запросе количества заявок на встречу: " + task.getException(), false);
-                }
-            }
-        });
+        queryCountMeetings();
         //===========================================================================================
 
 
@@ -128,6 +126,177 @@ public class FragmentAdmin extends Fragment {
         //==========================================================================================
 
 
+
+        //bTimeCheck////////////////////////////////////////////////////////////////////////////////
+        //проверяем заявки на просроченность
+        bTimeCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //проверяем первую заявку
+                checkTimeRequest(123, true);
+
+            }
+        });
+        //==========================================================================================
+
+
+    }
+
+
+
+    /** Запрос количества заявок из БД */
+    private void queryCountMeetings() {
+        CollectionReference collectionReference = globalApp.GenerateCollectionReference("meetings");
+        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    globalApp.Log(getClass().getSimpleName(), "onStart/onComplete", "Количество заявок на встречу = " + task.getResult().size(), false);
+                    int countMeetings = task.getResult().size(); //количество встреч
+                    tietCountMeetings.setText(String.valueOf(countMeetings));
+                    tietCountMeetingsIsUpdate = true; //отмечаем, что поле обновлено
+                    UpdateUI(); //пробуем обновить интерфейс, сейчас там крутится прогрессбар
+                } else {
+                    globalApp.Log(getClass().getSimpleName(), "onStart/onComplete", "Ошибка при запросе количества заявок на встречу: " + task.getException(), false);
+                }
+            }
+        });
+    }
+
+
+
+    /**
+     * Проверяет заявку, просрочилась ли она, если просрочилась, то удаляет из БД
+     * @param meetingID - идентификатор заявки, за котрым выбирается следующая заявка
+     * @param first - усли true, то первый параметр игнорируется и из БД берется первая заявка
+     */
+    private void checkTimeRequest (long meetingID, boolean first) {
+
+        ShowProgressBar(true);
+
+        CollectionReference collectionReference;
+        collectionReference = globalApp.GenerateCollectionReference("meetings");
+
+        //запрос в БД
+        Query query;
+
+        if (first) { //если выбрать первую
+            query = collectionReference
+                    .orderBy("meetingID") // упорядочиваем по ID
+                    .limit(1) // читаем только первую
+                    ;
+        } else {
+            query = collectionReference
+                    .whereGreaterThan("meetingID", meetingID)
+                    .orderBy("meetingID") // упорядочиваем по ID
+                    .limit(1) // читаем только первую
+            ;
+        }
+
+
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+
+                    if (!task.getResult().getDocuments().isEmpty()){ //если хотя бы один документ вычитан
+
+                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0); //получаем документ фаресторе
+
+                        ModelMeeting modelMeeting = documentSnapshot.toObject(ModelMeeting.class); //сериализация в класс
+
+                        Date currentDateTime = new Date();
+
+                        long difference = currentDateTime.getTime() - modelMeeting.getTimeStamp().getTime(); //разница по времени в милисекундах
+                        difference = (int) (difference / (1000 * 60 * 60)); //в часах
+
+                        globalApp.Log("FragmentAdmin", "bTimeCheck.setOnClickListener",
+                                "Разница во времени в заявке = " + difference + " часов", false);
+
+                        if (difference >= 24){
+
+                            //Удаляем заявочку
+                            globalApp.GenerateDocumentReference("meetings", modelMeeting.getUserID())
+                                    .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+
+                                        //переходим к следующей заявке
+                                        checkTimeRequest(modelMeeting.getMeetingID(), false);
+
+                                    } else {
+
+                                        ShowProgressBar(false);
+
+                                        //Покажем пользователю сообщение//////////////////////////////////////////////////
+                                        new AlertDialog.Builder(getContext())
+                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                .setTitle("Ошибка удаления из БД")
+                                                .setMessage("Ошибка при удалении заявки из БД: " + task.getException())
+                                                .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.cancel();
+                                                    }
+                                                })
+                                                //.setNegativeButton("No", null)
+                                                .show();
+                                        //===============================================================================
+                                    }
+                                }
+                            });
+
+                            //перейти к следующей
+                        }
+
+
+                    } else { //если нет ни одного документа
+
+                        ShowProgressBar(false);
+
+                        //Покажем пользователю и разрешаем повторить чтение/////////////////////////////
+                        new AlertDialog.Builder(getContext())
+                                .setIcon(android.R.drawable.ic_dialog_info)
+                                .setTitle("Нет данных")
+                                .setMessage("Нет заявок на проверку по времени.")
+                                //.setPositiveButton("Повторить", new DialogInterface.OnClickListener() {
+                                //    @Override
+                                //    public void onClick(DialogInterface dialog, int which) {
+                                //        ReadRandomMeeting();
+                                //    }
+                                //})
+                                //.setNegativeButton("No", null)
+                                .show();
+                        //===============================================================================
+
+                        queryCountMeetings();
+
+                    }
+
+                } else {
+
+                    ShowProgressBar(false);
+
+                    //Покажем пользователю сообщение//////////////////////////////////////////////////
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка чтения БД")
+                            .setMessage("Ошибка чтения заявки из БД: " + task.getException())
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+                }
+            }
+        });
     }
 
 

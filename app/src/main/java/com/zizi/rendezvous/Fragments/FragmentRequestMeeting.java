@@ -49,8 +49,6 @@ public class FragmentRequestMeeting extends Fragment {
     private FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     private FragmentPlace fragmentPlace; // фрагмент с выбором места
     private ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
-    //private Dialog dialog; //класс для показа всплывающих окон
-    //private FragmentManager fragmentManager; // для управления показом компонентов
 
     //виджеты
     private MaterialToolbar materialToolbar; // верхняя панелька
@@ -182,7 +180,15 @@ public class FragmentRequestMeeting extends Fragment {
 
                             CheckModeration(); //проверка на модерацию
 
-                            globalApp.requestMeeting.setStatus(Data.STATUS_ACTIVE);
+                            globalApp.Log(getClass().getSimpleName(), "btn_apply_request.setOnClickListener",
+                                    "Метка времени заявки = " + globalApp.requestMeeting.getTimeStamp(), false);
+
+                            if (globalApp.requestMeeting.getStatus().equals(Data.STATUS_ACTIVE)) { //если статус заявки активный, то есть мы заявку редактируем, то время подачи заявки не трогать
+                                globalApp.requestMeeting.setTimeStamp(globalApp.requestMeeting.getTimeStamp()); //оставляем такое же время заявки
+                            } else {
+                                globalApp.requestMeeting.setTimeStamp(null); //если null, то будет записано серверное время
+                                globalApp.requestMeeting.setStatus(Data.STATUS_ACTIVE); //устанавливаем статус у заявки Активная
+                            }
 
                             SaveParamsToRAM(); // сохранение в оперативную память
 
@@ -228,15 +234,7 @@ public class FragmentRequestMeeting extends Fragment {
                                                 .show();
                                         //===============================================================================
 
-
-                                        //показываем всплывающее окно
-                                        //dialog.setTitle("Ошибка записи в БД");
-                                        //dialog.setMessage("Ошибка при подаче заявки. Проверьте включен ли Интернет. Проверьете доступен ли Интернет. Ошибка записи заявки в БД: " + task.getException());
-                                        //dialog.setPositiveButtonRedirect(Data.ACTIVITY_LOGIN);
-                                        //dialog.show(fragmentManager, "classDialog");
-
                                     }
-
                                 }
                             });
                         } else { //если бесплатные заявки закончились
@@ -315,14 +313,8 @@ public class FragmentRequestMeeting extends Fragment {
                             .show();
                     //===============================================================================
 
-                    //Toast.makeText(getActivity().getApplicationContext(), "Заполните обязательные поля выделенные красным цветом", Toast.LENGTH_LONG).show();
-                    //dialog.setTitle("Заполните все поля");
-                    //dialog.setMessage("Заполните обязательные поля выделенные красным цветом");
-                    //dialog.show(fragmentManager, "classDialog");
 
                 }
-
-
             }
         });
         //==================================================================================================
@@ -355,7 +347,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
 
-        // materialToolbar ////////////////////////////////////////////////////////////////////////////////
+        // materialToolbar /////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Заявка"); // заголовок в панельке верхней
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
 
@@ -480,6 +472,7 @@ public class FragmentRequestMeeting extends Fragment {
         // til_soc_net_et ////////////////////////////////////////////////////////////////////////////////
         til_soc_net_et.setText(globalApp.requestMeeting.getSocNet()); // восстанавливаем выбранное значение из памяти);
         // =============================================================================================
+
 
 
         // til_contact ////////////////////////////////////////////////////////////////////////////
@@ -683,10 +676,7 @@ public class FragmentRequestMeeting extends Fragment {
         svRequestMeeting.setVisibility(View.VISIBLE); // Показываем UI
         pbRequestMeeting.setVisibility(View.GONE); // крутилку скрываем
 
-        //дальше нужно показать диалоги пользователю, если нужно
-        //if (globalApp.GetBundle("moderation").equals("false")) { //если заявка пользователя отклонена на модерации, то показать правила
 
-        //}
 
     }
 

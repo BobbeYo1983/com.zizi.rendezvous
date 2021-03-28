@@ -168,7 +168,7 @@ public class FragmentModeration extends Fragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) { //если запись успешна
 
-                            ReadRandomMeeting(); //читаем следующую случайную неморерированую заявку
+                            ReadRandomMeeting(); //читаем следующую случайную немодерированую заявку
 
                         } else { //если запись не
 

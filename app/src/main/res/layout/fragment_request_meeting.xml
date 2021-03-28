@@ -369,8 +369,26 @@
                 app:iconGravity="textStart" />
 
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="* заявка действует 24 часа"
+                android:textSize="12sp"
+                />
+
+
         </LinearLayout>
+
+
+
     </ScrollView>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

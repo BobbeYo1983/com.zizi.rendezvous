@@ -212,7 +212,7 @@ public class ActivityLogin extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             //отправить пользователя в Play Market
                             Intent browserIntent = new
-                                    Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=ru.zizi.gift&hl=ru&gl=US"));
+                                    Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.zizi.rendezvous"));
                             startActivity(browserIntent);
                         }
                     })
