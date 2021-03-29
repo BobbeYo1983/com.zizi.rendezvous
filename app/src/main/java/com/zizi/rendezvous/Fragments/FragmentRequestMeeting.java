@@ -31,11 +31,13 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.zizi.rendezvous.Activity.ActivityLogin;
 import com.zizi.rendezvous.Activity.ActivityMeetings;
 import com.zizi.rendezvous.Activity.ActivityPay;
 import com.zizi.rendezvous.GlobalApp;
 import com.zizi.rendezvous.Data.Data;
+import com.zizi.rendezvous.Models.ModelMeeting;
 import com.zizi.rendezvous.R;
 
 import java.util.ArrayList;
@@ -331,10 +333,120 @@ public class FragmentRequestMeeting extends Fragment {
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         } else {
-            UpdateUI();
+
+            //показываем прогрессбар
+            svRequestMeeting.setVisibility(View.GONE); // скрываем виджеты
+            pbRequestMeeting.setVisibility(View.VISIBLE); // показываем прогрессбар
+
+
+
+            // materialToolbar /////////////////////////////////////////////////////////////////////////
+            materialToolbar.setTitle("Заявка"); // заголовок в панельке верхней
+            materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
+
+            if (globalApp.requestMeeting.getStatus().equals(Data.STATUS_ACTIVE)) { //если статус заявки активный
+                //if (globalApp.GetParam("statusRequestMeeting").equals(Data.STATUS_ACTIVE)) { //если статус заявки активный
+                materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
+                // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
+                materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        getActivity().onBackPressed();
+                    }
+                });
+            } else {
+                materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
+                materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        drawerLayout.openDrawer(GravityCompat.START);
+                    }
+                });
+            }
+            //==========================================================================================
+
+
+            GetRequestMeetingFromDB();
+
+
+
         }
 
     }
+
+
+
+    /**
+     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в переменную глобального класса globalApp.requestMeeting, если нет, в нее же null
+     */
+    private void GetRequestMeetingFromDB() {
+
+        globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Проверяем, есть ли заявка текущего пользователя в БД", false);
+
+        DocumentReference documentReference = globalApp.GenerateDocumentReference("meetings", globalApp.GetCurrentUserUid()); // формируем путь к документу
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
+                if (task.isSuccessful()) { // если выполнилась успешно
+
+                    globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Задача чтения заявки из БД выполнена успешно, будем получать результат чтения", false);
+
+                    DocumentSnapshot document = task.getResult(); // получаем документ
+
+                    if (document.exists()) { // если документ такой есть, не null
+
+                        globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Документ с заявкой есть в БД, метка времени заявки получена.", false);
+
+                        ModelMeeting requestMeetingCurrentUser = document.toObject(ModelMeeting.class); // получаем заявку текущего пользователя из БД
+                        globalApp.SetRequestMeeting(requestMeetingCurrentUser); // записываем заявку пользователя в текущий класс
+
+                        globalApp.SaveRequestMeetingToMemory(); //сохраняем заявку в память телефона
+
+                        UpdateUI();
+
+                    } else { // если запрошенного документа не существует в БД
+
+                        globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Запрошенного документа нет в БД", false);
+                        globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Метка времени неизвестна и при подаче будет задана новая метка времени.", false);
+
+                        globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти
+                        globalApp.requestMeeting.setStatus(Data.STATUS_NOT_ACTIVE);//отмечаем статус заявки не активным
+                        //activityMeetings.ChangeFragment(new FragmentRequestMeeting(), false); //переходим на фрагмент с заявкой
+
+                        //svRequestMeeting.setVisibility(View.VISIBLE);
+                        //pbRequestMeeting.setVisibility(View.GONE);
+
+                        UpdateUI();
+
+                    }
+
+                } else { // если ошибка чтения БД
+
+                    globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Ошибка чтения БД: " + task.getException(), true);
+
+                    //Показать сообщение пользователю ///////////////////////////////////////////////
+                    new AlertDialog.Builder(getContext()) //во фрагментах getContext()
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Ошибка чтения БД")
+                            .setMessage("Ошибка чтения заявки из БД, метка времени неизвестна и при подаче будет задана новая метка времени, ошибка: " + task.getException())
+                            .setPositiveButton("Понятно", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dialog.cancel();
+
+                                }
+                            })
+                            //.setNegativeButton("No", null)
+                            .show();
+                    //===============================================================================
+                }
+            }
+        });
+    }
+
 
 
     /**
@@ -344,35 +456,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         svRequestMeeting.setVisibility(View.GONE); // скрываем виджеты
         pbRequestMeeting.setVisibility(View.VISIBLE); // показываем прогрессбар
-
-
-
-        // materialToolbar /////////////////////////////////////////////////////////////////////////
-        materialToolbar.setTitle("Заявка"); // заголовок в панельке верхней
-        materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
-
-        if (globalApp.requestMeeting.getStatus().equals(Data.STATUS_ACTIVE)) { //если статус заявки активный
-        //if (globalApp.GetParam("statusRequestMeeting").equals(Data.STATUS_ACTIVE)) { //если статус заявки активный
-            materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
-            // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
-            materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    getActivity().onBackPressed();
-                }
-            });
-        } else {
-            materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
-            materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-            });
-        }
-        //==========================================================================================
 
 
 

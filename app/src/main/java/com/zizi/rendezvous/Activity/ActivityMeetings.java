@@ -42,7 +42,6 @@ public class ActivityMeetings extends AppCompatActivity {
     private FragmentManager fragmentManager; // для управления показом компонентов
     private Fragment fragmentListMeetings; // фрагмент со списком заявок
     private Fragment fragmentRequestMeeting; // фрагмент с заявкой
-    //private DocumentReference documentReference; // ссылка на документ
     private ActionBarDrawerToggle  actionBarDrawerToggle; //связыватель drawerLayout и materialToolbar типа если открыта шторка или закрыта, то иконка гамбургера соответствующая
 
     //виджеты
@@ -238,7 +237,9 @@ public class ActivityMeetings extends AppCompatActivity {
                         globalApp.SetRequestMeeting(requestMeetingCurrentUser); // записываем заявку пользователя в текущий класс
 
                         globalApp.SaveRequestMeetingToMemory(); //сохраняем заявку в память телефона
+
                         RefreshDeviceTokenInMeeting(); //нужно обновить токен в заявке в БД на всякий
+
 
                     } else { // если запрошенного документа не существует в БД
 
