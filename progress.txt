@@ -1,6 +1,6 @@
 НУЖНО СДЕЛАТЬ
 
-Раскрутить
+Раскрутить 
 
 Прикрутить МОНЕТИЗАЦИЮ///////////////
 Раскомментировать на заявке со встречей в btn_apply_request.setOnClickListener(new View.OnClickListener() строку DecrementCountRequestMeetings();// вычеркиваем одну бесплатную заявку и записываем в профиль в БД
