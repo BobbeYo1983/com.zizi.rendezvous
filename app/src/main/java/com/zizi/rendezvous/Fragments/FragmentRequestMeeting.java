@@ -833,6 +833,36 @@ public class FragmentRequestMeeting extends Fragment {
         ArrayAdapter<String> adapter_towns;
 
         switch(region) {
+            case "Алтайский край":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.altaiRegion);
+                break;
+
+            case "Амурская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.amurskayaOblast);
+                break;
+
+            case "Архангельская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.arkhangelskRegion);
+                break;
+
+            case "Астраханская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.astrakhanRegion);
+                break;
+
+            case "Белгородская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.belgorodRegion);
+                break;
+
+            case "Брянская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.bryanskRegion);
+                break;
+
+            case "Владимирская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.vladimirRegion);
+                break;
+
+
+
             case "Московская область":
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.moscowRegion);
                 break;
