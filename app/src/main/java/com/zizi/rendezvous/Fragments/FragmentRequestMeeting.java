@@ -861,6 +861,32 @@ public class FragmentRequestMeeting extends Fragment {
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.vladimirRegion);
                 break;
 
+            case "Волгоградская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.volgogradRegion);
+                break;
+
+            case "Вологодская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.vologodskayaOblast);
+                break;
+
+            case "Воронежская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.voronezhRegion);
+                break;
+
+            case "Еврейская автономная область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.jewishAutonomousRegion);
+                break;
+
+            case "Забайкальский край":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.transbaikalRegion);
+                break;
+
+            case "Ивановская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.ivanovoRegion);
+                break;
+
+
+
 
 
             case "Московская область":
