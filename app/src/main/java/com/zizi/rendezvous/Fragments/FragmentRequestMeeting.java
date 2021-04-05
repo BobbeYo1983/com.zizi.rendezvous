@@ -885,6 +885,74 @@ public class FragmentRequestMeeting extends Fragment {
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.ivanovoRegion);
                 break;
 
+            case "Иркутская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.irkutskRegion);
+                break;
+
+            case "Кабардино-Балкарская Республика":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kabardinoBalkarRepublic);
+                break;
+
+            case "Калининградская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kaliningradRegion);
+                break;
+
+            case "Калужская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kalugaRegion);
+                break;
+
+            case "Камчатский край":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kamchatkaKrai);
+                break;
+
+            case "Карачаево-Черкесская Республика":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.karachayCherkessRepublic);
+                break;
+
+            case "Кемеровская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kemerovoRegion);
+                break;
+
+            case "Кировская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kirovRegion);
+                break;
+
+            case "Костромская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kostromaRegion);
+                break;
+
+            case "Краснодарский край":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.krasnodarRegion);
+                break;
+
+            case "Красноярский край":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.krasnoyarskRegion);
+                break;
+
+            case "Курганская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kurganRegion);
+                break;
+
+            case "Курская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.kurskRegion);
+                break;
+
+            case "Ленинградская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.leningradRegion);
+                break;
+
+            case "Липецкая область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.lipetskRegion);
+                break;
+
+            case "Магаданская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.magadanRegion);
+                break;
+
+
+
+
+
 
 
 
@@ -935,32 +1003,6 @@ public class FragmentRequestMeeting extends Fragment {
         globalApp.requestMeeting.setTime( til_time_act.getEditableText().toString());
         globalApp.requestMeeting.setComment( til_comment_et.getText().toString().trim());
 
-
-
-
-/*        classGlobalApp.PreparingToSave("name", til_name_et.getText().toString());
-        classGlobalApp.PreparingToSave("gender", til_gender_act.getEditableText().toString());
-        classGlobalApp.PreparingToSave("age", til_age_act.getText().toString());
-        classGlobalApp.PreparingToSave("phone", til_phone_et.getText().toString().trim());
-
-        if (cb_only_write.isChecked()){
-            classGlobalApp.PreparingToSave("onlyWrite", "trueTrue");
-        } else {
-            classGlobalApp.PreparingToSave("onlyWrite", "");
-        }
-
-        classGlobalApp.PreparingToSave("socNet", til_soc_net_et.getText().toString().trim());
-        classGlobalApp.PreparingToSave("contact", til_contact_et.getText().toString().trim());
-        classGlobalApp.PreparingToSave("gender_partner", til_gender_partner_act.getEditableText().toString());
-        classGlobalApp.PreparingToSave("age_min", til_age_min_act.getText().toString());
-        classGlobalApp.PreparingToSave("age_max", til_age_max_act.getText().toString());
-        classGlobalApp.PreparingToSave("region", til_region_act.getEditableText().toString());
-        classGlobalApp.PreparingToSave("town", til_town_act.getEditableText().toString());
-        classGlobalApp.PreparingToSave("place", til_place_et.getEditableText().toString());
-        classGlobalApp.PreparingToSave("time", til_time_act.getEditableText().toString());
-        classGlobalApp.PreparingToSave("comment", til_comment_et.getText().toString().trim());
-
-        classGlobalApp.SaveParams();*/
     }
 
 
