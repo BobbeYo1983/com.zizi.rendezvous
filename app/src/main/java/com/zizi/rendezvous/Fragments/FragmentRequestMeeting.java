@@ -949,24 +949,49 @@ public class FragmentRequestMeeting extends Fragment {
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.magadanRegion);
                 break;
 
-
-
-
-
-
-
-
-
             case "Московская область":
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.moscowRegion);
+                break;
+
+            case "Мурманская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.murmanskRegion);
+                break;
+
+            case "Ненецкий автономный округ":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.nenetsAutonomousOkrug);
                 break;
 
             case "Нижегородская область":
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.nizhnyNovgorodRegion);
                 break;
 
+            case "Новгородская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.novgorodRegion);
+                break;
+
+            case "Новосибирская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.novosibirskRegion);
+                break;
+
+            case "Омская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.omskRegion);
+                break;
+
+
+
+
+
+
+
+
+
+
             case "Республика Мордовия":
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfMordovia);
+                break;
+
+            case "Ямало-Ненецкий автономный округ":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.yamaloNenetsAutonomousDistrict);
                 break;
 
             default:
