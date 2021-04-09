@@ -650,7 +650,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_region_act.setText(globalApp.requestMeeting.getRegion());  // восстанавливаем выбранное значение из памяти
 
         //формируем список для выбора
-        ArrayAdapter<String> adapter_regions = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.regionsTmp);
+        ArrayAdapter<String> adapter_regions = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.regions);
         til_region_act.setAdapter(adapter_regions);
 
         //слушатель - если меняется выбор региона
@@ -1053,12 +1053,112 @@ public class FragmentRequestMeeting extends Fragment {
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfSakhaYakutia);
                 break;
 
+            case "Республика Северная Осетия - Алания":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.republicOfNorthOssetiaAlania);
+                break;
 
+            case "Республика Татарстан":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.republicOfTatarstan);
+                break;
 
+            case "Республика Тыва":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.tyvaRepublic);
+                break;
 
+            case "Республика Хакасия":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfKhakassia);
+                break;
+
+            case "Ростовская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.rostovRegion);
+                break;
+
+            case "Рязанская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.ryazanOblast);
+                break;
+
+            case "Самарская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.samaraRegion);
+                break;
+
+            case "Саратовская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.saratovRegion);
+                break;
+
+            case "Сахалинская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.sakhalinRegion);
+                break;
+
+            case "Свердловская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.sverdlovskRegion);
+                break;
+
+            case "Смоленская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.smolenskRegion);
+                break;
+
+            case "Ставропольский край":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.stavropolRegion);
+                break;
+
+            case "Тамбовская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.tambovRegion);
+                break;
+
+            case "Тверская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.tverRegion);
+                break;
+
+            case "Томская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.tomskRegion);
+                break;
+
+            case "Тульская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.tulaRegion);
+                break;
+
+            case "Тюменская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.tyumenRegion);
+                break;
+
+            case "Удмуртская Республика":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.udmurtia);
+                break;
+
+            case "Ульяновская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.ulyanovskRegion);
+                break;
+
+            case "Хабаровский край":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.khabarovskRegion);
+                break;
+
+            case "Ханты-Мансийский автономный округ - Югра":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.khantyMansiAutonomousOkrugYugra);
+                break;
+
+            case "Челябинская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.chelyabinskRegion);
+                break;
+
+            case "Чеченская Республика":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.chechenRepublic);
+                break;
+
+            case "Чувашская Республика - Чувашия":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.chuvashRepublicChuvashia);
+                break;
+
+            case "Чукотский автономный округ":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.chukotkaAutonomousDistrict);
+                break;
 
             case "Ямало-Ненецкий автономный округ":
                 adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.yamaloNenetsAutonomousDistrict);
+                break;
+
+            case "Ярославская область":
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.yaroslavlRegion);
                 break;
 
             default:
