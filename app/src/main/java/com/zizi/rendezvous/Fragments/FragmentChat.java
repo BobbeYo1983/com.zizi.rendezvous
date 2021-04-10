@@ -120,12 +120,13 @@ public class FragmentChat extends Fragment {
 
 
         // информация о партнере чата ///////////////////////////////////////////////////////////////
-
         partnerInfo.setUserID(globalApp.GetBundle("partnerUserID"));
         partnerInfo.setTokenDevice(globalApp.GetBundle("partnerTokenDevice"));
         partnerInfo.setName(globalApp.GetBundle("partnerName"));
         partnerInfo.setAge(globalApp.GetBundle("partnerAge"));
         partnerInfo.setUnReadMsg("0"); // делаем по умолчанию ноль непрочитанных сообщений
+
+        globalApp.Log(getClass().getSimpleName(), "onActivityCreated", "ID партнера = " + partnerInfo.getUserID(), false);
         //===========================================================================================
 
 

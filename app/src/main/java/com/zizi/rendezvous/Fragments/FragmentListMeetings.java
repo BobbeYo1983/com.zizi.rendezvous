@@ -167,7 +167,7 @@ public class FragmentListMeetings extends Fragment {
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         //подгружаем заявку из памяти телефона, чтобы делать выборку с актуальными данными
-        globalApp.LoadRequestMeetingFromMemory();
+        //globalApp.LoadRequestMeetingFromMemory();
 
         // запрос к БД c фильтрами
         collectionReference = globalApp.GenerateCollectionReference("meetings");

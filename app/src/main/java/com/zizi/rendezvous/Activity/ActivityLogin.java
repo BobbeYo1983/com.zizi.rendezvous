@@ -278,8 +278,7 @@ public class ActivityLogin extends AppCompatActivity {
                         SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача входы выполнится успешно
-                            //SaveProfile();
-                            LoadProfileToRAM();
+                            LoadProfileFromDbToRAM(); //грузим профайл пользователя из БД в оперативку
                         } else { // если вход не успешен
 
                             SetVisibilityViews(true); //показываем вьюхи
@@ -477,7 +476,7 @@ public class ActivityLogin extends AppCompatActivity {
 
                         if (task.isSuccessful()) {// если задача регистрации выполнена успешно, то юзер автоматои и авторизируется
 
-                            LoadProfileToRAM(); // загружаем профайл в оперативку
+                            LoadProfileFromDbToRAM(); // загружаем профайл в оперативку
 
                         } else { // если регистрация не успешна
 
@@ -538,21 +537,21 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     /**
-     * Сохраняет профайл пользователя в БД и входит в приложение
+     * Сохраняет профайл пользователя в БД
      */
-    public void SaveProfile (){
-        globalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
+    public void SaveProfileDB (){
+        globalApp.Log("ActivityLogin", "SaveProfileDB", "Сохраняет профайл пользователя в БД", false);
+        globalApp.Log(getClass().getSimpleName(), "SaveProfileDB", "globalApp.GetTokenDevice() = " + globalApp.GetTokenDevice(), false);
+        globalApp.Log(getClass().getSimpleName(), "SaveProfileDB", "globalApp.currentUser.getTokenDevice() = " + globalApp.currentUser.getTokenDevice(), false);
 
         //сохраняем в профайл пользователя в БД
         documentReference = globalApp.GenerateDocumentReference("users", globalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.set(globalApp.currentUser).addOnCompleteListener(new OnCompleteListener<Void>() {
-        //documentReference.update()
             @Override
             public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась
                 if (task.isSuccessful()) { //если задача сохранения выполнилась успешно
 
-                    //LoadProfileToRAM();
-                    EnterInApplication();
+                    EnterInApplication(); //входим в приложение
 
                 } else { // если сохранение не успешно
 
@@ -591,7 +590,7 @@ public class ActivityLogin extends AppCompatActivity {
     /**
      * Загрузка профайла пользователя из БД в RAM
      */
-    private void LoadProfileToRAM(){
+    private void LoadProfileFromDbToRAM(){
 
         //готовим профайл пользователя для сохранениния
         globalApp.currentUser.setUserID(globalApp.GetCurrentUserUid());
@@ -600,7 +599,7 @@ public class ActivityLogin extends AppCompatActivity {
 
         display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
         display.getSize(point); // получаем расширение экрана
-        globalApp.Log(getClass().getSimpleName(), "SaveProfile", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
+        globalApp.Log(getClass().getSimpleName(), "LoadProfileFromDbToRAM", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
 
         globalApp.currentUser.setScreenExtension(String.valueOf(point.x) + "x" + String.valueOf(point.y));
 
@@ -621,7 +620,7 @@ public class ActivityLogin extends AppCompatActivity {
 
                     } else {
 
-                        globalApp.Log(getClass().getSimpleName(), "LoadProfileToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле countRequestMeetings не найдено, присвоено значение по умолчанию", false);
+                        globalApp.Log(getClass().getSimpleName(), "LoadProfileFromDbToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле countRequestMeetings не найдено, присвоено значение по умолчанию", false);
                         globalApp.currentUser.setCountRequestMeetings(Data.DEFAULT_COUNT_REQUEST_MEETINGS);
                     }
 
@@ -630,11 +629,11 @@ public class ActivityLogin extends AppCompatActivity {
                         boolean acceptRules = (boolean)documentSnapshot.get("acceptRules");
                         globalApp.currentUser.setAcceptRules(acceptRules);
                     } else {
-                        globalApp.Log(getClass().getSimpleName(), "LoadProfileToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле acceptRules не найдено, присвоено значение по умолчанию", false);
+                        globalApp.Log(getClass().getSimpleName(), "LoadProfileFromDbToRAM/onComplete", "Ошибка загрузки профайла пользователя из БД: поле acceptRules не найдено, присвоено значение по умолчанию", false);
                         globalApp.currentUser.setAcceptRules(false);
                     }
 
-                    SaveProfile(); //сохраняем профайл в БД
+                    SaveProfileDB(); //сохраняем профайл в БД
 
 
                 } else { // если ошибка при чтении профайла из БД
@@ -656,12 +655,6 @@ public class ActivityLogin extends AppCompatActivity {
                             .show();
                     //===============================================================================
 
-
-                    //показываем всплывающее окно
-                    //dialog.setTitle("Ошибка входа");
-                    //dialog.setMessage("Ошибка при загрузке профайла пользователя из БД в RAM : " + task.getException());
-                    //dialog.show(fragmentManager, "classDialog");
-
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);
                 }
@@ -675,6 +668,8 @@ public class ActivityLogin extends AppCompatActivity {
      * Вход в приложение, то есть переход на первую активити после авторизации
      */
     private void EnterInApplication () {
+
+        globalApp.Log(getClass().getSimpleName(), "EnterInApplication", "Вход в приложение, переход к активити со встречами.", false);
 
         // сохраняем логин и пароль в память
         globalApp.PreparingToSave("email", email);

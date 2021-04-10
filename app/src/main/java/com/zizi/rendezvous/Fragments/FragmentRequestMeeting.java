@@ -379,7 +379,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
     /**
-     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в переменную глобального класса globalApp.requestMeeting, если нет, в нее же null
+     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в переменную глобального класса globalApp.requestMeeting
      */
     private void GetRequestMeetingFromDB() {
 
@@ -411,12 +411,8 @@ public class FragmentRequestMeeting extends Fragment {
                         globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Запрошенного документа нет в БД", false);
                         globalApp.Log(getClass().getSimpleName(), "GetRequestMeetingFromDB", "Метка времени неизвестна и при подаче будет задана новая метка времени.", false);
 
-                        globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти
+                        //globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти
                         globalApp.requestMeeting.setStatus(Data.STATUS_NOT_ACTIVE);//отмечаем статус заявки не активным
-                        //activityMeetings.ChangeFragment(new FragmentRequestMeeting(), false); //переходим на фрагмент с заявкой
-
-                        //svRequestMeeting.setVisibility(View.VISIBLE);
-                        //pbRequestMeeting.setVisibility(View.GONE);
 
                         UpdateUI();
 

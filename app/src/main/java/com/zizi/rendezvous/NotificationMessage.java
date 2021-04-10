@@ -50,8 +50,8 @@ public class NotificationMessage extends AsyncTask<String,Void,Void> {
             JSONObject data = new JSONObject();
             data.put("title", "Сообщение");   // Notification title
             data.put("body", "У вас есть новое сообщение"); // Notification body
-            data.put("userID", globalApp.GetCurrentUserUid()); // ID пользователя отправителя
-            data.put("tokenDevice", globalApp.GetTokenDevice()); // tokenDevice отправителя
+            data.put("userID", globalApp.requestMeeting.getUserID()); // ID пользователя отправителя
+            data.put("tokenDevice", globalApp.requestMeeting.getTokenDevice()); // tokenDevice отправителя
             data.put("name", globalApp.requestMeeting.getName()); // имя отправителя
             data.put("age", globalApp.requestMeeting.getAge()); // возраст отправителя
 

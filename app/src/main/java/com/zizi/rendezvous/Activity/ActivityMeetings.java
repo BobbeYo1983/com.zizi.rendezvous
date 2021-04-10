@@ -150,7 +150,7 @@ public class ActivityMeetings extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели
                 if (item.getItemId() == R.id.request) // если нажата кнопка показать заявку
                 {
-                    globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти телефона
+                    //globalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти телефона
                     ChangeFragment(fragmentRequestMeeting, true); // грузим фрагмент с заявкой на встречу
                 }
                 return false;
@@ -213,7 +213,8 @@ public class ActivityMeetings extends AppCompatActivity {
 
 
     /**
-     * Проеряет наличие заявки текущего пользователя в БД. Если есть возвращает результат в переменную глобального класса globalApp.requestMeeting, если нет, в нее же null
+     * Проеряет наличие заявки текущего пользователя в БД.
+     * Если есть возвращает результат в переменную глобального класса globalApp.requestMeeting, если нет, то подгружает из памяти телефона.
      */
     private void GetRequestMeetingFromDB() {
 
@@ -381,22 +382,23 @@ public class ActivityMeetings extends AppCompatActivity {
 
                 globalApp.Log(getClass().getSimpleName(), "onCreate", "Статус заявки активный, будем дальше смотреть, что грузить", false);
 
-                Bundle bundle = getIntent().getExtras(); //получаем параметры переданные в активити
+                //Bundle bundle = getIntent().getExtras(); //получаем параметры переданные в активити
 
                 //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerID="  + bundle.getString("partnerID"),false);
                 //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerTokenDevice="  + bundle.getString("partnerTokenDevice"),false);
                 //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerName="  + bundle.getString("partnerName"),false);
                 //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerAge="  + bundle.getString("partnerAge"),false);
 
-                if (bundle != null && bundle.getString("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
-                    globalApp.Log(getClass().getSimpleName(), "onCreate", "Параметр: fragmentForLoad=" + bundle.getString("fragmentForLoad") + ", нужно грузить фрагмент с чатом", false);
+                //if (bundle != null && bundle.getString("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
+                if (globalApp.GetBundle("fragmentForLoad") != null && globalApp.GetBundle("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
+                    globalApp.Log(getClass().getSimpleName(), "onCreate", "Параметр: fragmentForLoad=" + globalApp.GetBundle("fragmentForLoad") + ", нужно грузить фрагмент с чатом", false);
 
                     //извлекаем параметры и передаем их дальше фрагменту
-                    globalApp.ClearBundle();
-                    globalApp.AddBundle("partnerID", bundle.getString("partnerID"));
-                    globalApp.AddBundle("partnerTokenDevice", bundle.getString("partnerTokenDevice"));
-                    globalApp.AddBundle("partnerName", bundle.getString("partnerName"));
-                    globalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
+                    //globalApp.ClearBundle();
+                    //globalApp.AddBundle("partnerUserID", bundle.getString("partnerUserID"));
+                    //globalApp.AddBundle("partnerTokenDevice", bundle.getString("partnerTokenDevice"));
+                    //globalApp.AddBundle("partnerName", bundle.getString("partnerName"));
+                    //globalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
 
                     ChangeFragment(fragmentListMeetings, false); // показываем сначала встречи, чтобы правильно отработала кнопка назад
                     ChangeFragment(new FragmentChat(), true); // переходим к чату

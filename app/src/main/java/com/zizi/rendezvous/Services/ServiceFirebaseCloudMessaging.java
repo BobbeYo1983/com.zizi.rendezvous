@@ -32,20 +32,30 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
     public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление не в фоновом режиме
         super.onMessageReceived(remoteMessage);
 
+        globalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
+        globalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived",
+                "Пришло уведомление от пользователя с ID = " + remoteMessage.getData().get("userID"), false);
+
         String stringTmp = Data.FRAGMENT_CHAT + remoteMessage.getData().get("userID"); //формируем строку для сравнения
         // если в настоящее время открыт фрагмент (видимый виджет) с чатом пользователя, который прислал уведомление, то не формировать уведомление
         if (!globalApp.GetVisibleWidget().equals(stringTmp)) {
 
-
-            globalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
-
             //создаем намерение, что хотим перейти на другую активити
             Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
-            intent.putExtra("fragmentForLoad", Data.FRAGMENT_CHAT);
-            intent.putExtra("partnerID", remoteMessage.getData().get("userID")); //передаем идентификатор пользователя, чтобы открыть нужный чат
-            intent.putExtra("partnerTokenDevice", remoteMessage.getData().get("tokenDevice"));
-            intent.putExtra("partnerName", remoteMessage.getData().get("name"));
-            intent.putExtra("partnerAge", remoteMessage.getData().get("age"));
+
+            //создаем параметры для передачи на фрагмент чата
+            globalApp.ClearBundle();
+            globalApp.AddBundle("fragmentForLoad", Data.FRAGMENT_CHAT);
+            globalApp.AddBundle("partnerUserID", remoteMessage.getData().get("userID")); //передаем идентификатор пользователя, чтобы открыть нужный чат
+            globalApp.AddBundle("partnerTokenDevice", remoteMessage.getData().get("tokenDevice"));
+            globalApp.AddBundle("partnerName", remoteMessage.getData().get("name"));
+            globalApp.AddBundle("partnerAge", remoteMessage.getData().get("age"));
+
+            //intent.putExtra("fragmentForLoad", Data.FRAGMENT_CHAT);
+            //intent.putExtra("partnerUserID", remoteMessage.getData().get("userID")); //передаем идентификатор пользователя, чтобы открыть нужный чат
+            //intent.putExtra("partnerTokenDevice", remoteMessage.getData().get("tokenDevice"));
+            //intent.putExtra("partnerName", remoteMessage.getData().get("name"));
+            //intent.putExtra("partnerAge", remoteMessage.getData().get("age"));
 
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
                     | Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
