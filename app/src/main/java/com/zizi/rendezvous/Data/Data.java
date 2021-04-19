@@ -11,6 +11,7 @@ public class Data {
     public static final String OTHER = "Прочее";
     public static final String DEFAULT_COUNT_REQUEST_MEETINGS = "31"; // количество бесплатных встреч по умолчанию
     public static final String VERSION_CODE_KEY = "VERSION_CODE_KEY"; // для запроса последней версии с удаленного конфига
+    public static final boolean USE_DEBAG_DB = true; //использовать отладочную ветку БД
 
     //статусы заявки на встречу
     public static final String STATUS_ACTIVE = "STATUS_ACTIVE";

@@ -191,7 +191,7 @@ public class FragmentAdmin extends Fragment {
                     .whereGreaterThan("meetingID", meetingID)
                     .orderBy("meetingID") // упорядочиваем по ID
                     .limit(1) // читаем только первую
-            ;
+                    ;
         }
 
 
@@ -248,10 +248,11 @@ public class FragmentAdmin extends Fragment {
                                     }
                                 }
                             });
+                        } else { //если заявка не просрочена, то переходим проверять следующую заявку
 
-                            //перейти к следующей
+                            //если переходим к следующей заявке
+                            checkTimeRequest(modelMeeting.getMeetingID(), false);
                         }
-
 
                     } else { //если нет ни одного документа
 

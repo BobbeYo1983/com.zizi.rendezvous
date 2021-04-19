@@ -263,7 +263,7 @@ public class GlobalApp extends Application {
      */
     public DatabaseReference GenerateDatabaseReference (String path){
 
-        if (BuildConfig.DEBUG) { // если режим отладки
+        if (BuildConfig.DEBUG && Data.USE_DEBAG_DB) { // если режим отладки и константа, что использовать отладочную ветку БД
             path = "debug/" + path;
         }
 
@@ -282,7 +282,7 @@ public class GlobalApp extends Application {
      */
     public DocumentReference GenerateDocumentReference (String collection, String document){
 
-        if (BuildConfig.DEBUG) { // если режим отладки
+        if (BuildConfig.DEBUG && Data.USE_DEBAG_DB) { // если режим отладки и константа, что использовать отладочную ветку БД
             collection = "_debug_" + collection;
         }
         DocumentReference documentReference = firebaseFirestore.collection(collection).document(document); //формируем ссылку
@@ -292,7 +292,7 @@ public class GlobalApp extends Application {
 
     public CollectionReference GenerateCollectionReference (String collection) {
 
-        if (BuildConfig.DEBUG) { // если режим отладки
+        if (BuildConfig.DEBUG && Data.USE_DEBAG_DB) { // если режим отладки и константа, что использовать отладочную ветку БД
             collection = "_debug_" + collection;
         }
 
